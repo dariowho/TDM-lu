@@ -1,0 +1,33 @@
+-------------------------------------------------------------------------------
+planned
+-------------------------------------------------------------------------------
+ - Set up the repository
+ - Subscribe http://www.illc.uva.nl/LaCo/CLS/
+ - Refine features for chunk matcher
+ - Implement parameter matchng
+ - Keep an index of the chunks
+ - Keep class-conditional probabilities for chunks
+ - Train Score weights with Machine Learning
+ - Think about measures to exploit the relevance of a chunk respect to a class
+
+ 
+-------------------------------------------------------------------------------
+newly done
+-------------------------------------------------------------------------------
+ - Implement Score-based meaning matching
+ - Bugfix: nondeterministic parse trees
+ - HTML-generation code moved to a dedicate sub-package (score.output.*)
+ 
+-------------------------------------------------------------------------------
+Wednesday 17 April 2012
+-------------------------------------------------------------------------------
+ - Test distributional semantics: same problem of path length for [in/de]crease
+ - HTML browsable output of the M2 algorithm
+ - Bugfix: nondeterministic results (→ 20130416-nondeterministic_bug_solution)
+ - Test of different features for the M2 algorithm (_out/004-m2_features.tar.gz)
+
+-------------------------------------------------------------------------------
+Wednesday 10 April 2012
+-------------------------------------------------------------------------------
+ - Re-organization of the code: features are now dynamic and modular
+ - M2 algorithm for chunk matching sentence is considered as one chunk

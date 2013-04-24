@@ -1,0 +1,55 @@
+Solution of the undeterministic bug, 16/4/2013
+==============================================
+
+-------------------------------------------------------------------------------
+_old/20130416a_html-m2ndbugfix.tar.gz
+-------------------------------------------------------------------------------
+
+'asd_stub.html' and 'asd_stub2.html' are the outputs of two consecutive runs of
+'lu_client.py'. No changes to any file has been made between the two runs, 
+meaning that the exact same code has been run with the exact same input, using
+the exact same resources. The code is supposed to be deterministic, in that it
+is entirely dependent on the input, and no random values are used to initialize
+or compute anything in the code.
+
+Still, 'asd_stub.html' and 'asd_stub2.html' provide different results: across
+the two runs some sentences have been chunked differently, with different 
+final scores (eg. "decrease the volume" have been scored XXX in 'asd_stub.html',
+and YYY in 'asd_stub2.html').
+
+A basic example of the bug has been found in the computation of basic chunk 
+score between c_f="increase" and c_t="the volume". The procedure that computes 
+this score (score/features/chunk.py::c_stub_feature()) is supposed to be run 
+for each possible 2-split of the input chunks. Only one split is possible in 
+this case: C_F="increase" vs. C_T=["the","volume"], making this the only score 
+considered for "increase" vs. "the volume". For this split the procedure 
+computes the STUB_FEATURE, which is at the moment the only feature of a 
+ChunkScore. Such feature consists in the product of the best scores of every 
+sub-chunk of C_F (only "increase" in this case). Thus, "increase" is scored 
+against "the" and against "volume"; the best of this score will be the score
+of "increase" against "the volume".
+
+In both 'asd_stub.html' and 'asd_stub3.html' the scores "increase"vs"the" and
+"increase"vs"volume" are the same (0.09375 and 0.121527777985 respectively), 
+but the first is selected in "asd_stub3.html", while the second is selected in
+"asd_stub.html". "asd_stub3.html" is wrong because 0.09375 is lower than
+0.121527777985, thus there is a problem in determining which score is the 
+greatest of the two. This is the code, in chunk.py::c_stub_feature(), that 
+picks the best score (before the fix):
+
+	def c_stub(score,C_F,C_T,table):
+		max_scores = []
+		for cf_i in C_F:
+			max_i = table.get_score(cf_i,C_T[0])
+			for ct_j in C_T:
+				if table.get_score(cf_i,ct_j) > max_i:
+					max_i = table.get_score(cf_i,ct_j)
+			max_scores.append(max_i)
+
+In particular, the line
+	if table.get_score(cf_i,ct_j) > max_i:
+compares two Score objects.
+
+The fault is given by the fact that the Score class does not define methods for
+comparison, resulting in an unreliable result (probably dependent on the memory
+address of the two objects being compared)
