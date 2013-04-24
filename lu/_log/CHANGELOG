@@ -1,7 +1,6 @@
 -------------------------------------------------------------------------------
 planned
 -------------------------------------------------------------------------------
- - Set up the repository
  - Subscribe http://www.illc.uva.nl/LaCo/CLS/
  - Refine features for chunk matcher
  - Implement parameter matchng
@@ -17,6 +16,7 @@ newly done
  - Implement Score-based meaning matching
  - Bugfix: nondeterministic parse trees
  - HTML-generation code moved to a dedicate sub-package (score.output.*)
+ - Set up the repository: https://github.com/dario-chiappetta/TDM-lu.git
  
 -------------------------------------------------------------------------------
 Wednesday 17 April 2012
