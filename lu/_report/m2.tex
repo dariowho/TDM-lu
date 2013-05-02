@@ -43,7 +43,8 @@ The algorithm presented in this paper aims to provide a similarity measure for t
 
 %Document structure
 This paper is \textbf{structured} as follows. Section \ref{algo} describes the algorithm theoretically. %and in a better world a complexity analysis
-Section \ref{example} walks through a toy example. Section \ref{learning} describes possible extensions and improvements. Section \ref{conclusions} draws the conclusion of the paper.
+%Section \ref{example} walks through a toy example.
+Section \ref{learning} describes possible extensions and improvements. Section \ref{conclusions} draws the conclusion of the paper.
 
 \section{The algorithm} \label{algo}
 \begin{algorithm}
@@ -129,10 +130,76 @@ The next part of the inner loop, from line \ref{main:fe1} to line \ref{main:fe2}
 The last operation done in the loop, at line \ref{main:cappend}, is to combine the sub-scores that have just been scored in the table to compute the final score of this particular subdivision of $c_1$ and $c_2$. This is a \textbf{candidate score} for $c_1$ and $c_2$, and thus is appended to the list of candidate scores. As we already said, the definition of this combination is open; however it is most reasonable for the $\hat{\sigma}$ function to find the \textbf{best alignment} between the input sub-chunks, and provide a score based on it. It is plain that the definition of $\hat{\sigma}$ is crucial for getting sensible results from the algorithm. Furthermore, $\hat{\sigma}$ is the point where the algorithm can be extended with Machine Learning capabilities, that will be discussed in Section \ref{learning}.
 
 At line \ref{main:return} the function returns the \textbf{maximum of the candidate} score, that is, the split that produced the best score (eg. for "increase the volume" vs "raise the volume", the score of "increase $\vert$ the volume" vs "raise $\vert$ the volume" is likely to produce a better score than "increase $\vert$ the volume" vs. "raise the $\vert$ volume"). Note that this decision determines the branching of one level of the recursion tree; once the algorithm is done computing the score between two sentences, a traceback of the selected splits can be interpreted as a parse tree for the two input sentences.
-\section{An example} \label{example}
+
+%\section{An example} \label{example}
 
 \section{Machine Learning Possibilities} \label{learning}
+The basic algorithm described in section \ref{algo} only deals with \textbf{static features} to measure similarities: the score of two words is derived from equality, edit distance, Wordnet path length and so on; the score of chunks is the average of the scores of the best alignments of their components.
 
+In this section I address the question whether it is possible, and how, for the algorithm to \textbf{learn} from the sentences it is parsing. In other words, given a sentence of which I know the meaning, how can I use this information to improve the way I process new sentences?
+
+Here I consider \textbf{three features} based on Statistical Language Processing methods to address this problem: chunk likelihood, class-conditional chunk weight and alignments likelihood.
+
+\subsection{Chunk likelihood}
+% Relative frequency across all sentences
+% Used to select good chunks
+Let's consider the following pair of sentences:
+\begin{quote}
+Pump up the volume\\
+Turn up the volume
+\end{quote}
+
+As an English-speaking human being I immediately associate the phrase "pump up" with "turn up" and "the volume" with its analogue. One of the reasons I make this association rather than, for instance, associating "pump" with "turn" and "up the volume" with its analogue, is that I have good experience of the phrase "the volume" being used in different contexts, while fewer times I encounter "up the volume".
+
+Thus a feature that can be useful to \textbf{enforce good chunking} of the input sentences is the likelihood of a chunk of text (where a chunk is defined as either a word or a combination of chunks). This feature can be modeled as the relative count of each chunk in the whole pool of the ones that have been recorded:
+$$
+l(c)=\frac{\text{\# of }c}{\text{\# of total chunks}}
+$$
+
+Note that this feature is completely unsupervised, in that it does not require a Meaning label to be computed.
+\subsection{Class-conditional chunk weight}
+% frequency in class / frequency overall
+% Used to weight more chunks that are representative for one class
+Let's consider the following three sentences:
+\begin{quote}
+Increase the volume\\
+I would appreciate if you could increase a bit the the volume\\
+Decrease the volume
+\end{quote}
+
+With a reasonable approximation, the first two sentences have the same meaning, while the last says the opposite, although the first and the last sentence are much more similar from a syntactic point of view. Nevertheless, no English speaker would bother wondering about hidden meanings behind phrases like "I would appreciate", or "if you could": everyone could tell that the second sentence is no more than the first one, with some more formal dressing.
+
+Especially, when I listen to the second sentence, I can immediately locate "increase" and "the volume" as the most informative phrases, while filtering out the rest as less relevant. One of the reasons I am able to do this is that I have memory of "I would appreciate if you could" used in sentences conveying lots of different meanings, while "increase" is likely to appear only in situations where something is increased.
+
+A feature that could be useful to spot the \textbf{informativeness} of chunks can be the conditional probability of the chunk, given a certain meaning:
+$$
+l(c|m)=\frac{\text{\# of }c\text{ in }m}{\text{\# of }c}
+$$
+
+This feature can be used to weight the score of different chunks in the sentence, so for more informative chunks to influence more of the total score mass.
+%l(c|m,M)?
+\subsection{Alignment likelihood}
+% Recursive score of alignments
+% Used to align chunks correctly
+Let's consider the following pair of sentences:
+\begin{quote}
+Skip this track \\
+Jump over this song
+\end{quote}
+Again, English speakers can easily associate the meaning of "skip" with the one of "jump over", and the meaning of "track" with the one of "song".
+
+One device that the algorithm uses to solve this problem is the \textbf{Wordnet} Path Lenght measure for word comparison. However, it has been noticed that this measure has its limits. In particular
+\begin{itemize}
+\item Not all the words are included in Wordnet
+\item Being a static measure, it cannot be adapted to the domain
+\item It has difficulties spotting antonyms
+\end{itemize}
+The alignment likelihood measure can be used to \textbf{enforce correct alignments} of different chunks.
+$$
+l(c_2|c_1)=\frac{\text{\# of }c_1-c_2\text{ alignments }}{\text{\# of }c_1\text{ alignments}}
+$$
+Note that, since no alignment labels are provided in the dataset (each sentence is labeled with a meaning, but its syntactic structure is hidden), this measure have to be trained in an unsupervised fashion. This problem shares a lot with the alignment likelihood in \textbf{Machine Translation}, even though here we can take advantage of the chunks sharing the same language (thus allowing some clever initialization of unsupervised methods with sensible guesses based, for instance, on Wordnet). On the other side our problem presents less precise training data, in that, while MT alignments are trained on sentence pairs, here we have a group of sentences sharing a same meaning; it can be argued that this cannot allow for strong syntactic assumptions.
+% MT: T: more similar syntactic structure (label sentence by sentence)
 \section{conclusions} \label{conclusions}
 Here I described an algorithm to compare the similarity of two input sentences. Its main \textbf{advantages} are the concurrent consideration of many features like word meanings, position and overlapping, as well as the structure of the sentences, having the result in the form of aligned binary trees. The algorithm is recursive and exhaustive in that considers all the possible alignments of all the possible combinations of all the possible binary trees of the two input sentences, maximizing the efficiency with dynamic programming. Due to its modular structure, the algorithm can be easily extended with new features, allowing its integration with well-known Machine Learning techniques in Computational Linguistics (eg. Expectation-Maximization for computing word/phrase alignment probabilities).
 
