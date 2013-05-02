@@ -53,29 +53,38 @@ def c_aavg(score,C_F,C_T,table):
 	score.set_feature(score.AAVG,_r)
 
 def c_len(score,C_F,C_T,table):
-	"""
-	-no description-
-	"""
-
-	# Get the best scores (This is a repetition of the code in the first feature,
-	# this should be avoided...)
-	max_scores = []
-	min_len    = []
-	for cf_i in C_F:
-		max_i = table.get_score(cf_i,C_T[0])
-		min_j = C_T[0]
-		for ct_j in C_T:
-			if table.get_score(cf_i,ct_j).get_score() > max_i.get_score():
-				max_i = table.get_score(cf_i,ct_j)
-				min_j = ct_j
-		max_scores.append(max_i)
-		min_len.append( min(cf_i.length,min_j.length) )
-		
-	n = 0.0
-	_r = 0.0
-	for n,i in enumerate(min_len):
-		_r = _r+log(i)*max_scores[n].get_score()
-		n=n+1.0
-	_r=_r/n
+	# _r = log(min(C_F.length,C_T.length))
 	
-	score.set_feature(score.LEN,_r)
+	l=min(C_F.length,C_T.length)
+	import math
+	_r = 1-(1.0/(l+0.5))
+	
+	score.set_feature(score.LEN,_r*score.features[score.AAVG])
+
+#~ def c_len(score,C_F,C_T,table):
+	#~ """
+	#~ -no description-
+	#~ """
+#~ 
+	#~ # Get the best scores (This is a repetition of the code in the first feature,
+	#~ # should be avoided...)
+	#~ max_scores = []
+	#~ min_len    = []
+	#~ for cf_i in C_F:
+		#~ max_i = table.get_score(cf_i,C_T[0])
+		#~ min_j = C_T[0]
+		#~ for ct_j in C_T:
+			#~ if table.get_score(cf_i,ct_j).get_score() > max_i.get_score():
+				#~ max_i = table.get_score(cf_i,ct_j)
+				#~ min_j = ct_j
+		#~ max_scores.append(max_i)
+		#~ min_len.append( min(cf_i.length,min_j.length) )
+		#~ 
+	#~ n = 0.0
+	#~ _r = 0.0
+	#~ for n,i in enumerate(min_len):
+		#~ _r = _r+log(i)*max_scores[n].get_score()
+		#~ n=n+1.0
+	#~ _r=_r/n
+	#~ 
+	#~ score.set_feature(score.LEN,_r)

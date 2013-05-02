@@ -172,7 +172,6 @@ class Language:
 		
 		for i in range(len(self.meaning)):
 			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
-			#~ print("<p>The current meaning achieved score "+str(s.get_score())+"</p>")
 			score.output.meaning.render_html(s)
 			
 	def learn(self,sentence_in,meaning_in):
@@ -181,48 +180,4 @@ class Language:
 		"""
 		
 		raise NotImplementedError
-
-	#
-	# Private methods
-	#
-
-	def _score_sentence(self,sentence_from,sentence_to):
-		"""
-		Scores the similarity between 'sentence_from' and 'sentence_to'.
-		The higher the score, the higher the similarity.
-		
-		TODO: implement properly
-		"""
-		
-		#
-		# M2 testing
-		#
-		
-		return self._score_chunk(Chunk(sentence_from,1),Chunk(sentence_to,1))
-		
-		#
-		# OLD CODE
-		#
-		r = 0
-		# Loops through every possible combination of words
-		# NOTE: enumerate starts from 1, because chunks count should start from 1
-		for i,word_from_s in enumerate(tokenize.WordPunctTokenizer().tokenize(sentence_from),1):
-			for j,word_to_s in enumerate(tokenize.WordPunctTokenizer().tokenize(sentence_to),1):
-				word_from = Word(word_from_s,i)
-				word_to = Word(word_to_s,j)
-				# ChunkScore for two words = WordScore
-				word_score = score.word.get_score(word_from,word_to)
-				r = r+word_score.get_score()
-				print("	"+word_from.text+unicode(i)+" - "+word_to.text+unicode(j)+" ; "+unicode(word_score.get_score()))
-				for f in word_score.features:
-					print("		"+str(f))
-		
-		return r
-		
-	def _score_chunk(self,chunk_from,chunk_to):
-		"""
-		Scores the similarity between two chunks of text.
-		"""
-
-		return score.chunk.get_score_m2(chunk_from,chunk_to)
 

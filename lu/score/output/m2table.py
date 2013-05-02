@@ -7,6 +7,8 @@ readable file format.
 At the moment only TXT and HTML formats are supported.
 """
 
+import lu.score.output.score
+
 def render_txt(table,from_a=1,from_b=None,indent=0):
 	"""
 	Outputs a M2Table in text format.
@@ -88,12 +90,7 @@ def _render_html_sd_inner(table,chunk_from,chunk_to=None,indent=0):
 	print("\t"*indent+"<li>")
 	print("\t"*indent+"<a href='#'><span class='light'>"+str(chunk_from)+"</span> - "+str(chunk_to)+"</a>")
 	score = table.get_score(chunk_from,chunk_to)
-	print("<ul class='score'>")
-	print(score.s_from.penn_string()+"<br/>")
-	print(score.s_to.penn_string())
-	score.render_html()
-	print("<li class='total'>"+str(score.get_score())+"</li>")
-	print("</ul>")
+	lu.score.output.score.render_html(score)
 	if not chunk_to.is_word():
 		print("\t"*indent+"<ul>")
 		for i in range(1,chunk_to.length):

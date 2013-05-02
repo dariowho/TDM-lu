@@ -28,6 +28,9 @@ class ChunkScore(Score):
 		self.weights  = array('f',[1.0/ChunkScore.N_FEATURES]*ChunkScore.N_FEATURES)
 		self.is_feature_set = array('b',[False]*ChunkScore.N_FEATURES)
 
+		# Test weights: first feature only
+		self.weights  = array('f',[1,0])
+
 		# Debug information
 		self.s_from  = Chunk("__EMPTY_CHUNK_FROM__",1)
 		self.s_to    = Chunk("__EMPTY_CHUNK_TO__",1)

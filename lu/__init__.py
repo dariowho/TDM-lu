@@ -111,12 +111,12 @@ class Chunk(object):
 		if n == 1:
 			if n == self.length:
 				assert len(self.words) == 1
-				return self.words
+				return ChunkedChunk(self.words)
 				
 			c1 = self.words[0]
 		else:
 			if n == self.length:
-				return [self]
+				return ChunkedChunk([self])
 				
 			c1 = Chunk(None,self.position,self.words[:n])
 		
@@ -139,6 +139,12 @@ class ChunkedChunk(list):
 	
 	TODO: test this data structure
 	"""
+	
+	def __init__(self, *args):
+		list.__init__(self, *args)
+		self.length = 0
+		for c in self:
+			self.length = self.length + c.length
 	
 	def is_word(self):
 		return (len(self)==1) and (self[0].is_word())
@@ -194,7 +200,7 @@ class Word(object):
 	def split(self,n):
 		assert n == 1
 		
-		return [self]
+		return ChunkedChunk([self])
 		
 	def penn_string(self):
 		return "w'"+self.text+"'"

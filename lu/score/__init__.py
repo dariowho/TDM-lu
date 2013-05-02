@@ -87,12 +87,3 @@ class Score(object):
 		assert self.is_feature_set[i]
 		
 		return self.features[i]
-		
-	#
-	# Outpud methods (to be moved to a dedicated module)
-	#
-	
-	def render_html(self):
-		for f in self.features:
-			print("<li>"+str(f)+"</li>")
-
