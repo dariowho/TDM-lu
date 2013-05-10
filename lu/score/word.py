@@ -13,13 +13,14 @@ import features.word
 class WordScore(Score):
 
 	# Total number of features
-	N_FEATURES = 4
+	N_FEATURES = 5
 
 	# Constant feature names (must define N_FEATURES names)
 	EQUALS, \
 	EDIT_DISTANCE, \
 	POSITION_DISTANCE, \
-	WN_MAX_PATH_SIMILARITY, = range(N_FEATURES)
+	WN_MAX_PATH_SIMILARITY, \
+	ML_AFREQ = range(N_FEATURES)
 
 	def __init__(self,s_from,s_to):
 		super(WordScore,self).__init__()
@@ -32,7 +33,7 @@ class WordScore(Score):
 		self.s_to   = s_to
 		
 		# Debug...
-		#~ self.weights  = array('f',[0,0,1])
+		self.weights  = array('f',[0.8,0.05,0.05,0.05,0.05])
 
 #
 # Hooks (must match the order of the names in WordScore)
@@ -41,14 +42,15 @@ class WordScore(Score):
 _f = [ features.word.c_equals, \
        features.word.c_edit_distance, \
        features.word.c_position_distance, \
-       features.word.c_wn_max_path_similarity ]
+       features.word.c_wn_max_path_similarity, \
+       features.word.c_ml_afreq ]
 
 
 #
 # Main functions
 #
 
-def get_score(chunk_from, chunk_to):
+def get_score(chunk_from, chunk_to, ml):
 	"""
 	Compute similarity features between the two input chunks; returns the 
 	corresponding WordScore object.
@@ -63,7 +65,7 @@ def get_score(chunk_from, chunk_to):
 	
 	for i,f in enumerate(_f):
 		if not r.is_feature_set[i]:
-			f(r,chunk_from,chunk_to)
+			f(r,chunk_from,chunk_to,ml)
 
 	return r
 

@@ -15,7 +15,9 @@ Running the code
 A test client (lu_client.py) is provided. It can be run with:
 
 ```
-python2 lu_client.py > lu_client.out.html 
+python2 lu_client.py > lu/_out/lu_client.out.html
 ```
 
 The script produces an HTML file containing the detail of a sentence scored against all the meanings in a grammar.
+
+Temporarily, the output folder will also contain the exported indices of the Machine Learning module.

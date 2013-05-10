@@ -138,6 +138,9 @@ class ChunkedChunk(list):
 	How much wood would a woodchuck chunk if a woodchuk could chunk wood?
 	
 	TODO: test this data structure
+	TODO: check the efficiency of the text field: might be recursively expensive,
+	      and it's used only to keep the consistency of merge (which is used only
+	      for a temp. feature of M2)
 	"""
 	
 	def __init__(self, *args):
@@ -145,9 +148,17 @@ class ChunkedChunk(list):
 		self.length = 0
 		for c in self:
 			self.length = self.length + c.length
+		self.text = ' '.join([x.text for x in self])
 	
 	def is_word(self):
 		return (len(self)==1) and (self[0].is_word())
+	
+	def merge(self):
+		"""
+		TODO: This is very temporary
+		"""
+		
+		return Chunk(self.text,self[0].position)
 	
 	def penn_string(self):
 		"""

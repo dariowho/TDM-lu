@@ -1,0 +1,42 @@
+lang.c.ml:
+
+"first chunk"	0.1
+"first"	0.4
+"chunk"	0.5
+
+# Total mass
+T 1
+
+-------------------------------------------------------------------------------
+
+lang.cc.ml:
+
+"first chunk"	1	0.1
+"first"	1	0.4
+"chunk"	1	0.5
+"first chunk"	2	0.1
+"first"	2	0.4
+"chunk"	2	0.5
+
+# Total mass per class
+T	1	1
+T	2	1
+
+-------------------------------------------------------------------------------
+
+lang.a.ml:
+
+"first chunk"	"first chunk"	1
+"first chunk"	"first"	0.5
+"first chunk"	"chunk"	0.5
+"first"	"first"	1
+"first"	"chunk"	0.1
+"chunk" "chunk"	1
+
+# Total mass per chunk
+T "first chunk"	2
+T "first"	1.6
+T "chunk"	1.6
+
+#Total mass
+T 4.1

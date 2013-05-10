@@ -4,14 +4,24 @@ planned
  - Subscribe http://www.illc.uva.nl/LaCo/CLS/
  - Refine features for chunk matcher
  - Implement parameter matchng
- - Keep an index of the chunks
- - Keep class-conditional probabilities for chunks
+ - Implement Machine Learning structures for Language Learning
+    - Keep an index of the chunks
+    - Keep class-conditional probabilities for chunks
+    - Keep alignment probabilities
  - Train Score weights with Machine Learning
  - Think about measures to exploit the relevance of a chunk respect to a class
 
- 
 -------------------------------------------------------------------------------
-newly done
+Newly done
+-------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------
+2 May 2012
+-------------------------------------------------------------------------------
+ - M2 report
+
+-------------------------------------------------------------------------------
+24 April 2012
 -------------------------------------------------------------------------------
  - Implement Score-based meaning matching
  - Bugfix: nondeterministic parse trees

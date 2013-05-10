@@ -1,0 +1,16 @@
+from lu import Chunk
+
+a = Chunk("first chunk",1)
+b = Chunk("second chunk",1)
+c = Chunk("three",1)
+d = Chunk("four",1)
+
+from lu.ml.core import ML
+
+ml = ML()
+ml.reinforce_alignment(a,b,0.5)
+ml.reinforce_alignment(a,c,0.1)
+
+ml.get_alignment_score(a,b)
+
+ml.export_ml("asdasd")

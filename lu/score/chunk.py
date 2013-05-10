@@ -15,11 +15,12 @@ class ChunkScore(Score):
 	"""
 	
 	# Total number of features
-	N_FEATURES = 2
+	N_FEATURES = 3
 	
 	# Constant feature names (must define N_FEATURES names)
-	AAVG = 0
-	LEN  = 1
+	AAVG     = 0
+	LEN      = 1
+	ML_AFREQ = 2
 
 	def __init__(self):
 		super(ChunkScore,self).__init__()
@@ -28,8 +29,8 @@ class ChunkScore(Score):
 		self.weights  = array('f',[1.0/ChunkScore.N_FEATURES]*ChunkScore.N_FEATURES)
 		self.is_feature_set = array('b',[False]*ChunkScore.N_FEATURES)
 
-		# Test weights: first feature only
-		self.weights  = array('f',[1,0])
+		# Test weights: first and last features only
+		self.weights  = array('f',[0.5,0,0.5])
 
 		# Debug information
 		self.s_from  = Chunk("__EMPTY_CHUNK_FROM__",1)
@@ -38,7 +39,8 @@ class ChunkScore(Score):
 
 # Hooks (must match the order of the names in WordScore)
 _f = [ features.chunk.c_aavg, \
-       features.chunk.c_len ]
+       features.chunk.c_len, \
+       features.chunk.c_ml_afreq ]
 
 class M2Table(object):
 	"""
@@ -74,7 +76,7 @@ class M2Table(object):
 		
 		return self.table[chunk_from.position-1][chunk_from.position+chunk_from.length-2][chunk_to.position-1][chunk_to.position+chunk_to.length-2] is not None
 
-def get_score_m2(chunk_from,chunk_to):
+def get_score_m2(chunk_from,chunk_to,ml):
 	"""
 	Runs the actual score computing function, initialized with an empty M2Table
 	"""
@@ -83,12 +85,12 @@ def get_score_m2(chunk_from,chunk_to):
 	# score is pushed into the table (which will be accessible through the
 	# ChunkScore object)
 	table = M2Table(chunk_from,chunk_to)
-	r = _get_score_m2(chunk_from,chunk_to,table)
+	r = _get_score_m2(chunk_from,chunk_to,table,ml)
 	table.set_score(r,chunk_from,chunk_to)
 	
 	return r
 
-def _get_score_m2(chunk_from,chunk_to,table):
+def _get_score_m2(chunk_from,chunk_to,table,ml):
 	"""
 	This function scores the similarity between two chunks using the M2-score
 	algorithm.
@@ -121,10 +123,9 @@ def _get_score_m2(chunk_from,chunk_to,table):
 		#       the Score. Coding style apart, this shouldn't affect the
 		#       performance too much; anyway, it would be better to check.
 		#       See also the feature hook.
-		r = word.get_score(chunk_from,chunk_to)
-		r.s_from = chunk_from
-		r.s_to   = chunk_to
-		return word.get_score(chunk_from,chunk_to)
+		r = word.get_score(chunk_from,chunk_to,ml)
+		ml.reinforce_alignment(chunk_from,chunk_to,r.get_score())
+		return r
 	
 	# TODO: precompute the size
 	candidate_scores = []
@@ -158,7 +159,7 @@ def _get_score_m2(chunk_from,chunk_to,table):
 					if not table.is_score_set(cf_i,ct_j):
 						# DEBUG
 						#~ print("score("+str(cf_i.text)+","+str(ct_i.text)+")")
-						table.set_score(_get_score_m2(cf_i,ct_j,table),cf_i,ct_j)
+						table.set_score(_get_score_m2(cf_i,ct_j,table,ml),cf_i,ct_j)
 					# DEBUG
 					#~ else:
 						#~ print("HIT! "+cf_i.text+","+ct_i.text)
@@ -175,7 +176,7 @@ def _get_score_m2(chunk_from,chunk_to,table):
 			score.s_table = table
 			for fn,f in enumerate(_f):
 				if not score.is_feature_set[fn]:
-					f(score,C_F,C_T,table)
+					f(score,C_F,C_T,table,ml)
 			candidate_scores.append(score)
 			
 			# DEBUG
@@ -184,7 +185,7 @@ def _get_score_m2(chunk_from,chunk_to,table):
 	# DEBUG
 	#~ print(candidate_scores)
 	
-	# Return the best score
+	# Get the best score
 	max_score = candidate_scores[0]
 	for s in candidate_scores:
 		if s.get_score() > max_score.get_score():
@@ -193,6 +194,10 @@ def _get_score_m2(chunk_from,chunk_to,table):
 	#DEBUG
 	#~ d_recursion_level = d_recursion_level-1
 	
+	# Update Machine Learning knowledge
+	ml.reinforce_alignment(chunk_from,chunk_to,max_score.get_score())
+	
+	# Return the best score
 	return max_score
 
 

@@ -23,6 +23,7 @@ from array import array
 from . import Meaning,Sentence,Chunk,ChunkedChunk,Word
 from constants import *
 from language_base import stub_language
+from ml.core import ML
 
 import score.chunk
 import score.word
@@ -50,6 +51,9 @@ class Language:
 	# Language indexed by meaning
 	meaning = []
 	m_label = []
+	
+	# Machine Learning Module
+	ml = None
 
 	#
 	# Meta-methods
@@ -58,6 +62,8 @@ class Language:
 	def __init__(self):
 		self._valid  = False
 		self._status = STATUS.EMPTY
+		
+		self.ml = ML()
 		
 	def validate(self):
 		"""
@@ -68,6 +74,30 @@ class Language:
 		
 		self._status = STATUS.OK
 		return True
+
+	#
+	# Core methods
+	#
+
+	def understand(self,sentence_in):
+		"""
+		Assign an input sentence to one of the labels of the language, perfor-
+		ming a semantic match
+		"""
+
+		for i in range(len(self.meaning)):
+			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in),self.ml)
+		
+		for i in range(len(self.meaning)):
+			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in),self.ml)
+			score.output.meaning.render_html(s)
+			
+	def learn(self,sentence_in,meaning_in):
+		"""
+		Extend the knowledge about the language from a labeled example
+		"""
+		
+		raise NotImplementedError
 		
 	#
 	# Input/Output methods
@@ -159,25 +189,4 @@ class Language:
 		f.close()
 		
 		return True
-
-	#
-	# Core methods
-	#
-
-	def understand(self,sentence_in):
-		"""
-		Assign an input sentence to one of the labels of the language, perfor-
-		ming a semantic match
-		"""
-		
-		for i in range(len(self.meaning)):
-			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
-			score.output.meaning.render_html(s)
-			
-	def learn(self,sentence_in,meaning_in):
-		"""
-		Extend the knowledge about the language from a labeled example
-		"""
-		
-		raise NotImplementedError
 

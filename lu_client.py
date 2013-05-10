@@ -1,10 +1,16 @@
 #!/usr/bin/python2
 
+"""
+This script is a sample client for the Language Unit
+"""
+
 from lu import LU
+
+LANGUAGE_NAME = "stub_language_m2"
 
 l = LU.Language()
 
-l.import_l("lu/language_base/stub_language_m2.l")
+l.import_l("lu/language_base/"+LANGUAGE_NAME+".l")
 
 
 # M2 DEBUG
@@ -61,6 +67,11 @@ showSD('sd-default');\
 \
 \
 </html>")
+
+
+# ML
+
+l.ml.export_ml("lu/_out/"+LANGUAGE_NAME)
 
 
 #~ # BASE
