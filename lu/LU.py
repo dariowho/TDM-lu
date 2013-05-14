@@ -85,9 +85,10 @@ class Language:
 		ming a semantic match
 		"""
 
-		for i in range(len(self.meaning)):
-			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in),self.ml)
-		
+		for _ in range(10):
+			for i in range(len(self.meaning)):
+				s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in),self.ml)
+
 		for i in range(len(self.meaning)):
 			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in),self.ml)
 			score.output.meaning.render_html(s)

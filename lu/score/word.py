@@ -33,7 +33,7 @@ class WordScore(Score):
 		self.s_to   = s_to
 		
 		# Debug...
-		self.weights  = array('f',[0.8,0.05,0.05,0.05,0.05])
+		self.weights  = array('f',[0.5,0.02,0.03,0.05,0.4])
 
 #
 # Hooks (must match the order of the names in WordScore)

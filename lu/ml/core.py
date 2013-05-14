@@ -26,8 +26,8 @@ future review:
 
 class ML(object):
 
-	DEFAULT_MASS  = 0
-	DEFAULT_SCORE = 0
+	DEFAULT_MASS  = 1
+	DEFAULT_SCORE = 1
 	
 	def __init__(self):
 		# Chunk frequency
@@ -65,7 +65,9 @@ class ML(object):
 		assert (tm1 != 0 and tm2 != 0) or (m == 0)
 
 		try:
-			return ( (m/tm1) + (m/tm2) ) / 2
+			#~ return ( (m/tm1) + (m/tm2) ) / 2
+			#~ return 2*m/(tm1+tm2)
+			return m/(tm1)
 		except ZeroDivisionError:
 			return ML.DEFAULT_SCORE
 		
@@ -79,13 +81,9 @@ class ML(object):
 		   * ...
 		"""
 		
-		try:
-			m = self._get_alignment_mass(c1,c2)
-			m += score
-		except KeyError:
-			m = score
+		m = self._get_alignment_mass(c1,c2)
 		
-		self._set_alignment_mass(c1,c2,m)
+		self._set_alignment_mass(c1,c2,m+m*score)
 		
 	def discourage_alignment(self,c1,c2,score):
 		m = self._get_alignment_mass(c1,c2)
@@ -178,8 +176,8 @@ class ML(object):
 		
 		c2 = c2.text
 		
-		if c1 > c2:
-			c1,c2 = c2,c1
+		#~ if c1 > c2:
+			#~ c1,c2 = c2,c1
 		
 		return self.a_mass.get(c1,dict()).get(c2,ML.DEFAULT_MASS)
 
@@ -199,8 +197,8 @@ class ML(object):
 		
 		# Update alignment frequencies
 		
-		if c1 > c2:
-			c1,c2 = c2,c1
+		#~ if c1 > c2:
+			#~ c1,c2 = c2,c1
 		
 		try:
 			p_a_mass_c1 = self.a_mass[c1]
@@ -217,11 +215,11 @@ class ML(object):
 		assert c1 in self._a_cache_mass_c
 		self._a_cache_mass_c[c1] += m_diff
 
-		try:
-			self._a_cache_mass_c[c2] += m_diff
-		except KeyError:
-			assert m_diff == m
-			self._a_cache_mass_c[c2] = m_diff
+		#~ try:
+			#~ self._a_cache_mass_c[c2] += m_diff
+		#~ except KeyError:
+			#~ assert m_diff == m
+			#~ self._a_cache_mass_c[c2] = m_diff
 
 		self._a_cache_mass_tot += m_diff
 		
