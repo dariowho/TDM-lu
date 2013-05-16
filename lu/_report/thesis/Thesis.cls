@@ -181,7 +181,7 @@
 
 \thesistitle{Learning in Dialogue Interactions} % Your thesis title - this is used in the title and abstract
 %-------------------------------------------------  
-\supervisor{Prof. Raquel \textsc{Fernández}} % You supervisor's name - this is used in the title page
+\supervisor{Prof. Raquel \textsc{Fern\'andez}} % You supervisor's name - this is used in the title page
 %-------------------------------------------------   
 \examiner{} % Your examiner's name - this is not currently used anywhere in the template, cite it with \examname if you want it
 %-------------------------------------------------   
