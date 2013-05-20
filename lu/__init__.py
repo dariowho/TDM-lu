@@ -1,5 +1,13 @@
 from nltk import tokenize
 
+from ml.core import ML
+
+#
+# Machine Learning
+# (will be referenced by most of the sub-packages)
+#
+ml = ML()
+
 #
 # Data Structures
 #

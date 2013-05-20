@@ -50,7 +50,7 @@ _f = [ features.word.c_equals, \
 # Main functions
 #
 
-def get_score(chunk_from, chunk_to, ml):
+def get_score(chunk_from, chunk_to):
 	"""
 	Compute similarity features between the two input chunks; returns the 
 	corresponding WordScore object.
@@ -65,7 +65,7 @@ def get_score(chunk_from, chunk_to, ml):
 	
 	for i,f in enumerate(_f):
 		if not r.is_feature_set[i]:
-			f(r,chunk_from,chunk_to,ml)
+			f(r,chunk_from,chunk_to)
 
 	return r
 

@@ -46,7 +46,7 @@ _f = [ features.meaning.c_max_sscore, \
 # Main functions
 #
 
-def get_score(meaning_in,sentence_in,ml):
+def get_score(meaning_in,sentence_in):
 	"""
 	Scores a sentence against a meaning-
 	"""
@@ -55,6 +55,6 @@ def get_score(meaning_in,sentence_in,ml):
 	
 	for i,f in enumerate(_f):
 		if not r.is_feature_set[i]:
-			f(r,meaning_in,sentence_in,ml)
+			f(r,meaning_in,sentence_in)
 
 	return r

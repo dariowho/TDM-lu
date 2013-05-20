@@ -1,14 +1,14 @@
 from lu.score import chunk as chunk_score
 
-def c_max_sscore(score,meaning_in,sentence_in,ml):
+def c_max_sscore(score,meaning_in,sentence_in):
 	"""
 	Maximum of the sentence scores
 	"""
 	
-	_sentence_similarity_features(score,meaning_in,sentence_in,ml)
+	_sentence_similarity_features(score,meaning_in,sentence_in)
 
 
-def c_avg_sscore(score,meaning_in,sentence_in,ml):
+def c_avg_sscore(score,meaning_in,sentence_in):
 	"""
 	Average of the sentence scores
 	"""
@@ -19,7 +19,7 @@ def c_avg_sscore(score,meaning_in,sentence_in,ml):
 # Private procedures
 #
 
-def _sentence_similarity_features(score,meaning_in,sentence_in,ml):
+def _sentence_similarity_features(score,meaning_in,sentence_in):
 	"""
 	Aggregate function, computes all the features concerning the meaning's 
 	sentence similarities
@@ -28,7 +28,7 @@ def _sentence_similarity_features(score,meaning_in,sentence_in,ml):
 	max_score_value = 0.0
 	sum_scores = 0.0
 	for s in meaning_in.sentences:
-		s_score = chunk_score.get_score_m2(sentence_in,s,ml)
+		s_score = chunk_score.get_score_m2(sentence_in,s)
 		s_score_value = s_score.get_score()
 		
 		# Max score

@@ -2,10 +2,12 @@
 
 import sys
 
+import lu.ml
+
 from nltk import tokenize,distance
 from nltk.corpus import wordnet as wn
 
-def c_equals(score,word_from,word_to,ml):
+def c_equals(score,word_from,word_to):
 	"""
 	Equality (Boolean).
 	"""
@@ -22,7 +24,7 @@ def c_equals(score,word_from,word_to,ml):
 		score.set_feature(score.EDIT_DISTANCE,1)
 		score.set_feature(score.WN_MAX_PATH_SIMILARITY,1)
 		
-def c_edit_distance(score,word_from,word_to,ml):
+def c_edit_distance(score,word_from,word_to):
 	"""
 	Inverse of edit distance.
 	
@@ -34,7 +36,7 @@ def c_edit_distance(score,word_from,word_to,ml):
 	
 	score.set_feature(score.EDIT_DISTANCE,_r)
 
-def c_position_distance(score,word_from,word_to,ml):
+def c_position_distance(score,word_from,word_to):
 	"""
 	1 if the words are in the same position in the sentence. The more the 
 	distance, the less the score.
@@ -46,7 +48,7 @@ def c_position_distance(score,word_from,word_to,ml):
 	
 	score.set_feature(score.POSITION_DISTANCE,_r)
 
-def c_wn_max_path_similarity(score,word_from,word_to,ml):
+def c_wn_max_path_similarity(score,word_from,word_to):
 	"""
 	WordNet path similarity for the most similar synsets. (1 if same word)
 	
@@ -74,10 +76,10 @@ def c_wn_max_path_similarity(score,word_from,word_to,ml):
 	
 	score.set_feature(score.WN_MAX_PATH_SIMILARITY,_r)
 
-def c_ml_afreq(score,word_from,word_to,ml):
+def c_ml_afreq(score,word_from,word_to):
 	"""
 	Get a score based on the Alignment Likelihood, as it was learned from 
 	previous examples.
 	"""
 	
-	score.set_feature(score.ML_AFREQ,ml.get_alignment_score(word_from,word_to))
+	score.set_feature(score.ML_AFREQ,lu.ml.get_alignment_score(word_from,word_to))

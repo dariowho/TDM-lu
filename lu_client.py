@@ -5,6 +5,7 @@ This script is a sample client for the Language Unit
 """
 
 from lu import LU
+import lu.ml
 
 LANGUAGE_NAME = "stub_language_m2"
 
@@ -13,9 +14,9 @@ l = LU.Language()
 l.import_l("lu/language_base/"+LANGUAGE_NAME+".l")
 
 
-# M2 DEBUG
-
-
+#~ # M2 DEBUG
+#~ 
+#~ 
 print("<!DOCTYPE html>\n\
 <html>\n\
 <head>\n\
@@ -57,7 +58,8 @@ $(\"#content li > a\").click(function() {\n\
 	<div id=\"left\">")
 
 
-l.understand("increase the volume please")
+#~ l.understand("increase the volume please")
+l.understand("pump up the volume")
 
 print("	</div>\
 <script>\
@@ -67,11 +69,11 @@ showSD('sd-default');\
 \
 \
 </html>")
-
-
-# ML
-
-l.ml.export_ml("lu/_out/"+LANGUAGE_NAME)
+#~ 
+#~ 
+#~ # ML
+#~ 
+lu.ml.export_ml("lu/_out/"+LANGUAGE_NAME)
 
 
 #~ # BASE

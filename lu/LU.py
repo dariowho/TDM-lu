@@ -23,7 +23,8 @@ from array import array
 from . import Meaning,Sentence,Chunk,ChunkedChunk,Word
 from constants import *
 from language_base import stub_language
-from ml.core import ML
+
+import learn
 
 import score.chunk
 import score.word
@@ -52,9 +53,6 @@ class Language:
 	meaning = []
 	m_label = []
 	
-	# Machine Learning Module
-	ml = None
-
 	#
 	# Meta-methods
 	#
@@ -62,8 +60,6 @@ class Language:
 	def __init__(self):
 		self._valid  = False
 		self._status = STATUS.EMPTY
-		
-		self.ml = ML()
 		
 	def validate(self):
 		"""
@@ -87,10 +83,10 @@ class Language:
 
 		for _ in range(10):
 			for i in range(len(self.meaning)):
-				s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in),self.ml)
+				s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
 
 		for i in range(len(self.meaning)):
-			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in),self.ml)
+			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
 			score.output.meaning.render_html(s)
 			
 	def learn(self,sentence_in,meaning_in):

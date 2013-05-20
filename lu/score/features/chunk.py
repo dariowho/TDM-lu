@@ -1,8 +1,10 @@
 from lu import ChunkedChunk
 
+import lu.ml
+
 from math import log
 
-def c_aavg(score,C_F,C_T,table,ml):
+def c_aavg(score,C_F,C_T,table):
 	max_scores = []
 	
 	# 1 vs 2 comparison: consider both in the average
@@ -52,7 +54,7 @@ def c_aavg(score,C_F,C_T,table,ml):
 		
 	score.set_feature(score.AAVG,_r)
 
-def c_len(score,C_F,C_T,table,ml):
+def c_len(score,C_F,C_T,table):
 	# _r = log(min(C_F.length,C_T.length))
 	
 	l=min(C_F.length,C_T.length)
@@ -89,7 +91,7 @@ def c_len(score,C_F,C_T,table,ml):
 	#~ 
 	#~ score.set_feature(score.LEN,_r)
 
-def c_ml_afreq(score,C_F,C_T,table,ml):
+def c_ml_afreq(score,C_F,C_T,table):
 	"""
 	Get a score based on the Alignment Likelihood, as it was learned from 
 	previous examples.
@@ -100,5 +102,5 @@ def c_ml_afreq(score,C_F,C_T,table,ml):
 	      the possible splits of c_f,c_t (and this is an expensive computation)
 	"""
 	
-	score.set_feature(score.ML_AFREQ,ml.get_alignment_score(C_F.merge(),C_T.merge()))
+	score.set_feature(score.ML_AFREQ,lu.ml.get_alignment_score(C_F.merge(),C_T.merge()))
 	

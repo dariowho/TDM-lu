@@ -24,6 +24,8 @@ future review:
            rather then taking the text from the Chunk in every function
 """
 
+import math
+
 class ML(object):
 
 	DEFAULT_MASS  = 1
@@ -58,17 +60,31 @@ class ML(object):
 		TODO: consider weighting the results in proportion to the total mass
 		      being covered.
 		"""
+		
+		if c1.text == c2.text:
+			return 1
+		
 		m   = self._get_alignment_mass(c1,c2)
+		m2  = self._get_alignment_mass(c2,c1)
 		tm1 = self._get_alignment_mass(c1)
 		tm2 = self._get_alignment_mass(c2)
 
 		assert (tm1 != 0 and tm2 != 0) or (m == 0)
 
+		# DEBUG 
+		#~ import sys
+		#~ sys.stderr.write("m: "+str(m)+"\n")
+		#~ sys.stderr.write("m1: "+str(tm1)+"\n")
+		#~ sys.stderr.write("m2: "+str(tm2)+"\n")
+			
 		try:
-			#~ return ( (m/tm1) + (m/tm2) ) / 2
-			#~ return 2*m/(tm1+tm2)
-			return m/(tm1)
+			#~ sys.stderr.write("try: "+str(( (m/tm1) + (m2/tm2) ) / 2)+"\n")
+			return ( (m/tm1) + (m2/tm2) ) / 2
+			#~ return (m/tm1)*(m/tm2)
+			#~ return 2*m/(tm1+tm2) # Can be greater than zero
+			#~ return m/(tm1)
 		except ZeroDivisionError:
+			#~ sys.stderr.write("except: "+str(ML.DEFAULT_SCORE)+"\n")
 			return ML.DEFAULT_SCORE
 		
 	def reinforce_alignment(self,c1,c2,score):
@@ -81,11 +97,25 @@ class ML(object):
 		   * ...
 		"""
 		
-		m = self._get_alignment_mass(c1,c2)
+		if c1.text == c2.text:
+			return
+
+		assert not math.isnan(score)
 		
+		m = self._get_alignment_mass(c1,c2)
 		self._set_alignment_mass(c1,c2,m+m*score)
+
+		m = self._get_alignment_mass(c2,c1)
+		self._set_alignment_mass(c2,c1,m+m*score)
 		
 	def discourage_alignment(self,c1,c2,score):
+		"""
+		TODO: update criterion according to reinforcement policy (operation +
+		      simmetry)
+		"""
+		if c1.text == c2.text:
+			return
+		
 		m = self._get_alignment_mass(c1,c2)
 		
 		m -= score
@@ -210,6 +240,13 @@ class ML(object):
 
 		m_diff = m - p_a_mass_c1.get(c2,0)
 		p_a_mass_c1[c2] = m
+		
+		# DEBUG
+		import sys
+		if self.a_mass[c1][c2] != m:
+			sys.stderr.write(c1+","+c2+"\n")
+			sys.stderr.write("a_mass = "+str(self.a_mass[c1][c2])+"\n")
+			sys.stderr.write("m      = "+str(m)+"\n")
 		assert self.a_mass[c1][c2] == m
 		
 		assert c1 in self._a_cache_mass_c

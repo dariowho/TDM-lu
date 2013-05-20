@@ -4,6 +4,9 @@ from array import array
 
 from . import Score,word
 from lu import ChunkedChunk,Chunk
+
+import lu.ml
+
 import features.chunk
 
 # DEBUG
@@ -76,7 +79,7 @@ class M2Table(object):
 		
 		return self.table[chunk_from.position-1][chunk_from.position+chunk_from.length-2][chunk_to.position-1][chunk_to.position+chunk_to.length-2] is not None
 
-def get_score_m2(chunk_from,chunk_to,ml):
+def get_score_m2(chunk_from,chunk_to):
 	"""
 	Runs the actual score computing function, initialized with an empty M2Table
 	"""
@@ -85,12 +88,12 @@ def get_score_m2(chunk_from,chunk_to,ml):
 	# score is pushed into the table (which will be accessible through the
 	# ChunkScore object)
 	table = M2Table(chunk_from,chunk_to)
-	r = _get_score_m2(chunk_from,chunk_to,table,ml)
+	r = _get_score_m2(chunk_from,chunk_to,table)
 	table.set_score(r,chunk_from,chunk_to)
 	
 	return r
 
-def _get_score_m2(chunk_from,chunk_to,table,ml):
+def _get_score_m2(chunk_from,chunk_to,table):
 	"""
 	This function scores the similarity between two chunks using the M2-score
 	algorithm.
@@ -123,8 +126,8 @@ def _get_score_m2(chunk_from,chunk_to,table,ml):
 		#       the Score. Coding style apart, this shouldn't affect the
 		#       performance too much; anyway, it would be better to check.
 		#       See also the feature hook.
-		r = word.get_score(chunk_from,chunk_to,ml)
-		ml.reinforce_alignment(chunk_from,chunk_to,r.get_score())
+		r = word.get_score(chunk_from,chunk_to)
+		lu.ml.reinforce_alignment(chunk_from,chunk_to,r.get_score())
 		return r
 	
 	# TODO: precompute the size
@@ -159,7 +162,7 @@ def _get_score_m2(chunk_from,chunk_to,table,ml):
 					if not table.is_score_set(cf_i,ct_j):
 						# DEBUG
 						#~ print("score("+str(cf_i.text)+","+str(ct_i.text)+")")
-						table.set_score(_get_score_m2(cf_i,ct_j,table,ml),cf_i,ct_j)
+						table.set_score(_get_score_m2(cf_i,ct_j,table),cf_i,ct_j)
 					# DEBUG
 					#~ else:
 						#~ print("HIT! "+cf_i.text+","+ct_i.text)
@@ -176,7 +179,7 @@ def _get_score_m2(chunk_from,chunk_to,table,ml):
 			score.s_table = table
 			for fn,f in enumerate(_f):
 				if not score.is_feature_set[fn]:
-					f(score,C_F,C_T,table,ml)
+					f(score,C_F,C_T,table)
 			candidate_scores.append(score)
 			
 			# DEBUG
@@ -195,7 +198,7 @@ def _get_score_m2(chunk_from,chunk_to,table,ml):
 	#~ d_recursion_level = d_recursion_level-1
 	
 	# Update Machine Learning knowledge
-	ml.reinforce_alignment(chunk_from,chunk_to,max_score.get_score())
+	lu.ml.reinforce_alignment(chunk_from,chunk_to,max_score.get_score())
 	
 	# Return the best score
 	return max_score

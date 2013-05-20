@@ -1,3 +1,6 @@
+Chronological index of the ml parameters' changes
+-------------------------------------------------------------------------------
+
 Default: alignment score as average: ( (m/tm1) + (m/tm2) ) / 2
 
 as_shared: alignment score as shared mass: return 2*m/(tm1+tm2)
@@ -9,3 +12,22 @@ nosimm: m(a,b) != m(b,a)
  
 100pass: 100-times parsing
  "the volume" case: more mass but same proportions
+
+lastry: last during meeting
+ 10 passes
+ pump up the volume
+
+noid: c1=c2 not included in index (default score 1)
+
+as_shared2: = as_shared
+
+part_simmetry: ml score is average of two possible, but only one side is
+ reinforced
+ 
+ "increase the volume please" vs "increase the volume": bad ml score, because
+   "increase the volume" is present in index with other fragments
+ 
+ "increase the volume please" vs "decrease the volume": good score, because one
+  part of the average is 1
+ 
+simmetry: success!

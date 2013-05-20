@@ -1,0 +1,342 @@
+# This is an automatically generated ML data file, containing
+# alignment frequency data.
+# Its content is meant to be updated by a scoring system,
+# handmade modifications are likely to break its consistency.
+
+volume	the volume	65137874544.8
+volume	volume louder	129.282970581
+volume	make the volume	23786.4064098
+volume	up	8.91528424933
+volume	down	8.93196313229
+volume	louder	8.38013443135
+volume	decrease	8.87964321564
+volume	make the volume lower	67.9363491378
+volume	increase	1.60661891377
+volume	increase the volume	17.5630369564
+volume	down the volume	59.4172507799
+volume	make	74.8056406627
+volume	up the	20.9120851933
+volume	turn up the volume	68.6170689839
+volume	turn down	29.4920628113
+volume	the volume lower	52.833962359
+volume	up the volume	60.578365181
+volume	the volume louder	52.2769252023
+volume	decrease the	19.499524081
+volume	make the volume louder	68.4835509205
+volume	make the	379.219719522
+volume	turn up the	36.4582787783
+volume	decrease the volume	152.39186721
+volume	lower	8.82165622873
+volume	volume lower	129.529407537
+volume	turn down the	35.6925312515
+volume	increase the	1.6273565521
+volume	turn up	29.9800615539
+volume	turn	74.4716067006
+volume	down the	20.4144197331
+volume	the	5.30317449591
+volume	turn down the volume	67.5826072865
+increase the volume	the volume	1.22407002566e+11
+increase the volume	volume louder	165.475040982
+increase the volume	make the volume	57056.7243147
+increase the volume	up	42.2021500165
+increase the volume	down	40.0653996398
+increase the volume	louder	38.6786604974
+increase the volume	decrease	42.2128052432
+increase the volume	make the volume lower	109.153656612
+increase the volume	increase	17.1754636463
+increase the volume	down the volume	81.6433691497
+increase the volume	make	1834.82167304
+increase the volume	up the	60.2544200373
+increase the volume	turn up the volume	109.445433879
+increase the volume	turn down	61.0772244109
+increase the volume	the volume lower	130.286046421
+increase the volume	volume	663063.789029
+increase the volume	up the volume	85.1975249873
+increase the volume	the volume louder	127.621283846
+increase the volume	decrease the	76.0311273915
+increase the volume	make the volume louder	109.778726587
+increase the volume	make the	6007.51444666
+increase the volume	turn up the	74.9353566566
+increase the volume	decrease the volume	235.222826147
+increase the volume	lower	39.3036488625
+increase the volume	volume lower	165.113193662
+increase the volume	turn down the	73.7599391992
+increase the volume	increase the	43.6980214283
+increase the volume	turn up	63.0311780167
+increase the volume	turn	1888.77582128
+increase the volume	down the	58.5564886194
+increase the volume	the	9355.22469668
+increase the volume	turn down the volume	107.420551013
+the volume	volume louder	127.710177724
+the volume	make the volume	54708.9427894
+the volume	up	31.3637826403
+the volume	down	30.650196507
+the volume	louder	28.7659366547
+the volume	decrease	29.2255859652
+the volume	make the volume lower	106.790546675
+the volume	increase	1.71896739606
+the volume	increase the volume	116.014697781
+the volume	down the volume	105.299014123
+the volume	make	864.348310113
+the volume	up the	67.7227194127
+the volume	turn up the volume	120.256221328
+the volume	turn down	51.9901557328
+the volume	the volume lower	230.760603335
+the volume	volume	38396657761.4
+the volume	up the volume	106.974543086
+the volume	the volume louder	232.066151479
+the volume	decrease the	129.685309722
+the volume	make the volume louder	107.446337165
+the volume	make the	16886.8061481
+the volume	turn up the	77.7136786189
+the volume	decrease the volume	230.864812654
+the volume	lower	28.8790826946
+the volume	volume lower	126.765179881
+the volume	turn down the	77.7988782034
+the volume	increase the	34.0368349471
+the volume	turn up	53.1943993625
+the volume	turn	883.105852179
+the volume	down the	67.5343707109
+the volume	the	2.00620134677e+12
+the volume	turn down the volume	118.715211658
+please	the volume	3.51962352267
+please	volume louder	21.0408244732
+please	make the volume	1087.79570821
+please	up	8.99224377893
+please	down	9.38820336054
+please	louder	10.383912462
+please	decrease	9.02751519272
+please	make the volume lower	47.3806459531
+please	increase	1.56975658056
+please	increase the volume	1.61709630062
+please	down the volume	25.661971696
+please	make	96.9752098523
+please	up the	20.6309986453
+please	turn up the volume	40.9462971773
+please	turn down	31.4806996533
+please	the volume lower	24.4401186947
+please	volume	5.19119724005
+please	up the volume	26.421424375
+please	the volume louder	24.7441418656
+please	decrease the	19.981332805
+please	make the volume louder	47.7051049916
+please	make the	603.617907707
+please	turn up the	38.6130751436
+please	decrease the volume	24.4504635541
+please	lower	11.5084315763
+please	volume lower	21.243687921
+please	turn down the	37.6932330058
+please	increase the	1.60024134815
+please	turn up	31.8291475925
+please	turn	89.5621041263
+please	down the	20.2943517655
+please	the	2.77670564943
+please	turn down the volume	39.8807815052
+volume please	the volume	13321843.299
+volume please	volume louder	134.778469855
+volume please	make the volume	26531.3783316
+volume please	up	30.3134064411
+volume please	down	30.1332808466
+volume please	louder	30.554218803
+volume please	decrease	29.8872936787
+volume please	make the volume lower	84.3722978669
+volume please	increase	1.66292726791
+volume please	increase the volume	16.0115002601
+volume please	down the volume	59.4742623031
+volume please	make	936.25581859
+volume please	up the	44.403799349
+volume please	turn up the volume	69.7155759634
+volume please	turn down	52.5378793471
+volume please	the volume lower	69.3631831781
+volume please	volume	117140776.442
+volume please	up the volume	60.763278238
+volume please	the volume louder	69.6262197629
+volume please	decrease the	42.8584408734
+volume please	make the volume louder	84.5034725542
+volume please	make the	2060.12992375
+volume please	turn up the	58.68741567
+volume please	decrease the volume	153.089982121
+volume please	lower	31.4015438963
+volume please	volume lower	136.511260031
+volume please	turn down the	57.3996886336
+volume please	increase the	1.7220900322
+volume please	turn up	53.5323248095
+volume please	turn	934.809242029
+volume please	down the	43.414316781
+volume please	the	3.12892500885
+volume please	turn down the volume	68.4836835643
+increase the	the volume	60330672.1667
+increase the	volume louder	42.9670669877
+increase the	make the volume	6120.16188984
+increase the	make the	20165.2932249
+increase the	down	31.0014987358
+increase the	louder	28.5210810675
+increase the	decrease	31.5496544915
+increase the	make the volume lower	83.364543729
+increase the	increase	16.640743182
+increase the	increase the volume	48.9167374137
+increase the	down the volume	57.4099257964
+increase the	make	1041.27920905
+increase the	up the	54.492060285
+increase the	turn up the volume	73.5692795049
+increase the	turn down	53.7243726813
+increase the	the volume lower	153.506236635
+increase the	volume	3.04603330366
+increase the	up the volume	59.2097393655
+increase the	the volume louder	154.169865636
+increase the	decrease the	138.738046388
+increase the	make the volume louder	84.0651331039
+increase the	turn up the	67.3623727502
+increase the	decrease the volume	76.0909859866
+increase the	lower	29.2145975581
+increase the	volume lower	42.6854141016
+increase the	turn down the	65.8667722009
+increase the	up	32.6990499173
+increase the	turn up	55.4481532237
+increase the	turn	1071.30809299
+increase the	down the	52.697511625
+increase the	the	28020155.8962
+increase the	turn down the volume	72.667810402
+increase	the volume	4.63025014022
+increase	volume louder	20.0719495578
+increase	make the volume	1113.23667065
+increase	up	10.6140129336
+increase	down	9.3197852601
+increase	louder	7.96912037648
+increase	decrease	12.3255648917
+increase	make the volume lower	47.5258536733
+increase	increase the volume	16.9859994837
+increase	down the volume	24.6867608758
+increase	make	160.616823047
+increase	up the	21.2678463319
+increase	turn up the volume	43.3808021848
+increase	turn down	33.5900820985
+increase	the volume lower	24.3429175646
+increase	volume	6.24015134568
+increase	up the volume	25.7611226773
+increase	the volume louder	24.6049170159
+increase	decrease the	21.6522300697
+increase	make the volume louder	47.7169772761
+increase	make the	684.49620486
+increase	turn up the	41.4802190056
+increase	decrease the volume	25.3128706498
+increase	lower	9.2002731954
+increase	volume lower	20.4425231407
+increase	turn down the	40.107125244
+increase	increase the	16.83858961
+increase	turn up	35.2971086681
+increase	turn	163.744582893
+increase	down the	20.0252657266
+increase	the	3.47872342799
+increase	turn down the volume	42.1564833323
+the	the volume	1.50463887853e+12
+the	volume louder	19.1956148217
+the	make the volume	3849.25068531
+the	up	10.4663024672
+the	down	10.2032372185
+the	louder	8.02036312436
+the	decrease	8.23476035911
+the	make the volume lower	67.6851612321
+the	increase	1.46561778273
+the	increase the volume	6.44074880953
+the	make	71.5107351649
+the	up the	47.2713311477
+the	turn up the volume	61.4842776712
+the	turn down	30.3154371069
+the	the volume lower	150.978142101
+the	volume	3.13700832503
+the	up the volume	48.2265964355
+the	the volume louder	152.491721217
+the	decrease the	128.173180173
+the	make the volume louder	68.3972082369
+the	make the	17000.5404724
+the	down the volume	48.5310056934
+the	decrease the volume	60.9012319332
+the	lower	8.01075911335
+the	volume lower	18.9523947374
+the	turn down the	59.1930275891
+the	increase the	31.5171977666
+the	turn up	31.0033817776
+the	turn	72.719019525
+the	down the	46.2743898134
+the	turn up the	60.1721389992
+the	turn down the volume	62.2696201146
+increase the volume please	the volume	4274958.3917
+increase the volume please	volume louder	83.7959951488
+increase the volume please	make the volume	11806.4376489
+increase the volume please	up	54.6086086895
+increase the volume please	down	52.9571203935
+increase the volume please	louder	52.4183220421
+increase the volume please	decrease	53.1842924174
+increase the volume please	make the volume lower	111.825078185
+increase the volume please	increase	16.3391691687
+increase the volume please	increase the volume	50.8250560217
+increase the volume please	down the volume	72.4954897522
+increase the volume please	make	3198.13288928
+increase the volume please	up the	67.5452886477
+increase the volume please	turn up the volume	81.7470670383
+increase the volume please	turn down	70.2370561185
+increase the volume please	the volume lower	96.3945007229
+increase the volume please	volume	390.139367436
+increase the volume please	up the volume	74.6627121064
+increase the volume please	the volume louder	97.4770179617
+increase the volume please	decrease the	83.9121910053
+increase the volume please	make the volume louder	112.686214372
+increase the volume please	make the	8338.37328057
+increase the volume please	turn up the	76.3345108956
+increase the volume please	decrease the volume	98.9645682448
+increase the volume please	lower	52.6126487291
+increase the volume please	volume lower	83.2002897247
+increase the volume please	turn down the	74.5448522014
+increase the volume please	increase the	23.4176921496
+increase the volume please	turn up	72.0797596311
+increase the volume please	turn	3322.99074409
+increase the volume please	down the	65.6912461793
+increase the volume please	the	271.950063517
+increase the volume please	turn down the volume	79.6035757898
+the volume please	the volume	1.57929335379e+11
+the volume please	volume louder	69.3509898005
+the volume please	make the volume	17754.0773528
+the volume please	up	41.5927663911
+the volume please	down	40.6913264337
+the volume please	louder	40.5974989396
+the volume please	decrease	39.3877467687
+the volume please	make the volume lower	108.207109964
+the volume please	increase	1.68421841789
+the volume please	increase the volume	16.1542805022
+the volume please	down the volume	81.7456373077
+the volume please	make	1637.78068945
+the volume please	up the	64.5199175708
+the volume please	turn up the volume	106.829442291
+the volume please	turn down	60.1742151104
+the volume please	the volume lower	233.835011568
+the volume please	volume	2422.52750369
+the volume please	up the volume	82.0911263024
+the volume please	the volume louder	234.720969574
+the volume please	decrease the	166.232351996
+the volume please	make the volume louder	108.535402711
+the volume please	make the	28387.446679
+the volume please	turn up the	75.8651773633
+the volume please	decrease the volume	130.015753971
+the volume please	lower	41.2899898073
+the volume please	volume lower	68.8816227652
+the volume please	turn down the	75.0995344155
+the volume please	increase the	16.0749223175
+the volume please	turn up	61.4092819019
+the volume please	turn	1643.37851342
+the volume please	down the	63.2250461868
+the volume please	the	760299.152804
+the volume please	turn down the volume	105.849169265
+
+T	volume	65137900031.1
+T	increase the volume	1.2240774393e+11
+T	the volume	2.04459808031e+12
+T	please	2487.96415773
+T	volume please	130494600.645
+T	increase the	88380835.73
+T	increase	2779.11980721
+T	the	1.50463890077e+12
+T	increase the volume please	4304145.97602
+T	the volume please	1.57930149658e+11
+
+T	3.89493595955e+12
