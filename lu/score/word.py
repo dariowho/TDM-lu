@@ -29,8 +29,8 @@ class WordScore(Score):
 		self.weights  = array('f',[1.0/WordScore.N_FEATURES]*WordScore.N_FEATURES)
 		self.is_feature_set = array('b',[False]*WordScore.N_FEATURES)
 		
-		self.s_from = s_from
-		self.s_to   = s_to
+		self.s_from = self.s_from_tree = s_from
+		self.s_to   = self.s_to_tree   = s_to
 		
 		# Debug...
 		self.weights  = array('f',[0.5,0.02,0.03,0.05,0.4])

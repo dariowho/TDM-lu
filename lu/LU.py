@@ -24,7 +24,7 @@ from . import Meaning,Sentence,Chunk,ChunkedChunk,Word
 from constants import *
 from language_base import stub_language
 
-import learn
+import learn.sentence
 
 import score.chunk
 import score.word
@@ -81,20 +81,22 @@ class Language:
 		ming a semantic match
 		"""
 
-		for _ in range(10):
-			for i in range(len(self.meaning)):
-				s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
+		#~ for _ in range(10):
+			#~ for i in range(len(self.meaning)):
+				#~ s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
 
 		for i in range(len(self.meaning)):
 			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
 			score.output.meaning.render_html(s)
 			
-	def learn(self,sentence_in,meaning_in):
+	def learn(self,sentence_text_in,meaning_label_in):
 		"""
 		Extend the knowledge about the language from a labeled example
 		"""
 		
-		raise NotImplementedError
+		s = Sentence(sentence_text_in)
+		m = self.meaning[ self.m_label.index(meaning_label_in) ]
+		learn.sentence.learn(s,m)
 		
 	#
 	# Input/Output methods
@@ -136,15 +138,15 @@ class Language:
 		for line in f:
 			ln = ln+1
 			
-			# Skip empty lines
+			"""Skip empty lines"""
 			if line == "" or not line.strip():
 				continue
 			
-			# Skip comments
+			"""Skip comments"""
 			if line[0] == "#":
 				continue
 			
-			# Parse the line
+			"""Parse the line"""
 			tokens = line.split('\t')
 			try:
 				cur_label    = unicode(tokens[FORMAT.P_LABEL])
@@ -154,17 +156,25 @@ class Language:
 				sys.stderr.write("LU.Language.import_L(): Error processing line "+unicode(ln)+". Skipping.\n")
 				continue
 				
-			# Update the general sentence list
+			"""Update the general sentence list"""
 			self.label.append( cur_label )
 			self.weight.append( cur_weight )
 			self.sentence.append( cur_sentence )
 			
-			# Update the meaning index
+			"""Update the meaning index"""
 			if cur_label not in self.m_label:
 				self.meaning.append( Meaning(cur_label) )
 				self.m_label.append( cur_label )
 			m_i = self.m_label.index(cur_label)
 			self.meaning[m_i].add_sentence(cur_sentence,cur_weight)
+		
+		f.close()
+			
+		"""Initialize Machine Learning values"""
+		for _ in range(2):
+			for m in self.meaning:
+				for s in m.sentences:
+					learn.sentence.learn(s,m)
 			
 		return True
 		

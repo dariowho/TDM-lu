@@ -22,23 +22,25 @@ def c_aavg(score,C_F,C_T,table):
 		
 		
 	# TEMP CODE to save the chunking hierarchy
-	s_from = ChunkedChunk()
+	s_from_tree = ChunkedChunk()
 	for cf_i in C_F:
 		max_i = table.get_score(cf_i,C_T[0])
 		for ct_j in C_T:
 			if table.get_score(cf_i,ct_j).get_score() > max_i.get_score():
 				max_i = table.get_score(cf_i,ct_j)
-		s_from.append(max_i.s_from)
-	score.s_from = s_from
+		s_from_tree.append(max_i.s_from_tree)
+	#~ score.s_from = s_from
+	score.s_from_tree = s_from_tree
 	
-	s_to = ChunkedChunk()
+	s_to_tree = ChunkedChunk()
 	for ct_j in C_T:
 		max_j = table.get_score(C_F[0],ct_j)
 		for cf_i in C_F:
 			if table.get_score(cf_i,ct_j).get_score() > max_j.get_score():
 				max_j = table.get_score(cf_i,ct_j)
-		s_to.append(max_j.s_to)
-	score.s_to = s_to
+		s_to_tree.append(max_j.s_to_tree)
+	#~ score.s_to = s_to
+	score.s_to_tree = s_to_tree
 	
 	_r = 0.0
 	n = 0.0

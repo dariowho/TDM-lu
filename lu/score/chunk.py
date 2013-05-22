@@ -25,7 +25,7 @@ class ChunkScore(Score):
 	LEN      = 1
 	ML_AFREQ = 2
 
-	def __init__(self):
+	def __init__(self,s_from,s_to):
 		super(ChunkScore,self).__init__()
 
 		self.features = array('f',[0]*ChunkScore.N_FEATURES)
@@ -36,8 +36,10 @@ class ChunkScore(Score):
 		self.weights  = array('f',[0.5,0,0.5])
 
 		# Debug information
-		self.s_from  = Chunk("__EMPTY_CHUNK_FROM__",1)
-		self.s_to    = Chunk("__EMPTY_CHUNK_TO__",1)
+		#~ self.s_from  = Chunk("__EMPTY_CHUNK_FROM__",1)
+		#~ self.s_to    = Chunk("__EMPTY_CHUNK_TO__",1)
+		self.s_from  = s_from
+		self.s_to    = s_to
 		self.s_table = None
 
 # Hooks (must match the order of the names in WordScore)
@@ -56,7 +58,7 @@ class M2Table(object):
 		# DEBUG
 		#~ print("T_dim: "+str(chunk_from.length)+"x"+str(chunk_from.length)+"x"+str(chunk_to.length)+"x"+str(chunk_to.length) )
 		
-		# TODO: change this with an optimized matrix
+		# TODO-OPT: change this with an optimized matrix
 		self.table = [[[[None for x in xrange(chunk_to.length)] for x in xrange(chunk_to.length)] for x in xrange(chunk_from.length)] for x in xrange(chunk_from.length)]
 		self.chunk_from = chunk_from
 		self.chunk_to   = chunk_to
@@ -127,7 +129,7 @@ def _get_score_m2(chunk_from,chunk_to,table):
 		#       performance too much; anyway, it would be better to check.
 		#       See also the feature hook.
 		r = word.get_score(chunk_from,chunk_to)
-		lu.ml.reinforce_alignment(chunk_from,chunk_to,r.get_score())
+		#~ lu.ml.reinforce_alignment(chunk_from,chunk_to,r.get_score())
 		return r
 	
 	# TODO: precompute the size
@@ -175,7 +177,7 @@ def _get_score_m2(chunk_from,chunk_to,table):
 			# be selected in the end
 			# NOTE: it is up to the score to handle the alignment of the 
 			#       sub-chunks in the two sentences
-			score = ChunkScore()
+			score = ChunkScore(chunk_from,chunk_to)
 			score.s_table = table
 			for fn,f in enumerate(_f):
 				if not score.is_feature_set[fn]:
@@ -198,17 +200,17 @@ def _get_score_m2(chunk_from,chunk_to,table):
 	#~ d_recursion_level = d_recursion_level-1
 	
 	# Update Machine Learning knowledge
-	lu.ml.reinforce_alignment(chunk_from,chunk_to,max_score.get_score())
+	#~ lu.ml.reinforce_alignment(chunk_from,chunk_to,max_score.get_score())
 	
 	# Return the best score
 	return max_score
 
 
 # TODO: this function is never used!
-def _get_chunk_score_m2(C_F,C_T,table):
-	score = ChunkScore()
-	score.s_table = table
-	for fn,f in enumerate(_f):
-		if not score.is_feature_set[fn]:
-			f(score,C_F,C_T,table)
-	return score
+#~ def _get_chunk_score_m2(C_F,C_T,table):
+	#~ score = ChunkScore()
+	#~ score.s_table = table
+	#~ for fn,f in enumerate(_f):
+		#~ if not score.is_feature_set[fn]:
+			#~ f(score,C_F,C_T,table)
+	#~ return score

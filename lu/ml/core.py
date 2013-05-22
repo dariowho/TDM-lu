@@ -24,7 +24,12 @@ future review:
            rather then taking the text from the Chunk in every function
 """
 
+import sys
 import math
+import os.path
+
+# TODO: update alignment frequency operations to use defaultdict!
+from collections import defaultdict
 
 class ML(object):
 
@@ -32,21 +37,74 @@ class ML(object):
 	DEFAULT_SCORE = 1
 	
 	def __init__(self):
-		# Chunk frequency
-		# TODO: distinguish between count and mass
-		self.c_mass            = dict()
-		self._c_cache_mass_tot = 0.0
+		# Chunk frequency (count and mass)
+		# TODO: mass is probably useless...
+		self.c_count            = defaultdict(int)
+		self._c_cache_count_tot = 0
+		self.c_mass             = defaultdict(ML._floatdefaultdict_factory)
+		self._c_cache_mass_tot  = 0.0
 		
 		# Class-conditional chunk frequency
-		# NOT IMPLEMENTED
+		self.cc_count            = defaultdict(ML._intdefaultdict_factory)
+		self._cc_cache_count_m   = defaultdict(int)
+		self._cc_cache_count_tot = 0
 		
 		# Alignment frequency
-		self.a_mass            = dict()
-		self._a_cache_mass_c   = dict()
+		self.a_mass            = defaultdict(ML._floatdefaultdict_factory)
+		self._a_cache_mass_c   = defaultdict(float)
 		self._a_cache_mass_tot = 0.0
 	
 	#
-	# Core methods
+	# Core methods - Chunk count
+	#
+	
+	def get_c_frequency(self,c):
+		"""
+		(Count of c) / (Total count)
+		"""
+		c = c.text
+		
+		try:
+			return self.c_count[c]/self._c_cahce_count_tot
+		except ZeroDivisionError:
+			"""No chunk have been counted yet"""
+			return 0
+			
+	def increment_c_frequency(self,c):
+		c = c.text
+		
+		self.c_count[c] += 1
+		
+		self._c_cache_count_tot += 1
+	
+	#
+	# Core methods - Class-conditional count
+	#
+	
+	def get_cc_frequency(self,c,m):
+		"""
+		Given a chunk 'c' and a meaning 'm' returns the count of 'c' in 'm'
+		over the total count of chunks in 'm'
+		"""
+		c = c.text
+		m = m.label
+		
+		try:
+			return self.cc_count[c][m]/self._cc_cache_count_m[c]
+		except ZeroDivisionError:
+			"""No chunks in this meaning have been counted yet"""
+			return 0
+	
+	def increment_cc_frequency(self,c,m):
+		c = c.text
+		m = m.label
+		
+		self.cc_count[c][m]       += 1
+		self._cc_cache_count_m[m] += 1
+		self._cc_cache_count_tot  += 1
+	
+	#
+	# Core methods - Alignments
 	#
 	
 	def get_alignment_score(self,c1,c2):
@@ -103,16 +161,21 @@ class ML(object):
 		assert not math.isnan(score)
 		
 		m = self._get_alignment_mass(c1,c2)
-		self._set_alignment_mass(c1,c2,m+m*score)
+		#~ self._set_alignment_mass(c1,c2,m+m*score)
+		self._set_alignment_mass(c1,c2,m+score)
 
 		m = self._get_alignment_mass(c2,c1)
-		self._set_alignment_mass(c2,c1,m+m*score)
+		#~ self._set_alignment_mass(c2,c1,m+m*score)
+		self._set_alignment_mass(c2,c1,m+score)
 		
 	def discourage_alignment(self,c1,c2,score):
 		"""
 		TODO: update criterion according to reinforcement policy (operation +
 		      simmetry)
 		"""
+		
+		raise NotImplementedError
+		
 		if c1.text == c2.text:
 			return
 		
@@ -126,17 +189,49 @@ class ML(object):
 	# Input/Output methods
 	#
 
-	def import_ml(self,path):
-		raise NotImplementedError
+	def ml_data_exist(self,path,name):
+		"""
+		Check if ml data already exist in the given folder ('path') for the 
+		given language ('name')
+		
+		TODO: some consistency check, maybe hashing the language object, would
+		      be sweet...
+		"""
+		
+		path = path+name
+		
+		return os.path.isfile(path+".ml.cfreq") and \
+		       os.path.isfile(path+".ml.ccfreq") and \
+		       os.path.isfile(path+".ml.afreq")
 
-	def export_ml(self,path):
+	def import_ml(self,path,name):
+		"""
+		Imports ML data from human-readable .ml files (see 'export_ml' below).
+		
+		'path' is the path to the directory containing the ml files, including
+		       the last slash
+		'name' is the name of the language (without any extension)
+		
+		TODO: the imput procedures don't remove the content that may already be
+		      present in the ml's data structures
+		"""
+		
+		path = path+name
+		
+		self._import_ml_c(path+".ml.cfreq")
+		self._import_ml_cc(path+".ml.ccfreq")
+		self._import_ml_a(path+".ml.afreq")
+
+	def export_ml(self,path,name):
 		"""
 		Exports the Machine Learning data into human-readable files:
-		   * path.ml.cfreq  - Chunk frequency data
-		   * path.ml.ccfreq - Class-conditional chunk frequency data
-		   * path.ml.afreq  - Alignment frequency data
-		   
-		NOTE: path includes the filename, but not the extension
+		   * [path][name].ml.cfreq  - Chunk frequency data
+		   * [path][name].ml.ccfreq - Class-conditional chunk frequency data
+		   * [path][name].ml.afreq  - Alignment frequency data
+		
+		'path' is the path to the directory containing the ml files, including
+		       the last slash
+		'name' is the name of the language (without any extension)
 		
 		NOTE: the 'item' iterator is used in place of 'iteritems' to loop over
 		      the dictionaries. This is to maintain the compatibility with 
@@ -147,6 +242,9 @@ class ML(object):
 		
 		TODO: meta-symbols (TAB) are not escaped
 		"""
+		
+		"""Build the full path from path and filename"""
+		path = path+name
 		
 		f_cfreq  = open(path+'.ml.cfreq','w')
 		f_ccfreq = open(path+'.ml.ccfreq','w')
@@ -165,17 +263,23 @@ class ML(object):
 		              u"# Its content is meant to be updated by a scoring system,\n"+
 		              u"# handmade modifications are likely to break its consistency.\n\n")
 
-		for k,v in self.c_mass.items():
-			f_cfreq.write(k+u"\t"+unicode(v)+"\n")
-		f_cfreq.write(u"\nT\t"+unicode(self._c_cache_mass_tot))
+		for k,v in self.c_count.items():
+			f_cfreq.write(k+u"\t"+unicode(v)+"\t;\n")
+		f_cfreq.write(u"\nT\t"+unicode(self._c_cache_count_tot))
 		f_cfreq.close()
 		
-		f_ccfreq.write(u"# This feature has not been implemented yet.")
+		for k_i,v_i in self.cc_count.items():
+			for k_j,v_j in v_i.items():
+				f_ccfreq.write(k_i+u"\t"+k_j+u"\t"+unicode(v_j)+u"\t;\n")
+		f_ccfreq.write(u"\n")
+		for k,v in self._cc_cache_count_m.items():
+			f_ccfreq.write(u"T\t"+k+u"\t"+unicode(v)+u"\n")
+		f_ccfreq.write(u"\nT\t"+unicode(self._cc_cache_count_tot))
 		f_ccfreq.close()
 		
 		for k_i,v_i in self.a_mass.items():
 			for k_j,v_j in v_i.items():
-				f_afreq.write(k_i+u"\t"+k_j+u"\t"+unicode(v_j)+u"\n")
+				f_afreq.write(k_i+u"\t"+k_j+u"\t"+unicode(v_j)+u"\t;\n")
 		f_afreq.write(u"\n")
 		for k,v in self._a_cache_mass_c.items():
 			f_afreq.write(u"T\t"+k+u"\t"+unicode(v)+u"\n")
@@ -183,7 +287,30 @@ class ML(object):
 		f_afreq.close()
 
 	#
-	# Private methods
+	# Private methods - general
+	#
+	@staticmethod
+	def _intdefaultdict_factory():
+		"""
+		This method is used to set the default value of the class-conditional
+		index, wich is a 'defaultdict' having 'int' as an argument.
+		(The whole structure is thus a 'defautdict' of 'defaultdict's, see
+		__init__)
+		"""
+		return defaultdict(int)
+
+	@staticmethod
+	def _floatdefaultdict_factory():
+		"""
+		This method is used to set the default value of the mass-based indices
+		(eg. alignment), wich is a 'defaultdict' having 'float' as an argument.
+		(The whole structure is thus a 'defautdict' of 'defaultdict's, see
+		__init__)
+		"""
+		return defaultdict(float)
+
+	#
+	# Private methods - Alignment frequencies
 	#
 	
 	def _get_alignment_mass(self,c1=None,c2=None):
@@ -202,6 +329,11 @@ class ML(object):
 		c1 = c1.text
 		
 		if c2 is None:
+			"""NOTE: the 'get' method to get to return the default value in
+			         case of miss instead of taking advantage of 'defaultdict'.
+			         This is because the default value would be stored in the 
+			         dictionary otherwise, adding unexistent mass to c1.
+			"""
 			return self._a_cache_mass_c.get(c1,ML.DEFAULT_MASS)
 		
 		c2 = c2.text
@@ -225,51 +357,161 @@ class ML(object):
 		c1 = c1.text
 		c2 = c2.text
 		
-		# Update alignment frequencies
-		
+		# simmetry hack
 		#~ if c1 > c2:
 			#~ c1,c2 = c2,c1
-		
-		try:
-			p_a_mass_c1 = self.a_mass[c1]
-		except KeyError:
-			p_a_mass_c1 = self.a_mass[c1] = dict()
-			
-			#~ assert c1 not in self._a_cache_mass_c ← can actually happen, because of the symmetry property
-			self._a_cache_mass_c[c1] = self._a_cache_mass_c.get(c1,0)
 
-		m_diff = m - p_a_mass_c1.get(c2,0)
+		p_a_mass_c1 = self.a_mass[c1]
+
+		"""Update direct (c1,c2) value"""
+		m_diff = m - p_a_mass_c1[c2]
 		p_a_mass_c1[c2] = m
 		
-		# DEBUG
-		import sys
-		if self.a_mass[c1][c2] != m:
-			sys.stderr.write(c1+","+c2+"\n")
-			sys.stderr.write("a_mass = "+str(self.a_mass[c1][c2])+"\n")
-			sys.stderr.write("m      = "+str(m)+"\n")
 		assert self.a_mass[c1][c2] == m
 		
-		assert c1 in self._a_cache_mass_c
+		"""Update c1 cache"""
 		self._a_cache_mass_c[c1] += m_diff
+		#~ self._a_cache_mass_c[c2] += m_diff ← bidirectional update, for simmetry hack
 
-		#~ try:
-			#~ self._a_cache_mass_c[c2] += m_diff
-		#~ except KeyError:
-			#~ assert m_diff == m
-			#~ self._a_cache_mass_c[c2] = m_diff
-
+		"""Update total cache"""
 		self._a_cache_mass_tot += m_diff
-		
-		# Increment the chunk counts
-		
-		try:
-			self.c_mass[c1] += 1
-		except KeyError:
-			self.c_mass[c1] = 1
 
-		try:
-			self.c_mass[c2] += 1
-		except KeyError:
-			self.c_mass[c2] = 1
+	#
+	# Private methods - I/O
+	#
+	
+	def _import_ml_c(self,path):
+		f = open(path,'r')
 		
-		self._c_cache_mass_tot += 2
+		ln = 0
+		for line in f:
+			ln += 1
+			
+			"""Skip empty lines"""
+			if line == "" or not line.strip():
+				continue
+			
+			"""Skip comments"""
+			if line[0] == "#":
+				continue
+			
+			"""Parse the line"""
+			tokens = line.split('\t')
+			"""Try to parse as a chunk count line (3 elements)"""
+			try:
+				chunk = unicode(tokens[0])
+				count = int(tokens[1])
+				col   = tokens[2].strip()
+				assert col == ';'
+				
+				self.c_count[chunk] = count
+			except:
+				"""Try to parse as a total count line (2 elements)"""
+				try:
+					if unicode(tokens[0]) != "T":
+						raise Exception
+						
+					self._c_cache_count_tot = int(tokens[1])
+				except:
+					sys.stderr.write("lu.ml: Error processing ml.cfreq line "+unicode(ln)+". Skipping.\n")
+					continue
+		
+		f.close()
+	
+	def _import_ml_cc(self,path):
+		f = open(path,'r')
+
+		ln = 0
+		for line in f:
+			ln += 1
+			
+			"""Skip empty lines"""
+			if line == "" or not line.strip():
+				continue
+			
+			"""Skip comments"""
+			if line[0] == "#":
+				continue
+			
+			"""Parse the line"""
+			tokens = line.split('\t')
+			"""Try to parse as a cc count line (4 elements)"""
+			try:
+				chunk   = unicode(tokens[0])
+				meaning = unicode(tokens[1])
+				count   = int(tokens[2])
+				col     = tokens[3].strip()
+				assert col == ';'
+				
+				self.cc_count[chunk][meaning] = count
+			except:
+				"""Try to parse as a marginal meaning count line (3 elements)"""
+				try:
+					if unicode(tokens[0]) != "T":
+						raise Exception
+					
+					meaning = unicode(tokens[1])
+					count   = int(tokens[2])
+						
+					self._cc_cache_count_m[meaning] = count
+				except:
+					"""Try to parse as a total count line (2 elements)"""
+					try:
+						if unicode(tokens[0].strip()) != "T":
+							raise Exception
+						
+						self._cc_cache_count_tot = int(tokens[1])
+					except:
+						sys.stderr.write("lu.ml: Error processing ml.ccfreq line "+unicode(ln)+". Skipping.\n")
+						continue
+
+		f.close()
+		
+	def _import_ml_a(self,path):
+		f = open(path,'r')
+
+		ln = 0
+		for line in f:
+			ln += 1
+			
+			"""Skip empty lines"""
+			if line == "" or not line.strip():
+				continue
+			
+			"""Skip comments"""
+			if line[0] == "#":
+				continue
+			
+			"""Parse the line"""
+			tokens = line.split('\t')
+			"""Try to parse as a cc count line (4 elements)"""
+			try:
+				chunk_from = unicode(tokens[0])
+				chunk_to   = unicode(tokens[1])
+				mass       = float(tokens[2])
+				col        = tokens[3].strip()
+				assert col == ';'
+				
+				self.a_mass[chunk_from][chunk_to] = mass
+			except:
+				"""Try to parse as a marginal meaning mass line (3 elements)"""
+				try:
+					if unicode(tokens[0]).strip() != "T":
+						raise Exception
+					
+					chunk = unicode(tokens[1])
+					mass  = float(tokens[2].strip())
+
+					self._a_cache_mass_c[chunk] = mass
+				except:
+					"""Try to parse as a total mass line (2 elements)"""
+					try:
+						if unicode(tokens[0]).strip() != "T":
+							raise Exception
+						
+						self._a_cache_mass_tot = float(tokens[1].strip())
+					except:
+						sys.stderr.write("lu.ml: Error processing ml.afreq line "+unicode(ln)+". Skipping.\n")
+						continue
+
+		f.close()

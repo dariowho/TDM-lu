@@ -31,3 +31,9 @@ part_simmetry: ml score is average of two possible, but only one side is
   part of the average is 1
  
 simmetry: success!
+
+ml2-20p: proper machine learning (label by label, cyclical update)
+         20 em passes
+
+ml2-100p: 100 empasses
+ not so different, also because the training set is small and not diverse enough

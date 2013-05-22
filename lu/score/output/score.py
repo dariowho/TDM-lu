@@ -13,8 +13,8 @@ def render_html(s):
 	"""
 	
 	print("<ul class='score'>")
-	print(s.s_from.penn_string()+"<br/>")
-	print(s.s_to.penn_string())
+	print(s.s_from_tree.penn_string()+"<br/>")
+	print(s.s_to_tree.penn_string())
 	for f in s.features:
 		print("<li>"+unicode(f)+"</li>")
 	print("<li class='total'>"+unicode(s.get_score())+"</li>")
