@@ -171,6 +171,8 @@
 \newcommand*{\subject}[1]{\def\subjectname{#1}}
 \newcommand*{\keywords}[1]{\def\keywordnames{#1}}
 
+\newcommand*{\PROJECTNAME}[1]{\def\pname{#1}}
+
 %----------------------------------------------------------------------------------------
 %	DOCUMENT VARIABLES
 %	Fill in the lines below to update the thesis template
@@ -227,6 +229,8 @@
                 {FACULTY NAME (IN BLOCK CAPITALS)}} % Your faculty's name in capitals - this is not currently used anywhere in the template, cite it with \FACNAME if you want it
                 {FACULTY NAME (IN BLOCK CAPITALS)}}
 %----------------------------------------------------------------------------------------    
+
+\PROJECTNAME{MPlay }
 
 % The default title page, this is not used in this www.latextemplates.com version            
 \renewcommand\maketitle{

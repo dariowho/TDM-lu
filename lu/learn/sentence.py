@@ -29,6 +29,8 @@ def _process_chunks(sentence_in,meaning_in):
 	"""
 	Update chunk count and class-conditional count for the input Sentence
 	(Chunk) and, recursively, all of its components.
+	
+	TODO-OPT: recursion is based on the not-optimized split() operation
 	"""
 	
 	"""Base case, no need for further recursion"""

@@ -14,3 +14,6 @@
 3	1	shut up
 4	1	skip this track
 4	1	go to the next track
+5	1	empty the playlist
+5	1	remove all the songs from the playlist
+5	1	remove everything from the playlist

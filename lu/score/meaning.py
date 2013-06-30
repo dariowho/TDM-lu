@@ -6,7 +6,7 @@ from . import Score
 import features.meaning
 
 #
-# The WordScore data structure
+# The MeaningScore data structure
 # NOTE: parent cless Score is defined in __init__.py
 #
 
@@ -16,11 +16,12 @@ class MeaningScore(Score):
 	"""
 
 	# Total number of features
-	N_FEATURES = 2
+	N_FEATURES = 3
 
 	# Constant feature names (must define N_FEATURES names)
 	MAX_SSCORE, \
-	AVG_SSCORE, = range(N_FEATURES)
+	AVG_SSCORE, \
+	ML_CCSUM = range(N_FEATURES)
 
 	def __init__(self,meaning_in,sentence_in):
 		super(MeaningScore,self).__init__()
@@ -28,6 +29,9 @@ class MeaningScore(Score):
 		self.features = array('f',[0]*MeaningScore.N_FEATURES)
 		self.weights  = array('f',[1.0/MeaningScore.N_FEATURES]*MeaningScore.N_FEATURES)
 		self.is_feature_set = array('b',[False]*MeaningScore.N_FEATURES)
+
+		# Hand-crafted weights
+		self.weights  = array('f',[0.5,0.0,0.5])
 		
 		# Debug information
 		self.meaning   = meaning_in
@@ -39,7 +43,8 @@ class MeaningScore(Score):
 #
 
 _f = [ features.meaning.c_max_sscore, \
-       features.meaning.c_avg_sscore ]
+       features.meaning.c_avg_sscore, \
+       features.meaning.c_ml_ccsum ]
 
 
 #

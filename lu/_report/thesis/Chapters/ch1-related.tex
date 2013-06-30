@@ -1,0 +1,42 @@
+% Chapter Template
+
+\chapter{Related work} % Main chapter title
+
+\label{ch:rw} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\lhead{Chapter \ref{ch:rw}. \emph{Related work}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+%	INTRO TEXT
+%----------------------------------------------------------------------------------------
+The goal of this thesis, to design and implement a learning-capable dialogue system, combines different disciplines within the fields of Artificial Intelligence and Linguistics. This chapter reviews the work that has been previously done, and that contributed to the realization of this project.
+
+%----------------------------------------------------------------------------------------
+%	SENTENCE SIMILARITY
+%----------------------------------------------------------------------------------------
+
+\section{Sentence similarity}
+As it has been mentioned in \ref{ch:intro:project}, the core task of the system is to associate an unknown sentence to its correct meaning, where each meaning is defined by a set of sentences realizing it. Therefore, one of the constituent capabilities that the system must implement is the ability to tell whether two sentences \textbf{share the same meaning} or not.
+
+The problem of scoring the similarity between two sentences is not new in the literature. \cite{Achananuparp:2008:ESS:1430555.1430594} suggest to classify the existing measures in \textbf{three categories}: word overlap measures, TD-IDF measures and Linguistic measures. \textbf{Word overlap} scores are computed taking into account only the number of words that are shared between the two input sentences; a basic measure of this kind is the Jaccard coefficient, which is defined as the size of the intersection of the words in the two sentences compared to the size of the union of the words in the two sentences. \cite{Banerjee03extendedgloss} extended the concept to include a special treatment of phrasal $n$-word overlaps, motivated by the fact that they are much rarer than single word ones. \textbf{TF-IDF} measures are based on term frequency-inverse document frequency, hence the name. Those are common measures to express the importance of a term of a document in an  indicized corpus; respectively, they represent the frequency of the term in the document, and the frequency of the term across all documents. TF-IDF can be used to score the similarity between two sentences, for instance, computing the cosine similarity in a vector-space approach. Lastly, \textbf{linguistic} measures are meant to exploit, intuitively, the linguistic information contained in the input sentences. Such information consists of semantic relations between words, and the syntactic structure that connects them. % Various methods exist to ...
+
+The way sentences are compared in \pname tries to take into account all the aspects of this three type of measures, which are combined together in a feature-oriented fashion; the specific algorithm for sentence comparison is described in Chapter \ref{ch:M2}.
+
+%----------------------------------------------------------------------------------------
+%	IBM WATSON
+%----------------------------------------------------------------------------------------
+
+\section{Machine Learning for Language Processing}
+The task of labeling an unknown sentence with its correct meaning can be easily expressed in terms of Machine Learning. In fact, is is a standard supervised classification problem to learn a class' model from examples, and later use that model to label new data points. In this view, a data point is a natural language sentence, and a label is its meaning. 
+
+Particularly inspiring for the development of this thesis was the work done by IBM on Watson. Watson is \ldots 
+
+CL\&DOP \ldots
+
+%----------------------------------------------------------------------------------------
+%	ISU
+%----------------------------------------------------------------------------------------
+
+\section{Information State Update Dialogue Management}
+
+\ldots

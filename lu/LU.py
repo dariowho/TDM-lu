@@ -22,7 +22,8 @@ from array import array
 
 from . import Meaning,Sentence,Chunk,ChunkedChunk,Word
 from constants import *
-from language_base import stub_language
+
+import lu.ml
 
 import learn.sentence
 
@@ -78,16 +79,21 @@ class Language:
 	def understand(self,sentence_in):
 		"""
 		Assign an input sentence to one of the labels of the language, perfor-
-		ming a semantic match
+		ming a semantic match.
+		
+		Returns a list of tuples (label,score) ordered by score.
 		"""
 
-		#~ for _ in range(10):
-			#~ for i in range(len(self.meaning)):
-				#~ s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
+		r = []
 
 		for i in range(len(self.meaning)):
 			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
-			score.output.meaning.render_html(s)
+			
+			r.append( (self.meaning[i].label,s.get_score()) )
+		
+		r.sort(key=lambda t: t[1], reverse=True)
+		return r
+
 			
 	def learn(self,sentence_text_in,meaning_label_in):
 		"""
@@ -97,7 +103,20 @@ class Language:
 		s = Sentence(sentence_text_in)
 		m = self.meaning[ self.m_label.index(meaning_label_in) ]
 		learn.sentence.learn(s,m)
-		
+	
+	def understand_debug(self,sentence_in):
+		"""
+		Equal tu understand(), but prints the results on screen as HTML code
+		"""
+
+		#~ for _ in range(10):
+			#~ for i in range(len(self.meaning)):
+				#~ s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
+
+		for i in range(len(self.meaning)):
+			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
+			#score.output.meaning.render_html(s)
+	
 	#
 	# Input/Output methods
 	#
@@ -110,12 +129,11 @@ class Language:
 		TODO: implement (as of now it loads a stub language)
 		"""
 		
-		if path is not None:
-			raise(NotImplementedError)
+		raise(NotImplementedError)
 		
-		self.sentence = stub_language.sentence
-		self.label    = stub_language.label
-		self.weight   = stub_language.weight
+		#~ self.sentence = stub_language.sentence
+		#~ self.label    = stub_language.label
+		#~ self.weight   = stub_language.weight
 	
 	def save(self,path):
 		"""
@@ -127,12 +145,12 @@ class Language:
 		
 		raise NotImplementedError
 	
-	def import_l(self,path):
+	def import_l(self,path,name):
 		"""
 		Import the language from a human-readable language file (*.l)
 		"""
 		
-		f = open(path,'r')
+		f = open(path+name+".l",'r')
 		
 		ln = 0
 		for line in f:
@@ -153,6 +171,8 @@ class Language:
 				cur_weight   = float(tokens[FORMAT.P_WEIGHT])
 				cur_sentence = Sentence(unicode(tokens[FORMAT.P_SENTENCE].strip()))
 			except:
+				# TODO: for some reason it doesn't see the global "import sys": WHY???
+				import sys
 				sys.stderr.write("LU.Language.import_L(): Error processing line "+unicode(ln)+". Skipping.\n")
 				continue
 				
@@ -171,10 +191,19 @@ class Language:
 		f.close()
 			
 		"""Initialize Machine Learning values"""
-		for _ in range(2):
+		if lu.ml.ml_data_exist(path,name):
+			lu.ml.import_ml(path,name)
+		else:
+			import sys
+			sys.stderr.write("[LU.import_l] ML data not found, building...\n")
+			
 			for m in self.meaning:
 				for s in m.sentences:
 					learn.sentence.learn(s,m)
+			
+			sys.stderr.write("[LU.import_l] ML training finished.\n")
+			
+			lu.ml.export_ml(path,name)
 			
 		return True
 		

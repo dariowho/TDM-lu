@@ -1,0 +1,74 @@
+% Chapter Template
+
+\chapter{Architecture} % Main chapter title
+
+\label{ch:arch} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\lhead{Chapter \ref{ch:arch}. \emph{Architecture}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+
+%----------------------------------------------------------------------------------------
+%	INTRO TEXT
+%----------------------------------------------------------------------------------------
+
+The outcome of this thesis project is \pname, a music player application that accepts English utterances as commands, adapts to utterances it has never been exposed to, and learns from them, thus expanding its initial knowledge of the language. The application has been written in Python 2.7, and consists of a client application for the existing OpenTDM dialogue management library. Such a library supports basic dialogue management based on the Information State Update approach, but has no support for grounding or flexible understanding of unknown sentences. Therefore, TDM has been extended with the Language Unit module, that introduces these capabilities.
+
+Section \ref{ch:arch:client} describes the \pname client, Section \ref{ch:arch:TDM} describes the OpenTDM library, and Section \ref{ch:arch:LU} describes the Language Unit module.
+
+
+%----------------------------------------------------------------------------------------
+%	CLIENT
+%----------------------------------------------------------------------------------------
+
+\section{The client application} \label{ch:arch:client}
+\pname is a client application for the OpenTDM library. An OpenTDM application can be seen as a container for domain-specific \textbf{parameters} for the dialogue manager. These parameters consist of:
+\begin{itemize}
+\item A \textbf{device} class, containing variables and methods that directly control the actions of the application. The \textit{device} file of a music player application will contain, for instance, variables holding the current playlist, or the current volume level, and methods to play/stop the music, lookup for a song and so forth.
+\item An \textbf{ontology}, which main purpose is to define predicates an actions that will be used at dialogue management level. In the case of \pname, an example of predicate is \texttt{current\_song(X)}, that identifies the song currently being played (note that such a predicate must be mirrored in the device file as a variable\footnote{The actual implementation consists of an inner \texttt{current\_song} class of the device class, which access the proper, private, variable of the device file through a \texttt{perform()} method. The reasons that led to such an implementative choice were not made known by the authors of OpenTDM.}); an example of action is \texttt{increase\_volume} that, intuitively, identifies the action of increasing the volume (actions are mirrored as well in the device class, in the same way predicates are).
+\item A \textbf{domain} file, which main purpose is to contain the list of plans that will control the dialogue episodes. For instance, the TOP plan of an application is to find out what the user wants to do. Another example of a plan in \pname is the \texttt{increase\_volume} plan: step 1 of the plan is ask the user for how much the volume should be increased, step 2 is to perform the actual action through the device.
+\item A \textbf{grammar} implemented using the Grammatical Framework\footnote{http://www.grammaticalframework.org/}. This part will not be discussed, since, as it is explained in Section \ref{ch:arch:LU}, the Grammatical Framework in OpenTDM has been replaced with a specifically created module called Language Unit.
+\end{itemize}
+
+The dialogue management logic is left to OpenTDM, that will be discussed in the next section.
+
+
+%----------------------------------------------------------------------------------------
+%	TDM
+%----------------------------------------------------------------------------------------
+
+\section{OpenTDM} \label{ch:arch:TDM}
+OpenTDM is a dialogue management library developed and maintained by Talkmatic\footnote{http://talkamatic.se/} based on the Information State Update framework
+
+\ldots
+
+%----------------------------------------------------------------------------------------
+%	LU
+%----------------------------------------------------------------------------------------
+\section{The Language Unit} \label{ch:arch:LU}
+The Language Unit (LU) is a Python library that have been specifically created to support \pname. The purpose of this library is to perform the classification task as it has been defined so far.
+
+\subsection{Language}
+The \texttt{Language} class is the main class of LU, its purpose is to model a natural language under the following abstraction: a Language is defined by a finite set of Meanings (labels); a Meaning is defined by a finite set of Sentences expressing that Meaning. As an example, the \pname language consists of a number of meanings, each of them defining an action for the application to perform; one of this meaning can be the one to pause the current song; this meaning will be realized by a number of English sentences, like ``Pause the song", ``Suspend the music", or ``Pause the current track". For the purpose of language understanding, a Sentence can be brougth down to any of its (linguistic or non-linguistic) constituents called Chunks or Phrases. A chunk is formed by one or more Words.
+
+The following are the main capabilities implemented in the Language class:
+\begin{itemize}
+\item \textbf{Load} and \textbf{save} languages. Each OpenTDM application must define a \texttt{language/} folder where the language is stored, in the form of a \texttt{.l} file. Such a file is just a dump of all the meanings and their example sentences. Since the language  can evolve through learning, applications' language files are updated every time the application is run and dialogue interactions are performed.
+\item \textbf{Learn} a sentence. When a new labeled example (a sentence with its meaning label) is provided, the knowledge of the language is extended. This is done adding the new sentence to the list of sentences realizing that meaning, and drawing statistics (e.g. the frequency of a certain word/phrase in the given meaning) to improve the model of the meaning. Note that, when a language is loaded for the first time, every sentence in it is run through the learning procedure to initialize the statistics.
+\item \textbf{Understand} an input sentence. The core task of the Language Unit is associate an input sentence to its correct meaning. While this operation is trivial when the input sentence is already present in the language, it becomes hard for unknown examples. In this latter case the LU computes a score for the sentence against each of the meanings that are present in the language; the meaning that achieves the best score is given as an output, along with the score itself, representing the degree of confidence for the output to be correct. The way sentences are scored is presented in the next section.
+\end{itemize}
+
+\subsection{Scores}
+
+\subsubsection{Meaning Score}
+
+\subsubsection{Sentence Score}
+
+\subsubsection{Chunk Score}
+Chunks are compared using the M2 algorithm, that is explained in detail in Chapter \ref{ch:M2}.
+
+\subsubsection{Word Score}
+Word scores are as well explained in Chapter \ref{ch:M2}.
+
+\subsection{Machine Learning}
+
+
+\ldots

@@ -1,0 +1,50 @@
+# This is an automatically generated ML data file, containing
+# class-conditional chunk frequency data.
+# Its content is meant to be updated by a scoring system,
+# handmade modifications are likely to break its consistency.
+
+the volume	1	3	;
+the volume	2	3	;
+volume louder	1	1	;
+make the volume	1	1	;
+make the volume	2	1	;
+increase the	1	1	;
+down	2	1	;
+louder	1	1	;
+decrease	2	1	;
+make the volume lower	2	1	;
+increase	1	1	;
+increase the volume	1	1	;
+down the volume	2	1	;
+make	1	1	;
+make	2	1	;
+up the	1	1	;
+turn up the volume	1	1	;
+turn down	2	1	;
+the volume lower	2	1	;
+volume	1	3	;
+volume	2	3	;
+up the volume	1	1	;
+the volume louder	1	1	;
+decrease the	2	1	;
+make the volume louder	1	1	;
+make the	1	1	;
+make the	2	1	;
+turn up the	1	1	;
+decrease the volume	2	1	;
+lower	2	1	;
+volume lower	2	1	;
+turn down the	2	1	;
+up	1	1	;
+turn up	1	1	;
+turn	1	1	;
+turn	2	1	;
+down the	2	1	;
+the	1	3	;
+the	2	3	;
+turn down the volume	2	1	;
+
+T	1	26
+T	2	26
+
+T	52

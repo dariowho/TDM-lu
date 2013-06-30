@@ -32,8 +32,8 @@ class WordScore(Score):
 		self.s_from = self.s_from_tree = s_from
 		self.s_to   = self.s_to_tree   = s_to
 		
-		# Debug...
-		self.weights  = array('f',[0.5,0.02,0.03,0.05,0.4])
+		# Hand-crafted weights
+		self.weights  = array('f',[0.5,0.05,0.0,0.05,0.4])
 
 #
 # Hooks (must match the order of the names in WordScore)

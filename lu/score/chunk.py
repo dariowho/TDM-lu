@@ -18,12 +18,14 @@ class ChunkScore(Score):
 	"""
 	
 	# Total number of features
-	N_FEATURES = 3
+	N_FEATURES = 5
 	
 	# Constant feature names (must define N_FEATURES names)
-	AAVG     = 0
-	LEN      = 1
-	ML_AFREQ = 2
+	AAVG, \
+	LEN, \
+	STRAIGHT, \
+	ML_AFREQ, \
+	ML_CFREQ = range(N_FEATURES)
 
 	def __init__(self,s_from,s_to):
 		super(ChunkScore,self).__init__()
@@ -33,11 +35,12 @@ class ChunkScore(Score):
 		self.is_feature_set = array('b',[False]*ChunkScore.N_FEATURES)
 
 		# Test weights: first and last features only
-		self.weights  = array('f',[0.5,0,0.5])
+		self.weights  = array('f',[0.35,0.1,0.0,0.35,0.2])
+
+		# Extra information
+		self.alignment = None
 
 		# Debug information
-		#~ self.s_from  = Chunk("__EMPTY_CHUNK_FROM__",1)
-		#~ self.s_to    = Chunk("__EMPTY_CHUNK_TO__",1)
 		self.s_from  = s_from
 		self.s_to    = s_to
 		self.s_table = None
@@ -45,7 +48,9 @@ class ChunkScore(Score):
 # Hooks (must match the order of the names in WordScore)
 _f = [ features.chunk.c_aavg, \
        features.chunk.c_len, \
-       features.chunk.c_ml_afreq ]
+       features.chunk.c_straight, \
+       features.chunk.c_ml_afreq, \
+       features.chunk.c_ml_cfreq ]
 
 class M2Table(object):
 	"""

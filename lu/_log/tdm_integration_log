@@ -1,0 +1,34 @@
+This is the debugged I/O with GfGrammar: the output of "utterance_to_moves" is 
+a list containing a list (?) containing the action:
+
+S> Do you want to know which song is playing (nq), know my name or increase the volume?
+
+U> what is your name
+ . utterance_to_moves: what is your name
+ . utterance_to_moves: tokens: ['what', 'is', 'your', 'name']
+ . utterance_to_moves: tree: [u'userAskWHQ', [u'ask_my_name']]
+ . utterance_to_moves: lin: [[u'ask', u'(', u'?', u'X', u'.', u'my_name', u'(', u'X', u')', u')']]
+ . utterance_to_moves: [[u'ask(?X.my_name(X))']]
+[Move(ask(?X.my_name(X)), speaker=USR, modality=speech)]
+S> My name is Al, and the volume is 50.
+
+
+-------------------------------------------------------------------------------
+
+Looks like:
+ - The application stores the grammar object
+    - This is defined directly in the application files! (not in the tdm library)
+      e.g. /home/dario/lavoro/universiteit/thesis/code/mplay/mplay.py
+ - The grammar is an instance of GfGrammar, defined in gf_grammar.py (in /usr/lib/.../tdm/)
+ - interpret.py receives the request to interpret a user utterance
+ - interpret.py calls the grammar to receive the corresponding move
+    - interpret.py import the application manager
+    - the application manager returns the application
+    - the application contains the grammar
+ 
+-------------------------------------------------------------------------------
+
+Implementation
+ - new module lu_grammar.py, meant to replace gf_grammar.py
+    - method "utterance_to_moves" wraps to "LU.Language.understand"
+ - application file /home/dario/.../mplay/mplay.py modified to import LuGrammar

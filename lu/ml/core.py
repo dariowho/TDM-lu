@@ -33,8 +33,8 @@ from collections import defaultdict
 
 class ML(object):
 
-	DEFAULT_MASS  = 1
-	DEFAULT_SCORE = 1
+	DEFAULT_MASS  = 0
+	DEFAULT_SCORE = 0
 	
 	def __init__(self):
 		# Chunk frequency (count and mass)
@@ -65,7 +65,7 @@ class ML(object):
 		c = c.text
 		
 		try:
-			return self.c_count[c]/self._c_cahce_count_tot
+			return float(self.c_count[c])/float(self._c_cache_count_tot)
 		except ZeroDivisionError:
 			"""No chunk have been counted yet"""
 			return 0
@@ -90,7 +90,7 @@ class ML(object):
 		m = m.label
 		
 		try:
-			return self.cc_count[c][m]/self._cc_cache_count_m[c]
+			return float(self.cc_count[c][m])/float(self._cc_cache_count_m[m])
 		except ZeroDivisionError:
 			"""No chunks in this meaning have been counted yet"""
 			return 0
