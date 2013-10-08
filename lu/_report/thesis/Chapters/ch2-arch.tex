@@ -20,11 +20,11 @@ Section \ref{ch:arch:client} describes the \pname client, Section \ref{ch:arch:T
 %----------------------------------------------------------------------------------------
 
 \section{The client application} \label{ch:arch:client}
-\pname is a client application for the OpenTDM library. An OpenTDM application can be seen as a container for domain-specific \textbf{parameters} for the dialogue manager. These parameters consist of:
+\pname is a client application for the OpenTDM library \citep{Larsson02issue-baseddialogue}. An OpenTDM application can be seen as a container for domain-specific \textbf{parameters} for the dialogue manager. These parameters consist of:
 \begin{itemize}
 \item A \textbf{device} class, containing variables and methods that directly control the actions of the application. The \textit{device} file of a music player application will contain, for instance, variables holding the current playlist, or the current volume level, and methods to play/stop the music, lookup for a song and so forth.
-\item An \textbf{ontology}, which main purpose is to define predicates an actions that will be used at dialogue management level. In the case of \pname, an example of predicate is \texttt{current\_song(X)}, that identifies the song currently being played (note that such a predicate must be mirrored in the device file as a variable\footnote{The actual implementation consists of an inner \texttt{current\_song} class of the device class, which access the proper, private, variable of the device file through a \texttt{perform()} method. The reasons that led to such an implementative choice were not made known by the authors of OpenTDM.}); an example of action is \texttt{increase\_volume} that, intuitively, identifies the action of increasing the volume (actions are mirrored as well in the device class, in the same way predicates are).
-\item A \textbf{domain} file, which main purpose is to contain the list of plans that will control the dialogue episodes. For instance, the TOP plan of an application is to find out what the user wants to do. Another example of a plan in \pname is the \texttt{increase\_volume} plan: step 1 of the plan is ask the user for how much the volume should be increased, step 2 is to perform the actual action through the device.
+\item An \textbf{ontology}, whose main purpose is to define predicates and actions that will be used at dialogue management level. In the case of \pname, an example of predicate is \texttt{current\_song(X)}, that identifies the song currently being played (note that such a predicate must be mirrored in the device file as a variable\footnote{The actual implementation consists of an inner \texttt{current\_song} class of the device class, which access the proper, private, variable of the device file through a \texttt{perform()} method. The reasons that led to such an implementative choice were not made known by the authors of OpenTDM.}); an example of action is \texttt{increase\_volume} that, intuitively, identifies the action of increasing the volume (actions are mirrored as well in the device class, in the same way predicates are).
+\item A \textbf{domain} file, which main purpose is to contain the list of plans that will control the dialogue episodes. For instance, the TOP plan of an application is to find out what the user wants to do. Another example of a plan in \pname is the \texttt{increase\_volume} plan: step 1 of the plan is to ask the user for how much the volume should be increased, step 2 is to perform the actual action through the device.
 \item A \textbf{grammar} implemented using the Grammatical Framework\footnote{http://www.grammaticalframework.org/}. This part will not be discussed, since, as it is explained in Section \ref{ch:arch:LU}, the Grammatical Framework in OpenTDM has been replaced with a specifically created module called Language Unit.
 \end{itemize}
 
@@ -44,31 +44,124 @@ OpenTDM is a dialogue management library developed and maintained by Talkmatic\f
 %	LU
 %----------------------------------------------------------------------------------------
 \section{The Language Unit} \label{ch:arch:LU}
-The Language Unit (LU) is a Python library that have been specifically created to support \pname. The purpose of this library is to perform the classification task as it has been defined so far.
+The Language Unit (LU) is a Python library that has been specifically created to support \pname's utterances understanding ability. The purpose of this library is to perform the classification task as it has been defined so far, that is, assigning every input sentence to its correct meaning label.
 
 \subsection{Language}
-The \texttt{Language} class is the main class of LU, its purpose is to model a natural language under the following abstraction: a Language is defined by a finite set of Meanings (labels); a Meaning is defined by a finite set of Sentences expressing that Meaning. As an example, the \pname language consists of a number of meanings, each of them defining an action for the application to perform; one of this meaning can be the one to pause the current song; this meaning will be realized by a number of English sentences, like ``Pause the song", ``Suspend the music", or ``Pause the current track". For the purpose of language understanding, a Sentence can be brougth down to any of its (linguistic or non-linguistic) constituents called Chunks or Phrases. A chunk is formed by one or more Words.
+The \texttt{Language} class is the main class of LU, its purpose is to model a natural language under the following abstraction: a Language is defined by a finite set of Meanings (labels); a Meaning is defined by a finite set of Sentences expressing that Meaning. As an example, the \pname language consists of a number of meanings, each of them defining an action for the application to perform; one of these meanings can be the one to pause the current song; this meaning will be realized by a number of English sentences, like ``Pause the song", ``Suspend the music", or ``Pause the current track". For the purpose of language understanding, a Sentence can be brougth down to any of its (linguistic or non-linguistic) constituents called Chunks or Phrases. A chunk is formed by one or more Words.
 
 The following are the main capabilities implemented in the Language class:
 \begin{itemize}
-\item \textbf{Load} and \textbf{save} languages. Each OpenTDM application must define a \texttt{language/} folder where the language is stored, in the form of a \texttt{.l} file. Such a file is just a dump of all the meanings and their example sentences. Since the language  can evolve through learning, applications' language files are updated every time the application is run and dialogue interactions are performed.
-\item \textbf{Learn} a sentence. When a new labeled example (a sentence with its meaning label) is provided, the knowledge of the language is extended. This is done adding the new sentence to the list of sentences realizing that meaning, and drawing statistics (e.g. the frequency of a certain word/phrase in the given meaning) to improve the model of the meaning. Note that, when a language is loaded for the first time, every sentence in it is run through the learning procedure to initialize the statistics.
-\item \textbf{Understand} an input sentence. The core task of the Language Unit is associate an input sentence to its correct meaning. While this operation is trivial when the input sentence is already present in the language, it becomes hard for unknown examples. In this latter case the LU computes a score for the sentence against each of the meanings that are present in the language; the meaning that achieves the best score is given as an output, along with the score itself, representing the degree of confidence for the output to be correct. The way sentences are scored is presented in the next section.
+	\item \textbf{Load} and \textbf{save} languages. Each OpenTDM application must define a \texttt{language/} folder where the language is stored, in the form of a \texttt{.l} file. Such a file is just a dump of all the meanings and their example sentences. Since the language  can evolve through learning, applications' language files are updated every time the application is run and dialogue interactions are performed. This update consists of adding new examples to meanings (unknown sentences from the user that have been understood with a good degree of confidence) and updating the usage count of the known wxamples that have been processed during the interaction with the user.
+	\item \textbf{Learn} a sentence. When a new labeled example (a sentence with its meaning label) is provided, the knowledge of the language is extended. This is done adding the new sentence to the list of sentences realizing that meaning, and drawing statistics (e.g. the frequency of a certain word/phrase in the given meaning) to improve the model of the meaning. Note that, when a language is loaded for the first time, every sentence in it is run through the learning procedure to initialize the statistics.
+	\item \textbf{Understand} an input sentence. The core task of the Language Unit is to associate an input sentence to its correct meaning. While this operation is trivial when the input sentence is already present in the language, it becomes hard for unknown examples. In this latter case the LU computes a score for the sentence against each of the meanings that are present in the language; the meaning that achieves the best score is given as an output, along with the score itself, representing the degree of confidence for the output to be correct. The way sentences are scored is presented in the next section.
 \end{itemize}
 
 \subsection{Scores}
+The way the Language Unit understands a sentence is based on a number of nested comparisons, resulting into comparison scores. A \textbf{score} is a linear combination of separate features. The top-level task is to score the sentence against every meaning in the application database; for each of them a \textbf{Meaning Score} is computed, representing how likely the input sentence is to be a realization that meaning. A part of this score is determined by the similarity of the input sentence with the known sentences realizing the meaning; the \textbf{Sentence Score} represents the similarity between two sentences. A part of this score is determined by how similar the (linguistic or non-linguistic) components of the two sentences are; any sub-string of a sentence is called Chunk, and the \textbf{Chunk Score} represents the similarity between two chunks. A part of the Chunk Score is determined by the similarity of the words contained in the two chunks; the \textbf{Word Score} represents the similarity between two words.
 
-\subsubsection{Meaning Score}
+Scores in the application are modeled by the \textbf{\texttt{Score} class} (\texttt{lu/score/\_\_init\_\_.py}). A \texttt{Score} object defines the following \textbf{fields}:
+\begin{itemize}
+	\item \texttt{Score.features}, an array of N features that are used to form the final score. A feature is represented as a floating-point (\texttt{float}) number.
+	\item \texttt{Score.weights}, an array of N weights that are used in the linear combination of features to form the final score. A weight is also represented as a floating-point (\texttt{float}) number. Weights are equally distributed by default, but they can be overridden with custom values. To this respect, an ideal scenario would be the one in which \textbf{optimal weights} for the features are determined with machine learning (\emph{meta-model learning}), as it will be described in \ref{ch:conclusions}. % TODO: REFINE CITATION, maybe also cite Watson
+\end{itemize}
+Implementation-wise, for the sake of efficiency, the Python \texttt{array} module\footnote{http://docs.python.org/2/library/array.html} is used instead of traditional lists and dictionaries. Such a module defines ``an object type which can compactly represent an array of basic values", directly based on their original C implementation. The acces to the elements of an \texttt{array} is positional. For this reason any instantiation of \texttt{Score} is recommended to define proper \textbf{constants} to access the single features.
 
-\subsubsection{Sentence Score}
+The \texttt{Score} class also defines the following textbf{methods}:
+\begin{itemize}
+	\item \texttt{Score.set\_feature(i, value)}, sets \texttt{value} as the value of the the $i$-th feature.
+	\item \texttt{Score.get\_feature(i)}, returns the value of the the $i$-th feature.
+	\item \texttt{Score.get\_score()}, returns the final score, as the weighted average of the features:
+	\begin{displaymath}
+		\sigma=\sum\limits_{i=1}^Nw_if_i
+	\end{displaymath}
+	Where $\sigma$ is the final score, $N$ is the total number of features, $f_i$ is the $i$-th feature and $w_i$ is the weight of the $i$-th feature.
+\end{itemize}
 
-\subsubsection{Chunk Score}
-Chunks are compared using the M2 algorithm, that is explained in detail in Chapter \ref{ch:M2}.
+Parallel to its class definition, any subclass of score must define a list $h = \{h_1, ..., h_N\}$ of procedures, called \textbf{hooks}, that compute the single features of the score, and a \textbf{factory} method, which runs the two elements to be compared through the feature hooks, fills a score object with the results and return it. As an example, let's consider a fictional Word Score class, that scores the similarity of two English words, and that has only one feature, being the edit distance between the two words. In this case the hooks list will contain only one element ($h=\{h_1\}$), which is a pointer to a procedure \texttt{c\_edit\_distance(word\_from, word\_to)}, that returns the edit distance between two input words. The factory function \texttt{get\_score(word\_from, word\_to)}\footnote{Not to be confused with the \texttt{Score.get\_score() method.}} will instanciate an empty score object, and will assign the result of the computation of every feature hook $h_i$ to the corresponding feature $f_i$; therefore, the only feature of the score, representing the edit distance, will be filled with the result of \texttt{c\_edit\_distance}.
 
-\subsubsection{Word Score}
-Word scores are as well explained in Chapter \ref{ch:M2}.
+The following paragraphs describe how the \texttt{Score} class is \textbf{extended} to model the different levels of scores that were introduced above.
 
-\subsection{Machine Learning}
+\subsubsection{Meaning Score} \label{ch:arch:LU:scores:meaning}
+A Meaning Score $\sigma_M(s,m)$ represents how likely is the sentence $s$ to be a realization of the meaning $m$. It is represented in the application by the \texttt{MeaningScore} class (\texttt{lu/score/meaning.py}), which is a subclass of \texttt{Score}. Such a class defines the following \textbf{three features}:
+\begin{itemize}
+	\item \texttt{MeaningScore.MAX\_SSCORE} - The best similarity score between the input sentence and one of the sentences that realize the meaning.
+	\begin{displaymath}
+		\sigma_{M,\text{MAX\_SCORE}}(s,m) = \max{\sigma_S(s,s_i)}
+	\end{displaymath}
+	Where $\sigma_{M,\text{MAX\_SCORE}}$ is the value of the feature, $s$ is the input sentence, $m$ is the meaning $s$ is scored against, $\sigma_S$ is a Sentence Score (see Section \ref{ch:arch:LU:scores:sentence}) and $s_i \in m$ is one of the know sentences that realize $m$.
+	
+	\item \texttt{MeaningScore.AVG\_SSCORE} - The average similarity score between the input sentence and the sentences that realize the meaning.
+	 \begin{displaymath}
+		\sigma_{M,\text{AVG\_SCORE}}(s,m) = \frac{\sum\limits_{i=1}^N{\sigma_S(s,s_i)}}{N}
+	\end{displaymath}
+	Where $N$ is the number of known sentences that realize $m$.
+	
+	\item \texttt{MeaningScore.ML\_CCSUM} - The sum of the class-conditional probabilities of every possible sub-string of $s$.
+	 \begin{displaymath}
+		\sigma_{M,\text{ML\_CCSUM}}(s,m) = \sum\limits_{c_s \in s}{p(c_s|m)}
+	\end{displaymath}
+	Where $c_s \in s$ is a sub-string (chunk) of $s$ and $p(c_s|m)$ is the class-conditional probability of $c_s$ respect to the meaning $m$, that is, the relative frequency of $c_s$ in the known sentences that realize $m$.
+\end{itemize}
 
+\subsubsection{Sentence Score} \label{ch:arch:LU:scores:sentence}
+A Sentence Score $\sigma_S(s_\text{from},s_\text{to})$ represents how likely the sentence $s_\text{from}$ is to realize the same meaning of the sentence $s_\text{to}$.
+% or maybe "how similar the meaning of s1 is to the one realized by s2", or maybe just "how similar s1 and s2 are"
+Even though more feature could be considered to measure this value, at the moment a Sentence Score is defined as the Chunk Score (see Section \ref{ch:arch:LU:scores:chunk}) $\sigma_C(c_1,c_2)$, where $c_1$ is the chunk spanning the whole $s_\text{from}$, and $c_2$ is the chunk spanning the whole $s_\text{to}$.
 
-\ldots
+\subsubsection{Chunk Score} \label{ch:arch:LU:scores:chunk}
+A Chunk Score $\sigma_C(c_\text{from},c_\text{to})$ represents how similar the chunk $c_\text{from}$ is to the chunk $c_\text{to}$. In the context of this thesis, a Chunk is defined as any possible, linguistic or non-linguistic, substring of a sentence $s$, including $s$ itself. As an example, the sentence \enumsentence{``Execute order 66"} contains the chunks ``Execute", ``order", ``66", ``Execute order", ``order 66" and ``Execute order 66".
+
+In the application, a Chunk Score is represented by the \texttt{ChunkScore} class (\texttt{lu/score/chunk.py}), which is a subclass of \texttt{Score}. Such a class defines the following \textbf{five features}:
+\begin{itemize}
+	\item \texttt{ChunkScore.AAVG} - The maximum, over all the possible 2-splits of the input chunks, of the arithmetic averages of the best alignment scores.
+	\begin{displaymath}
+		\sigma_{C,\text{AAVG}}(c,d) = \max\limits_{i,j}\left\{\frac{ \max\left\{\sigma_C(c_0^i,d_0^j), \sigma_C(c_0^i,d_{j+1}^M)\right\} + \max\left\{\sigma_C(c_{i+1}^N,d_0^j),\sigma_C(c_{i+1}^i,d_{j+1}^M)\right\}}{2}\right\}
+	\end{displaymath}
+	Where $c$ is a chunk of $N$ words, $d$ is a chunk of $M$ words, $c_a^b$ is a sub-string of $c$ spanning from the $a$-th word of $c$ to the $b$-th word of $c$, $i\in(0,N]$ and $j\in(0,M]$.
+	
+	By \textbf{2-split} of a chunk we mean a split of it in two sub-strings of arbitrary size; as an example, a 2-split of the chunk $c$ ``Increase the volume" can be \enumsentence{$|\text{ Increase } | \text{ the volume } |$} In this case we refer to ``Increase" as $c_1^1$ (the sub-string of $c$ spanning from position 1 to position 1), and to ``the volume" as $c_2^3$.
+	
+	Given two chunks that have been split in two parts each, each sub-string of one can be associated with a sub-string of the other\footnote{Since a sub-string can be a single word, as well as the whole chunk, we have two special cases to consider. Firstly, a word can be scored against another word; in this case the returned score is not a Chunk Score, but rather a Word Score (see \ref{ch:arch:LU:scores:word}). Then, it may happen that the whole first chunk is scored against the whole second chunk; this is prevented by the algorithm, as it would result in an infinite loop.) }. For example, given the chunks $c$ ``increase the volume" and $d$ ``turn up the volume", an ideal behaviour would be to associate $c_1^1$ (``increase") with $d_1^2$ (``turn up") and $c_2^3$ (``the volume") with $d_3^4$ (``the volume"). Such an association is what we call an \textbf{alignment}\footnote{Note that, while ideally every $c_i^j$ could be aligned with 0, 1 or 2 $d_k^l$ and vice versa, due to implementation restrictions the software allows a $c_i^j$ to be aligned with only one $d_k^l$, where every $d_k^l$ can be aligned to 0, 1 or 2 $c_i^j$. }, and it produces two Chunk Scores (in the case of the example, $\sigma_C(c_1^1,d_1^2)$ and $\sigma_C(c_2^3,d_3^4)$).
+	
+	It is worth to note that the value of this feature \textbf{builds recursively} on the scores of these smaller chunks, chosing the split and the alignment for the final score to be maximized. For this purpose a special algorithm called M2 has been defined, a more detailed description of it can be found in Chapter \ref{ch:M2}.
+	
+	\item \texttt{ChunkScore.LEN} - Sets a preference for big chunks over short ones.
+	\begin{displaymath}
+		\sigma_{C,\text{LEN}}(c,d) = 1-\frac{1}{\min(|c|,|d|)+\alpha}
+	\end{displaymath}
+	Where $|c|$ is the length in words of $c$, $|d|$ is the length in words of $d$, and $\alpha$ is a smoothing constant.
+	
+	\item \texttt{ChunkScore.STRAIGHT} - Sets a preference for straight alignments over crossed ones.
+	\begin{displaymath}
+		\sigma_{C,\text{STRAIGHT}}(c,d) = \begin{cases} 1, & \mbox{if } n\mbox{ streight alignment} \\
+		                                                0.5, & \mbox{if } n\mbox{ half-straight alignment} \\
+		                                                0, & \mbox{if } n\mbox{ crossed alignment} \end{cases}
+	\end{displaymath}
+	Where, under the assumption that the best alignment has been determined by \texttt{ChunkScore.AAVG}, a \textbf{straight} alignment happens when the first sub-string of $c$ is aligned to the first sub-string of $d$, and the second sub-string of $c$ is aligned with the second sub-string of $d$; a \textbf{half-straight} alignment happens when both the sub-strings of $c$ are aligned to the same sub-string of $d$; a \textbf{crossed} alignment happens when the first sub-string of $c$ is aligned to the second sub-string of $d$, and the second sub-string of $c$ is aligned with the first sub-string of $d$.
+
+	\item \texttt{ChunkScore.ML\_CFREQ} - The Chunk Likelihood. This features is meant to enforce good linguistic splitting of the input chunks, as it sets a preference for chunks that occur more in the language base (eg. the chunk ``the volume" is supposed to occur more often that ``increase the"). Such a value is based on Machine Learning from previous examples, and it is implemented as the sum of the relative counts of the two chunks. A more detailed explanation of this will be given in \ref{ch3:ml:cl}.
+
+	\item \texttt{ChunkScore.ML\_AFREQ} - The Alignment Likelihood. Such a value is based on Machine Learning from previous examples, and it is implemented as the relative count of the times the two input chunks have been found aligned together. A more detailed explanation of this feature will be given in  \ref{ch3:ml:al}. 
+	
+	
+\end{itemize}
+
+\subsubsection{Word Score} \label{ch:arch:LU:scores:word}
+A Word Score $\sigma_W(w_\text{from},w_\text{to})$ represents how similar the word $w_\text{from}$ is to the word $w_\text{to}$. It is represented in the application by the \texttt{WordScore} class (\texttt{lu/score/word.py}), which is a subclass of \texttt{Score}. Such a class defines the following \textbf{four features}:
+\begin{itemize}
+	\item \texttt{WordScore.EQUALS} - Boolean equality.
+	\begin{displaymath}
+		\sigma_{W,\text{EQUALS}}(w_\text{from},w_\text{to}) = \begin{cases} 1, & \mbox{if } w_\text{from} = w_\text{to} \\
+		                                                                    0, & \mbox{otherwise} \end{cases}
+	\end{displaymath}
+	
+	\item \texttt{WordScore.EDIT\_DISTANCE} - The edit distance is a measure of string-wise similarity defined by \cite{levelshtein-66-binary}: the more two strings are similar, the less their distance.
+	\begin{displaymath}
+		\sigma_{W,\text{EDIT\_DISTANCE}}(w_\text{from},w_\text{to}) = 1-f(w_\text{from},w_\text{to})
+	\end{displaymath}
+	Where $f(w_\text{from},w_\text{to})$ is the edit distance between $w_\text{from}$ and $w_\text{to}$, as it is implemented in the Python Natural Language ToolKit \citep{Loper:2002:NNL:1118108.1118117}.
+	
+	\item \texttt{WordScore.WN\_MAX\_PATH\_SIMILARITY} - The length of the shortest path between the two words in the WordNet onthology \citep{Miller:1995:WLD:219717.219748}. This measure is implemented in the NLTK as well.
+	
+	\item \texttt{WordScore.ML\_AFREQ} - The Alignment Likelihood. This feature has already been described in \ref{ch:arch:LU:scores:chunk}.
+\end{itemize}

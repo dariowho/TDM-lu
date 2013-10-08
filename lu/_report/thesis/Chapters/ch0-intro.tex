@@ -11,10 +11,10 @@
 %----------------------------------------------------------------------------------------
 
 
-The \textbf{user interface}, or human-computer interface (HCI) is the component of a computer system that provides a space of interaction between the human user and the resources offered by the machine; such a space defines a bridge language which human intentions can be translated into, to be converted into computational procedures for the machine; vice versa, the result of the computation is then presented to the user in the same language, which he or she is assumed to understand.
+The \textbf{user interface}, or human-computer interface, is the component of a computer system that provides a space of interaction between the human user and the resources offered by the machine; such a space defines a bridge language which human intentions can be translated into, to be converted into computational procedures for the machine; vice versa, the result of the computation is then presented to the user in the same language, which he or she is assumed to understand.
 
 % cite Tanenbaum
-In the early days of computing, the so-called \textbf{batch interfaces} were non-interactive: the user/programmer was supposed to feed the machine with a software, punched on cards using the \textit{machine's assembly language} directly, and retrieve the result of the computation printed on paper. The third and fourth generations of computing brought \textbf{text-based} interfaces for operating systems (UNIX, DOS, CP/M), that were later took over by \textbf{Graphical User Interfaces} (GUI), moving the human-machine interaction on a new, visual language made of windows, icons and buttons. Recently, touch screen and camera devices allowed for the implementation of even more natural means of interaction based on \textbf{gestures} and physical actions.
+In the early days of computing, the so-called \textbf{batch interfaces} were non-interactive: the user/programmer was supposed to feed the machine with a software, punched on cards using the \textit{machine's assembly language} directly, and retrieve the result of the computation printed on paper. The third and fourth generations of computing brought \textbf{text-based} interfaces for operating systems (UNIX, DOS, CP/M), that were later taken over by \textbf{Graphical User Interfaces} (GUI), moving the human-machine interaction on a new, visual language made of windows, icons and buttons. Recently, touch screen and camera devices allowed for the implementation of even more natural means of interaction based on \textbf{gestures} and physical actions.
 
 From this brief spot on computing history, and in a way from common sense, we can draw the rather trivial, yet crucial, conclusion that the trend in user interfaces development is to \textbf{close the gap} between humans and machines by moving the needle of the interface languages from a machine-centered space towards the human language itself. To this respect, the studies on Natural Language Processing (NLP) assume a dramatically central role, as dramatically central is natural language in the interaction of humans with each other.
 
@@ -24,17 +24,15 @@ From this brief spot on computing history, and in a way from common sense, we ca
 
 \section*{Dialogue Systems}
 
-A spoken dialogue system, or conversational agent (CA), allow humans and machines to interact through an intermediate language which is as close as possible to the \textbf{human language}, and through conversational episodes that implement as close as possible the human dialogue modalities.
+A spoken dialogue system, or conversational agent (CA), allows humans and machines to interact through an intermediate language which is as close as possible to the \textbf{human language}, and through conversational episodes that implement as close as possible the human dialogue modalities.
 
-Research in dialogue systems has been carried on since the \textbf{early days} of Artificial Intelligence. A milestone in the early work on this field is ELIZA \cite{Weizenbaum:1966:ECP:365153.365168}, which provides the user with a basic human-like interaction based on pattern matching; another example is the SHRDLU system
-% Cite SHRDLU: http://dspace.mit.edu/handle/1721.1/7095?show=full
-, which interfaces the user with a simple spatial domain being able to ambiguous or implicit references to the entities in it.
+Research on dialogue systems has been carried on since the \textbf{early days} of Artificial Intelligence. A milestone in the early work on this field is ELIZA \citep{Weizenbaum:1966:ECP:365153.365168}, which provides the user with a basic human-like interaction based on pattern matching; another example is the SHRDLU system \citep{winograd1971procedure}, which interfaces the user with a simple spatial domain by listening to the user's utterances (eg. "Would you please put the green pyramid in the box?"), and performing actions accordingly in the domain, resolving, if necessary, ambiguous or implicit references to the entities in it.
 
-According to \cite{Jokinen2009}, modern dialogue systems can be divided in \textbf{two main types}: task-oriented and nontask-oriented. Intuitively, systems in the first category are meant to deal with a specific task such as making a hotel booking, or booking a plane ticket; an example in this category is the MIT Mercury system, a vocal interface to a flight database \cite{Seneff:2000:DMM:1605285.1605288}. On the other hand, nontask-oriented systems are meant to engage in conversations without a specific purpose to fulfill, but the one of delivering a realistic simulation; ELIZA itself is an example of nontask-oriented dialogue system.
+According to \cite{Jokinen2009}, modern dialogue systems can be divided in \textbf{two main types}: task-oriented and nontask-oriented. Intuitively, systems in the first category are meant to deal with a specific task such as making a hotel booking, or booking a plane ticket; an example in this category is the MIT Mercury system, a vocal interface to a flight database \citep{Seneff:2000:DMM:1605285.1605288}. On the other hand, nontask-oriented systems are meant to engage in conversations without a specific purpose to fulfill, but the one of delivering a realistic simulation; ELIZA itself is an example of nontask-oriented dialogue system.
 
 Task-oriented systems can be very simple, as simple and well-formalized the task is;  many applications, such as travel service or call routing, can be successfully solved by \textbf{slot-based} systems: each step of the conversation requires some pieces of information, modeled as slots, to be filled in by the user (departure city, arrival city, date, and so on); given the slots to be filled, the dialogue task can be solved with a formal grammar of interaction. As the complexity increases, more phenomena of human interaction have to be modeled, such as turn-taking, multimodality or grounding
 %\ignore{CITE RAQUEL'S CHAPTER}
-, as well as semantic structures such as quantification and negation; slot-based systems are not sufficient to model these scenarios \cite{Gabsdil03clarificationin}, that require more advanced frameworks such a the Information State Update (ISU) one.
+, as well as semantic structures such as quantification and negation; slot-based systems are not sufficient to model these scenarios \citep{Gabsdil03clarificationin}, that require more advanced frameworks such a the Information State Update (ISU) one \citep{TraumLarsson03p325}.
 
 %----------------------------------------------------------------------------------------
 %	LEARNING TO TALK
@@ -42,7 +40,8 @@ Task-oriented systems can be very simple, as simple and well-formalized the task
 
 \section*{Learning to talk}
 
-One of the constituent features of humans' ability to speak is that such an ability is \textbf{not innate}, but is rather learned through interactions.
+One of the constituent features of humans' ability to speak is that such an ability doesn't come fully developed in children, but rather \textbf{grows} with time, influenced by the interaction of the subject with the outer world.
+%~ One of the constituent features of humans' ability to speak is that such an ability is \textbf{not innate}, but is rather learned through interactions.
 
 Ever since the power of computers grew enough to allow for intensive statistical analysis of significant amounts of data, \textbf{Machine Learning} approaches to Artificial Intelligence tasks got more and more prominent in the scene, often outperforming static methods (i.e. where the solution procedure for a task is explicitly coded by the programmer).
 % Citation needed...
@@ -50,13 +49,16 @@ One of the clearest examples is the field of NLP itself, where the most importan
 % Citation needed
 meaning that, for instance, a Machine Translation system will first be trained on a corpus of aligned sentences. Statistical structures will be extracted from this corpus, like the most likely word-by-word alignment, and later be used to process new examples.
 
-However, the task of learning dialogue interactions brings some \textbf{peculiar} challenges. First of all, humans learning to talk do not go through two separate phases of learning and processing, but rather improve their abilities episode by episode; as \cite{2095408} point out, this incremental learning structure is nowadays not implemented in state-of-the-art systems. Furthermore, ...
+However, the task of learning through dialogue interactions comes with some \textbf{peculiar} challenges. First of all, humans learning to talk do not go through two separate phases of learning and processing, but rather improve their abilities episode by episode; as \cite{2095408} point out, this \textbf{incremental learning} structure is nowadays not implemented in state-of-the-art systems. Also, the nature of this incrementing learning is \textbf{not linear}, as the new information was stacked little by little on the existing one: new words and phrases can be described with concepts and linguistic structures that are already present in the learner's mind. Lastly, if we keep considering the way humans learn to talk, we realize that, as from a certain point, the language ceases to be a mere subject of learning, and \textbf{becomes the means} by which it is itself learned: the same linguistic structures that are used to express concepts and categories of the learner's experience, can also be used to describe themselves, as they become part of the same experience; we can observe a clear example of this process in any primary-school-level English class, where the teacher explains, by using English sentences, how English sentences are structured.
+
+We can identify some \textbf{ideal features} we would like to have implemented into an automatic language learner:
 \begin{itemize}
 	\item Learning to produce or understand new surface forms, or \textbf{realizations}, for a given meaning -- eg. the sentence ``Bill eats an apple" for the action of Bill eating an apple.
 	\item Learning to produce new \textbf{meanings} from the existing ones and their respective realizations -- eg. the concept of motor home, sharing the features of a house and a car.
-	\item Learning a \textbf{grammar of conversation}, to place the correct utterance at each step of a conversational episode. -- eg. an appropriate answer to the utterance ``My name is Bill" is ``Nice to meet you", whereas ``I like cookies" would not sound as much appropriate.
+	\item Learning a \textbf{``grammar" of conversation}, to place the correct utterance at each step of a conversational episode. -- eg. an appropriate answer to the utterance ``My name is Bill" can be ``Nice to meet you", whereas ``I like cookies" would not sound as much appropriate.
+	%~ \item Learning to talk about its \textbf{meta} level, that is, the structures that control the production of utterances, like the syntax according to which new utterances are formed, or the ``grammar" of conversation of the previous point. 
 \end{itemize}
-Lastly, we can point out that the definitions of actions, meaning and episodes are somehow arbitrary and not sharply bounded, as it can be argued for recursive and compositional structures at any level of their interpretation.
+Lastly, we can point out that when we talk of such things like \emph{realizations}, \emph{meanings} and \emph{episodes} we cannot provide exact, sharply bounded definitions, as it can be argued for \textbf{recursive and compositional} structures at any level of their interpretation. As an example, let's consider the sentence \enumsentence{I am pronouncing a sentence that contains two verbs and three nouns} The meaning of such a sentence describes structural elements of the sentence itself (which is the realization of the same meaning) and also the conversational episode that starts when the sentence is stated.
 
 %----------------------------------------------------------------------------------------
 %	THIS THESIS PROJECT
@@ -68,7 +70,7 @@ The aim of this thesis project is to design and implement language learning capa
 
 The \textbf{domain} I am considering is the one of a music player application, being able to get natural language input from the user and translate it into an appropriate corresponding behaviour. For example, when the input is ``Play Pictures at an exhibition", the system should start playing the famous suite by Modest Mussorgsky.
 
-In this domain, each \textbf{meaning} is an action that a player is performed, and is defined by a set of representative sentences, being its surface forms. For instance, the action of increasing the volume level can be defined by the following set of sentences:
+In this domain, each \textbf{meaning} is an action that the player can perform (eg. play a song, jump to the next track, increase the volume, etc.), and is defined by a set of representative sentences, being its surface forms. For instance, the action of increasing the volume level can be defined by the following set of sentences:
 \begin{itemize}
 	\item \textit{Increase the volume}
 	\item \textit{Increase the volume level}
@@ -76,12 +78,12 @@ In this domain, each \textbf{meaning} is an action that a player is performed, a
 	\item \textit{Increase the volume please}
 \end{itemize}
 
-Note that, even though one would be likely to think of such meanings in compositional terms, such compositionality have not been explored for the sake of simplicity.
+Note that, even though one would be likely to think of such meanings in compositional terms, such compositionality has not been explored for the sake of simplicity.
 
-The \textbf{task} for the application is, given an arbitrary input sentence and a context (the point of the conversational episode being realized), to perform the correct action, that is, associate that sentence with its correct meaning. Furthermore, the system should be able to \textbf{learn} new realizations for each meaning, as unknown sentences are given in input and processed.
+The \textbf{task} for the application is, given an arbitrary input sentence and a context (the point of the conversational episode being realized), to reply appropriately, and perform the correct action, that is, associate that sentence with its correct meaning. Furthermore, the system should be able to \textbf{learn} new realizations for each meaning, as unknown sentences are given in input and processed.
 
 Note that such processing might be more or less \textbf{semantically intensive}. As an example, it can be argued that, given the above definition of the action to increase the volume, matching \textit{``raise the volume please"} is an easier task than classifying \textit{``Turn up the volume"}.
 
 Also, an unknown input sentence should be given a \textbf{confidence score} for each candidate meaning it is associated to; the system should be able to narrow possible needs for clarification down to single sentence components, eventually asking the user for disambiguation as specifically as possible.
 
-This document is structured as follows. Chapter \ldots
+This document is structured as follows. Chapter \ref{ch:rw} reviews the \textbf{related work} that has been previously done; chapter \ref{ch:arch} describes the \textbf{architecture} of the solution that has been developed; chapter \ref{ch:M2} delves into the \textbf{M2 algorithm}, which is the core of the meaning matching feature of the application; chapter ...\ldots
