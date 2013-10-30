@@ -1,18 +1,13 @@
 
-\chapter{The M2 matching algorithm} % Main chapter title
+\chapter{Sentence similarity computation} % Main chapter title
 
 \label{ch:M2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
 \lhead{Chapter \ref{ch:M2}. \emph{The M2 matching algorithm}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
 
-Computing a \textbf{similarity score} between two natural language \textbf{sentences} is not a trivial problem. Many features can be taken into account to solve it, such as the syntactic structure of the sentence, or the meaning of the single words, or their order; all of these features are informative respect to the meaning of the sentence, and it is reasonable to assume they are all considered by humans solving the same task. Here I describe a recursive, dynamic programming \textbf{algorithm} for sentence comparison aimed to exploit word-based information, as well as the syntactic one, expressed in the form of unsupervised learned binary trees.
-
-\section{Introduction}
 In the context of sentences \textbf{classification}, where the task is to label an unknown input sentence with the correct meaning, and each meaning is defined by a set of representative natural language sentences (as it was defined in the Introduction), one crucial point is to measure the similarity of the input sentence with each of the sentences defining each meaning.
 
-The problem of scoring the similarity between two sentences is not new in the \textbf{literature}, and a number of different approaches already exist to tackle it. \cite{Achananuparp:2008:ESS:1430555.1430594} classify these approaches in \emph{word overlap} measures (based on the number of words shared by the two sentences), \emph{TF-IDF} measures (based on term frequency-inverse document frequency) and \emph{linguistic} measures (based on semantic relations between words and their syntactic composition).
-
-Another source of inspiration for this work is represented by \textbf{statistic}, corpus-based methods in Computational Linguistics; a significant example comes from The IBM models for Statistical \textbf{Machine Translation} \citep{Brown:1993:MSM:972470.972474}, that first introduced the idea of feeding statistically intensive \textbf{Machine Learning} algorithms with big data from corpora, which nowadays is the dominant paradigm in MT; insightful is also the work on Data Oriented Parsing, and particularly the U-DOP model for \textbf{Unsupervised Language Learning} \citep{Bod:2006:UPU:1596276.1596293}, which core idea is to initially assume all the possible syntax trees for a set of sentences as equally possible, and then use all the possible sub-trees of them to compute the most probable parse trees, letting the structure of the language emerge from the data.
+Computing a \textbf{similarity score} between two natural language \textbf{sentences} is not a trivial problem. Many features can be taken into account to solve it, such as the syntactic structure of the sentence, or the meaning of the single words, or their order; all of these features are informative respect to the meaning of the sentence, and it is reasonable to assume they are all considered by humans solving the same task. Here we describe a recursive, dynamic programming \textbf{algorithm} for sentence comparison aimed to exploit word-based information, as well as the syntactic one, expressed in the form of unsupervised learned binary trees.
 
 % A bit more on literature, relation to the work would be nice..
 
@@ -33,7 +28,7 @@ This chapter is \textbf{structured} as follows. Section \ref{algo} describes the
 %Section \ref{example} walks through a toy example.
 Section \ref{learning} describes possible extensions and improvements. Section \ref{conclusions} draws the conclusion of the paper.
 
-\section{The algorithm} \label{algo}
+\section{The M2 matching algorithm} \label{algo}
 \begin{algorithm}
   \SetKwData{Left}{left}
   \SetKwData{Up}{up}
@@ -187,8 +182,9 @@ l(c_2|c_1)=\frac{\text{\# of }c_1-c_2\text{ alignments }}{\text{\# of }c_1\text{
 $$
 Note that, since no alignment labels are provided in the dataset (each sentence is labeled with a meaning, but its syntactic structure is hidden), this measure have to be trained in an unsupervised fashion. This problem shares a lot with the alignment likelihood in \textbf{Machine Translation}, even though here we can take advantage of the chunks sharing the same language (thus allowing some clever initialization of unsupervised methods with sensible guesses based, for instance, on Wordnet). On the other side our problem presents less precise training data, in that, while MT alignments are trained on sentence pairs, here we have a group of sentences sharing a same meaning; it can be argued that this cannot allow for strong syntactic assumptions.
 % MT: T: more similar syntactic structure (label sentence by sentence)
-\section{conclusions} \label{conclusions}
-Here I described an algorithm to compare the similarity of two input sentences. Its main \textbf{advantages} are the concurrent consideration of many features like word meanings, position and overlapping, as well as the structure of the sentences, having the result in the form of aligned binary trees. The algorithm is recursive and exhaustive in that considers all the possible alignments of all the possible combinations of all the possible binary trees of the two input sentences, maximizing the efficiency with dynamic programming. Due to its modular structure, the algorithm can be easily extended with new features, allowing its integration with well-known Machine Learning techniques in Computational Linguistics (eg. Expectation-Maximization for computing word/phrase alignment probabilities).
+
+\section{Summary} \label{conclusions}
+In this chapter we described an algorithm to compare the similarity of two input sentences. Its main \textbf{advantages} are the concurrent consideration of many features like word meanings, position and overlapping, as well as the structure of the sentences, having the result in the form of aligned binary trees. The algorithm is recursive and exhaustive in that considers all the possible alignments of all the possible combinations of all the possible binary trees of the two input sentences, maximizing the efficiency with dynamic programming. Due to its modular structure, the algorithm can be easily extended with new features, allowing its integration with well-known Machine Learning techniques in Computational Linguistics (eg. Expectation-Maximization for computing word/phrase alignment probabilities).
 
 There are some assumptions and \textbf{weak points} as well. First of all, the algorithm is inherently binary, in that every recursion step is made of a 2-split of the two input strings; this may have an effect in the way partial scores are combined. More generally, this "two times binary" recursive structure makes the features design task hard, since the effect of one operation is not easy to control over a potentially unlimited number of recursion steps. Also the number of parameters can become high, since each score is a linear combination of single features, requiring a separate Machine Learning training.
 

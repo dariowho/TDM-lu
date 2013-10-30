@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+"""
+Chunk Score feature computation hooks
+
+NOTE: see lu/score/chunk.py for explanations about the TODO-TMP-CHUNKER label
+"""
+
 from lu import ChunkedChunk
 
 import lu.ml
@@ -75,18 +81,39 @@ def c_ml_afreq(score,C_F,C_T,table):
 	          expensive computation)
 	"""
 	
-	score.set_feature(score.ML_AFREQ,lu.ml.get_alignment_score(C_F.merge(),C_T.merge()))
+	#~ score.set_feature(score.ML_AFREQ,lu.ml.get_alignment_score(C_F.merge(),C_T.merge()))
+	score.set_feature(score.ML_AFREQ,lu.ml.get_alignment_frequency_norm(C_F.merge(),C_T.merge()))
 
 def c_ml_cfreq(score,C_F,C_T,table):
 	"""
-	Get a score based on the frequency of c_f and c_t in the language
+	Average of the normalized frequency of c_f and c_t in the language
 	
 	TODO-OPT: merging required
 	"""
 	
-	_r = lu.ml.get_c_frequency(C_F.merge()) + lu.ml.get_c_frequency(C_T.merge())
+	_r = lu.ml.get_c_frequency_norm(C_F.merge()) + lu.ml.get_c_frequency_norm(C_T.merge())
 	
 	score.set_feature(score.ML_CFREQ,_r)
+
+def c_tmp_chunker(score,C_F,C_T,table):
+	"""
+	TODO-TMP-CHUNKER
+	
+	Returns 1 only if C_F, C_T, and all of their sub-phrases are present in the
+	corpus-based chunk list, 0 otherwise. 
+	"""
+	
+	_r = 1
+	
+	for c in C_F:
+		if c.text.lower() not in table.tmp_chunks_from:
+			_r = 0
+	
+	for c in C_T:
+		if c.text.lower() not in table.tmp_chunks_to:
+			_r = 0
+	
+	score.set_feature(score.TMP_CHUNKER,_r)
 
 #
 # Private functions

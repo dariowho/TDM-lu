@@ -1,6 +1,6 @@
 % Chapter Template
 
-\chapter*{Introduction} % Main chapter title
+\chapter{Introduction} % Main chapter title
 
 \label{ch:Introduction} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
@@ -18,27 +18,13 @@ In the early days of computing, the so-called \textbf{batch interfaces} were non
 
 From this brief spot on computing history, and in a way from common sense, we can draw the rather trivial, yet crucial, conclusion that the trend in user interfaces development is to \textbf{close the gap} between humans and machines by moving the needle of the interface languages from a machine-centered space towards the human language itself. To this respect, the studies on Natural Language Processing (NLP) assume a dramatically central role, as dramatically central is natural language in the interaction of humans with each other.
 
-%----------------------------------------------------------------------------------------
-%	DIALOGUE SYSTEMS
-%----------------------------------------------------------------------------------------
-
-\section*{Dialogue Systems}
-
-A spoken dialogue system, or conversational agent (CA), allows humans and machines to interact through an intermediate language which is as close as possible to the \textbf{human language}, and through conversational episodes that implement as close as possible the human dialogue modalities.
-
-Research on dialogue systems has been carried on since the \textbf{early days} of Artificial Intelligence. A milestone in the early work on this field is ELIZA \citep{Weizenbaum:1966:ECP:365153.365168}, which provides the user with a basic human-like interaction based on pattern matching; another example is the SHRDLU system \citep{winograd1971procedure}, which interfaces the user with a simple spatial domain by listening to the user's utterances (eg. "Would you please put the green pyramid in the box?"), and performing actions accordingly in the domain, resolving, if necessary, ambiguous or implicit references to the entities in it.
-
-According to \cite{Jokinen2009}, modern dialogue systems can be divided in \textbf{two main types}: task-oriented and nontask-oriented. Intuitively, systems in the first category are meant to deal with a specific task such as making a hotel booking, or booking a plane ticket; an example in this category is the MIT Mercury system, a vocal interface to a flight database \citep{Seneff:2000:DMM:1605285.1605288}. On the other hand, nontask-oriented systems are meant to engage in conversations without a specific purpose to fulfill, but the one of delivering a realistic simulation; ELIZA itself is an example of nontask-oriented dialogue system.
-
-Task-oriented systems can be very simple, as simple and well-formalized the task is;  many applications, such as travel service or call routing, can be successfully solved by \textbf{slot-based} systems: each step of the conversation requires some pieces of information, modeled as slots, to be filled in by the user (departure city, arrival city, date, and so on); given the slots to be filled, the dialogue task can be solved with a formal grammar of interaction. As the complexity increases, more phenomena of human interaction have to be modeled, such as turn-taking, multimodality or grounding
-%\ignore{CITE RAQUEL'S CHAPTER}
-, as well as semantic structures such as quantification and negation; slot-based systems are not sufficient to model these scenarios \citep{Gabsdil03clarificationin}, that require more advanced frameworks such a the Information State Update (ISU) one \citep{TraumLarsson03p325}.
+For this reason, the focus of this thesis work is the area of \textbf{dialogue systems}. A spoken dialogue system, or conversational agent (CA), allows humans and machines to interact through an intermediate language which is as close as possible to the \textbf{human language}, and through conversational episodes that implement as close as possible the human dialogue modalities.
 
 %----------------------------------------------------------------------------------------
 %	LEARNING TO TALK
 %----------------------------------------------------------------------------------------
 
-\section*{Learning to talk}
+\section{Learning to talk}
 
 One of the constituent features of humans' ability to speak is that such an ability doesn't come fully developed in children, but rather \textbf{grows} with time, influenced by the interaction of the subject with the outer world.
 %~ One of the constituent features of humans' ability to speak is that such an ability is \textbf{not innate}, but is rather learned through interactions.
@@ -64,11 +50,11 @@ Lastly, we can point out that when we talk of such things like \emph{realization
 %	THIS THESIS PROJECT
 %----------------------------------------------------------------------------------------
 
-\section*{This thesis project} \label{ch:intro:project}
+\section{This thesis project} \label{ch:intro:project}
 
-The aim of this thesis project is to design and implement language learning capabilities for an existing dialogue system, focusing on the \textbf{realization level}. That is, given a fixed list of meanings, the system should be able to classify every sentence into its correct meaning.
+The aim of this thesis project is to design and implement language learning capabilities for an existing dialogue system, focusing on the \textbf{realization level}. That is, given a fixed list of meanings, the system should be able to classify every sentence into its correct meaning. A client application has also been developed, that makes use of the dialog system to solve a real user experience task.
 
-The \textbf{domain} I am considering is the one of a music player application, being able to get natural language input from the user and translate it into an appropriate corresponding behaviour. For example, when the input is ``Play Pictures at an exhibition", the system should start playing the famous suite by Modest Mussorgsky.
+Such an application is a voice-controlled music player, which has been named \textbf{\pname}. The task of such an application is to to get natural language input from the user and translate it into an appropriate corresponding behaviour. For example, when the input is ``Play Pictures at an exhibition", the system should start playing the famous suite by Modest Mussorgsky.
 
 In this domain, each \textbf{meaning} is an action that the player can perform (eg. play a song, jump to the next track, increase the volume, etc.), and is defined by a set of representative sentences, being its surface forms. For instance, the action of increasing the volume level can be defined by the following set of sentences:
 \begin{itemize}
@@ -78,12 +64,12 @@ In this domain, each \textbf{meaning} is an action that the player can perform (
 	\item \textit{Increase the volume please}
 \end{itemize}
 
-Note that, even though one would be likely to think of such meanings in compositional terms, such compositionality has not been explored for the sake of simplicity.
+The \textbf{task} for the application is, given an arbitrary input sentence and a context (the point of the conversational episode being realized), to reply appropriately, and perform the correct action, that is, \textbf{associate} that sentence with its correct meaning. Furthermore, the system should be able to \textbf{learn} new realizations for each meaning, as unknown sentences are given in input and processed.
 
-The \textbf{task} for the application is, given an arbitrary input sentence and a context (the point of the conversational episode being realized), to reply appropriately, and perform the correct action, that is, associate that sentence with its correct meaning. Furthermore, the system should be able to \textbf{learn} new realizations for each meaning, as unknown sentences are given in input and processed.
+Note that such processing might be more or less \textbf{semantically intensive}. As an example, it can be argued that, given the above definition of the action to increase the volume, matching \textit{``Raise the volume please"} is an easier task than classifying \textit{``Turn up the volume"}. This is because the first sentence can be seen as a mere, string-wise, fusion of the two existing examples \textit{``Raise the volume"} and \textit{``Increase the volume please"}, whereas the second one requires a model of \textit{``Turn up"} being a string that carries the same meaning of different strings like \textit{``Increase"} or \textit{``Raise"}.
 
-Note that such processing might be more or less \textbf{semantically intensive}. As an example, it can be argued that, given the above definition of the action to increase the volume, matching \textit{``raise the volume please"} is an easier task than classifying \textit{``Turn up the volume"}.
+Also, an unknown input sentence should be given a \textbf{confidence score} for each candidate meaning it is associated to, in order for the system to model the uncertainty in the classification of unknown examples.
 
-Also, an unknown input sentence should be given a \textbf{confidence score} for each candidate meaning it is associated to; the system should be able to narrow possible needs for clarification down to single sentence components, eventually asking the user for disambiguation as specifically as possible.
+Finally, the system should be able to narrow possible needs for \textbf{clarification} down to single sentence components, eventually asking the user for disambiguation as specifically as possible. This is to enforce the learning of small components that may appear again in further unknown example.
 
 This document is structured as follows. Chapter \ref{ch:rw} reviews the \textbf{related work} that has been previously done; chapter \ref{ch:arch} describes the \textbf{architecture} of the solution that has been developed; chapter \ref{ch:M2} delves into the \textbf{M2 algorithm}, which is the core of the meaning matching feature of the application; chapter ...\ldots

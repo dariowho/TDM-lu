@@ -34,9 +34,23 @@ class MeaningScore(Score):
 		self.weights  = array('f',[0.5,0.0,0.5])
 		
 		# Debug information
-		self.meaning   = meaning_in
-		self.sentence  = sentence_in
-		self.s_sscores = []
+		self.meaning         = meaning_in
+		self.sentence        = sentence_in
+		self.s_sscores       = []
+		self.max_sscore_full = None
+
+	def get_score(self):
+		"""
+		HACK the original method to return 1 if max sentence score is 1. No 
+		time to	work on the features to achieve this
+		
+		TODO: work on the features to achieve this or something similar
+		"""
+		
+		if self.features[MeaningScore.MAX_SSCORE] == 1.0:
+			return 1.0
+		
+		return super(MeaningScore,self).get_score()
 	
 #
 # Hooks (must match the order of the names in WordScore)

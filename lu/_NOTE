@@ -1,4 +1,7 @@
-Classification
- - Perceptron
- - Decision stumps
- - Naive Bayes
+
+Code comments
+=============
+
+TODO:		To do.
+TODO-OPT:	Optimization: this part of the code can be changed to be more 
+			efficient

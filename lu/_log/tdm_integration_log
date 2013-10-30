@@ -32,3 +32,4 @@ Implementation
  - new module lu_grammar.py, meant to replace gf_grammar.py
     - method "utterance_to_moves" wraps to "LU.Language.understand"
  - application file /home/dario/.../mplay/mplay.py modified to import LuGrammar
+ - LU version used for first integration saved as 20130606-integration.tar.gz

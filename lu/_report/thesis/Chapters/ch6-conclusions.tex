@@ -1,8 +1,59 @@
-...
--future/open questions
- - Machine Learning on weights
- - maybe dynamic weights (eg. disregard other Word features if Equals=1)
- - Tabu game to get corpus
- - Weighting of sources (use confidence of sentences)
- - Better integration with OpenTDM (requires documentation)
- - Meta-learning of episodes (eg. new ways to do disambiguation interactions)
+% Chapter Template
+
+\chapter{Conclusions} % Main chapter title
+
+\label{ch:conclusions} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\lhead{Chapter \ref{ch:conclusions}. \emph{Conclusions}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+
+
+future/open questions
+
+- Multi-pass matching: restricting the match candidates changes the
+   conditional probabilities of chunks (eg. with "the volume") you select
+   "increase" or "decrease", then conditional relevance of " the volume" becomes
+   0 and you can disambiguate the verb.
+   
+- Cache partial scores to make computation faster
+ 
+   $\rightarrow$ Update with math instead of recomputing features
+   
+   $\rightarrow$ Degree of confidence above which scores are no more computed
+   
+- coarse-to-fine matching (restrict candidates with cosine -> M2 on remaining)
+ 
+- Machine Learning on weights
+ 
+- maybe dynamic weights (eg. disregard other Word features if Equals=1)
+ 
+- Tabu game to get corpus
+ 
+- Weighting of sources (use confidence of sentences)
+ 
+- Better integration with OpenTDM (requires documentation)
+ 
+- Syntactic compositionality: understanding 2 moves with a sentence
+ 
+- Meta-learning of episodes (eg. new ways to do disambiguation interactions)
+ 
+- Insert user's negative feedback on wrongly understood sentences
+ 
+- Reinforcement propagation through fuzzy synsets
+ 
+- "Economy" of reinforcements: now "Volume" gets ~300 times the mass of other
+   chunks: might be useful to enforce subtraction from somewhere where it is
+   necessary to add somewhere else 
+   
+- How to deal with holes and plugs in training sentences (eg. "clean X up")
+ 
+
+
+----
+
+Classification
+
+- Perceptron
+ 
+- Decision stumps
+ 
+- Naive Bayes

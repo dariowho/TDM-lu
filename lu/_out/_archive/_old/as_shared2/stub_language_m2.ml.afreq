@@ -1,0 +1,342 @@
+# This is an automatically generated ML data file, containing
+# alignment frequency data.
+# Its content is meant to be updated by a scoring system,
+# handmade modifications are likely to break its consistency.
+
+up the	the volume	6968588.83878
+up the	volume louder	1.30911216913
+up the	make the volume	5.13298071442
+up the	up	12.9996399648
+up the	down	1.34404041827
+up the	louder	1.22100895001
+up the	decrease	1.23275781309
+up the	make the volume lower	2.07460483314
+up the	increase the volume	2.9243781098
+up the	down the volume	2.83635506069
+up the	make	1.66042029508
+up the	increase	2.201990036
+up the	turn up the volume	5.73060508033
+up the	turn down	1.33403232534
+up the	the volume lower	9.58005044357
+up the	volume	3.81603898432
+up the	up the volume	23.5903096986
+up the	the volume louder	9.18027131431
+up the	decrease the	9.21844844716
+up the	make the volume louder	2.13106631053
+up the	make the	89.5667077076
+up the	turn up the	30.7705531766
+up the	decrease the volume	2.2247881476
+up the	lower	1.20468359531
+up the	volume lower	1.27736226225
+up the	turn down the	18.0840191381
+up the	increase the	11.036666244
+up the	turn up	13.5715472739
+up the	turn	1.82300682717
+up the	down the	18.3578723503
+up the	the	4.17106872742e+16
+up the	turn down the volume	2.77712595441
+the volume	volume louder	4.12069637768
+the volume	make the volume	60.4309146617
+the volume	up	1.2025642201
+the volume	down	1.17544629071
+the volume	louder	1.27634080546
+the volume	decrease	1.17669700092
+the volume	make the volume lower	2.67478716969
+the volume	increase	1.99941027878
+the volume	increase the volume	9.61020247029
+the volume	down the volume	21.4291716748
+the volume	make	1.39636723876
+the volume	up the	16.9692730563
+the volume	turn up the volume	22.5716273443
+the volume	turn down	1.17643212867
+the volume	the volume lower	13.1833831008
+the volume	volume	817744.162239
+the volume	up the volume	21.5637362812
+the volume	the volume louder	13.0285333293
+the volume	decrease the	8.55635585418
+the volume	make the volume louder	2.74726976356
+the volume	make the	75.6410621413
+the volume	turn up the	17.7099451474
+the volume	decrease the volume	7.66988265887
+the volume	lower	1.23525562722
+the volume	volume lower	3.96093582931
+the volume	turn down the	16.9264204255
+the volume	increase the	10.6213568745
+the volume	turn up	1.28781368968
+the volume	turn	1.56421658868
+the volume	down the	16.9547478782
+the volume	the	2.26689982667e+16
+the volume	turn down the volume	21.3324883379
+up	the volume	4.21477867772
+up	volume louder	1.41278090567
+up	make the volume	2.55125956985
+up	make the	2.97244187931
+up	down	2.0780655703
+up	louder	1.29229285732
+up	decrease	1.52036500378
+up	make the volume lower	1.55513488615
+up	increase	2.54170306743
+up	increase the volume	2.03401506086
+up	down the volume	1.55206522881
+up	make	2.95623747967
+up	up the	13.2121759146
+up	turn up the volume	3.56544336821
+up	turn down	1.70663613174
+up	the volume lower	1.49573367409
+up	volume	3.18990738527
+up	up the volume	12.9461867278
+up	the volume louder	1.55771212997
+up	decrease the	1.56008886351
+up	make the volume louder	1.62081520629
+up	turn up the	3.62767514593
+up	decrease the volume	1.46329255463
+up	lower	1.44857382927
+up	volume lower	1.40016796222
+up	turn down the	1.5826229483
+up	increase the	2.26041067012
+up	turn up	25.7573086763
+up	turn	2.97165832255
+up	down the	1.58167174363
+up	the	12.6556042565
+up	turn down the volume	1.57271398348
+pump up	the volume	4.51947487237
+pump up	volume louder	1.5055326275
+pump up	make the volume	3.56782384993
+pump up	up	16.6371026895
+pump up	down	1.66129262038
+pump up	louder	1.41775828714
+pump up	decrease	1.62836581363
+pump up	make the volume lower	1.72870171302
+pump up	increase	3.29963476828
+pump up	increase the volume	2.44648274264
+pump up	down the volume	1.66129262038
+pump up	make	3.67017330607
+pump up	up the	13.2705675317
+pump up	turn up the volume	3.87930141014
+pump up	turn down	1.90063669799
+pump up	the volume lower	1.50083660969
+pump up	volume	3.2045544437
+pump up	up the volume	13.2840271869
+pump up	the volume louder	1.56719779377
+pump up	decrease the	1.64278822438
+pump up	make the volume louder	1.78765811527
+pump up	make the	3.59886048799
+pump up	turn up the	3.89588151892
+pump up	decrease the volume	1.62331293113
+pump up	lower	1.47951904595
+pump up	volume lower	1.48277745118
+pump up	turn down the	1.7937710319
+pump up	increase the	2.51712961672
+pump up	turn up	26.4761434784
+pump up	turn	4.58200508546
+pump up	down the	1.65795236771
+pump up	the	4.93851874508
+pump up	turn down the volume	1.79151827566
+volume	the volume	392428.989309
+volume	volume louder	4.23408093941
+volume	make the volume	15.4724950737
+volume	up	1.23686283267
+volume	down	1.25109059552
+volume	louder	1.56928796848
+volume	decrease	1.28563044852
+volume	make the volume lower	1.69919465479
+volume	increase	1.78463044044
+volume	increase the volume	4.70631951989
+volume	down the volume	12.8829030287
+volume	make	1.55154437986
+volume	up the	1.19755725999
+volume	turn up the volume	13.6775226872
+volume	turn down	1.18973841229
+volume	the volume lower	1.86895101103
+volume	up the volume	12.8140914894
+volume	the volume louder	1.93568735548
+volume	decrease the	1.19025657223
+volume	make the volume louder	1.75346139214
+volume	make the	1.39353537072
+volume	turn up the	1.26980241494
+volume	decrease the volume	3.88418934966
+volume	lower	1.62651097243
+volume	volume lower	4.10803569618
+volume	turn down the	1.17184592388
+volume	increase the	1.60951368888
+volume	turn up	1.28299858167
+volume	turn	1.62572430583
+volume	down the	1.18212803472
+volume	the	3.08296570127
+volume	turn down the volume	12.8247713272
+pump	the volume	3.77633784555
+pump	volume louder	1.48924132508
+pump	make the volume	3.51425369037
+pump	up	1.45357831883
+pump	down	1.5919618875
+pump	louder	1.30850529699
+pump	decrease	1.97388037874
+pump	make the volume lower	1.76429599524
+pump	increase	2.88373072446
+pump	increase the volume	2.22038089527
+pump	down the volume	1.50440412313
+pump	make	5.62372008068
+pump	up the	1.24665873397
+pump	turn up the volume	1.8643838299
+pump	turn down	1.88171158416
+pump	the volume lower	1.4769399807
+pump	volume	4.20905210882
+pump	up the volume	1.24849683964
+pump	the volume louder	1.53406644577
+pump	decrease the	1.62721189164
+pump	make the volume louder	1.83818020223
+pump	make the	3.56628789155
+pump	turn up the	1.87364121541
+pump	decrease the volume	1.61610592557
+pump	lower	1.54006163608
+pump	volume lower	1.49190271899
+pump	turn down the	1.84939756104
+pump	increase the	2.29885111123
+pump	turn up	1.96343716995
+pump	turn	7.30495825471
+pump	down the	1.49973839106
+pump	the	3.99502997026
+pump	turn down the volume	1.84871776847
+pump up the volume	the volume	2.60644229489e+20
+pump up the volume	volume louder	3.91441526907
+pump up the volume	make the volume	417.967053018
+pump up the volume	up	2.39911807949
+pump up the volume	down	1.26950618485
+pump up the volume	louder	1.27355083953
+pump up the volume	decrease	1.32663985187
+pump up the volume	make the volume lower	2.96668915251
+pump up the volume	increase	2.51345351043
+pump up the volume	increase the volume	29.0205957637
+pump up the volume	down the volume	33.1785577868
+pump up the volume	make	1.9890835227
+pump up the volume	up the	17.2335272652
+pump up the volume	turn up the volume	39.3875977574
+pump up the volume	turn down	1.44033637513
+pump up the volume	the volume lower	19.5040499247
+pump up the volume	volume	96841.0395119
+pump up the volume	up the volume	35.3528615021
+pump up the volume	the volume louder	18.6515221834
+pump up the volume	decrease the	9.64753963773
+pump up the volume	make the volume louder	3.04767696113
+pump up the volume	make the	97.3360176886
+pump up the volume	turn up the	20.0016411323
+pump up the volume	decrease the volume	19.5337921789
+pump up the volume	lower	1.23879471143
+pump up the volume	volume lower	3.7666068184
+pump up the volume	turn down the	11.659464045
+pump up the volume	increase the	12.3068985598
+pump up the volume	turn up	2.90845187152
+pump up the volume	turn	2.35241356664
+pump up the volume	down the	11.6683252587
+pump up the volume	the	1244469.87131
+pump up the volume	turn down the volume	33.9653729883
+up the volume	the volume	2.62108773866e+20
+up the volume	volume louder	3.91988731182
+up the volume	make the volume	334.630265482
+up the volume	up	12.8180061908
+up the volume	down	1.32034710175
+up the volume	louder	1.26829831943
+up the volume	decrease	1.22783095295
+up the volume	make the volume lower	2.72086738756
+up the volume	increase	2.28423247959
+up the volume	increase the volume	20.0005950778
+up the volume	down the volume	32.3147245932
+up the volume	make	1.62211450041
+up the volume	up the	71.4002990604
+up the volume	turn up the volume	45.7585887999
+up the volume	turn down	1.31334644594
+up the volume	the volume lower	18.3926843723
+up the volume	volume	103077.576509
+up the volume	the volume louder	17.7354688149
+up the volume	decrease the	8.0294676373
+up the volume	make the volume louder	2.77938412675
+up the volume	make the	68.9871506314
+up the volume	turn up the	26.3812313902
+up the volume	decrease the volume	17.8519162332
+up the volume	lower	1.23260753479
+up the volume	volume lower	3.75338683821
+up the volume	turn down the	11.344037723
+up the volume	increase the	10.0850526286
+up the volume	turn up	13.4352167501
+up the volume	turn	1.78978843
+up the volume	down the	11.7861324854
+up the volume	the	665444.595824
+up the volume	turn down the volume	31.9149008413
+the	the volume	215030.357165
+the	volume louder	1.30069238627
+the	make the volume	3.15413908918
+the	up	1.23322820126
+the	down	1.20671424105
+the	louder	1.22537377406
+the	decrease	1.142294504
+the	make the volume lower	1.54041416179
+the	increase	1.59082821
+the	increase the volume	2.23546943451
+the	make	1.38921873145
+the	up the	13.0096055794
+the	turn up the volume	2.67942080646
+the	turn down	1.16914058662
+the	the volume lower	3.40581974555
+the	volume	9.27571239126
+the	up the volume	2.51342549331
+the	the volume louder	3.57270495556
+the	decrease the	3.41655991552
+the	make the volume louder	1.62327385713
+the	make the	12.1769369772
+the	down the volume	2.48114639865
+the	decrease the volume	1.75827094748
+the	lower	1.19415533686
+the	volume lower	1.2360337161
+the	turn down the	12.8756765483
+the	increase the	4.32981337245
+the	turn up	1.27250518099
+the	turn	1.49716232356
+the	down the	12.996580238
+the	turn up the	13.8048640944
+the	turn down the volume	2.4695571202
+pump up the	the volume	16489861.3906
+pump up the	volume louder	1.33361281172
+pump up the	make the volume	6.61018546848
+pump up the	up	2.44225455162
+pump up the	down	1.28954304227
+pump up the	louder	1.24908569648
+pump up the	decrease	1.3442751386
+pump up the	make the volume lower	2.38307664212
+pump up the	increase	2.46720772683
+pump up the	increase the volume	3.2873690288
+pump up the	down the volume	2.88791515519
+pump up the	make	2.05643388739
+pump up the	up the	25.1123547197
+pump up the	turn up the volume	5.77023172919
+pump up the	turn down	1.46274948627
+pump up the	the volume lower	11.8681114667
+pump up the	volume	3.69742659343
+pump up the	up the volume	12.8260913471
+pump up the	the volume louder	11.2359724464
+pump up the	decrease the	11.4996981318
+pump up the	make the volume louder	2.4245304239
+pump up the	make the	143.486319302
+pump up the	turn up the	27.6084971741
+pump up the	decrease the volume	2.4429755653
+pump up the	lower	1.22759001856
+pump up the	volume lower	1.28529862284
+pump up the	turn down the	19.8904187353
+pump up the	increase the	13.8351084574
+pump up the	turn up	2.95107116211
+pump up the	turn	2.43557711292
+pump up the	down the	19.4214352507
+pump up the	the	2.06218794137e+17
+pump up the	turn down the volume	2.96723825123
+
+T	up the	4.17106872811e+16
+T	the volume	2.26689982675e+16
+T	up	123.857539681
+T	pump up	141.61859396
+T	volume	392547.352636
+T	pump	76.879121793
+T	pump up the volume	2.60644229489e+20
+T	up the volume	2.62108773866e+20
+T	the	215155.133904
+T	pump up the	2.06218794153e+17
+
+T	5.23023601835e+20

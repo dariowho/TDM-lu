@@ -26,6 +26,7 @@ from constants import *
 import lu.ml
 
 import learn.sentence
+import learn.interaction
 
 import score.chunk
 import score.word
@@ -36,9 +37,18 @@ import datetime
 now = datetime.datetime.now()
 __version__ = "dev-"+str(now.year)+str(now.month)+str(now.day)
 
-#
-# The Language class
-#
+"""
+Constants
+"""
+
+# Tuple elements of Language.understand() return value
+R_LABEL   = 0
+R_SCORE_F = 1
+R_SCORE   = 2
+
+"""
+The Language class
+"""
 
 class Language:
 	# Status
@@ -81,18 +91,37 @@ class Language:
 		Assign an input sentence to one of the labels of the language, perfor-
 		ming a semantic match.
 		
-		Returns a list of tuples (label,score) ordered by score.
+		Returns a list of tuples (label,score) ordered by score. Scores are
+		malized so that their score head up to 1.
+		
+		NOTE: Implementation is being changed, lists may be chosen instead of 
+		      tuples
 		"""
 
 		r = []
+		scores_sum = 0.0
 
 		for i in range(len(self.meaning)):
 			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
 			
-			r.append( (self.meaning[i].label,s.get_score()) )
+			score_f = s.get_score()
+			r.append( [self.meaning[i].label,score_f,s] )
 		
+			scores_sum += score_f
+			
 		r.sort(key=lambda t: t[1], reverse=True)
-		return r
+		
+		for s in r:
+			s[R_SCORE_F] = s[R_SCORE_F]/scores_sum
+		
+		# DEBUG
+		print("\n[LU.Language] understand(): Printing debug output")
+		for s in r:
+			print(s)
+		print("[LU.Language] understand(): End debug output\n")
+		# END DEBUG
+		
+		return learn.interaction.get_plan_tdm(r)
 
 			
 	def learn(self,sentence_text_in,meaning_label_in):
@@ -115,7 +144,7 @@ class Language:
 
 		for i in range(len(self.meaning)):
 			s = score.meaning.get_score(self.meaning[i],Sentence(sentence_in))
-			#score.output.meaning.render_html(s)
+			score.output.meaning.render_html(s)
 	
 	#
 	# Input/Output methods

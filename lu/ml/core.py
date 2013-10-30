@@ -41,6 +41,7 @@ class ML(object):
 		# TODO: mass is probably useless...
 		self.c_count            = defaultdict(int)
 		self._c_cache_count_tot = 0
+		self._c_cache_count_max = 0
 		self.c_mass             = defaultdict(ML._floatdefaultdict_factory)
 		self._c_cache_mass_tot  = 0.0
 		
@@ -50,9 +51,11 @@ class ML(object):
 		self._cc_cache_count_tot = 0
 		
 		# Alignment frequency
-		self.a_mass            = defaultdict(ML._floatdefaultdict_factory)
-		self._a_cache_mass_c   = defaultdict(float)
-		self._a_cache_mass_tot = 0.0
+		self.a_mass              = defaultdict(ML._floatdefaultdict_factory)
+		self._a_cache_mass_c_tot = defaultdict(float)
+		self._a_cache_mass_c_max = defaultdict(float)
+		self._a_cache_mass_tot   = 0.0
+		self._a_cache_mass_max   = 0.0
 	
 	#
 	# Core methods - Chunk count
@@ -60,12 +63,29 @@ class ML(object):
 	
 	def get_c_frequency(self,c):
 		"""
-		(Count of c) / (Total count)
+		Chunk frequency = (Count of c) / (Total count)
 		"""
 		c = c.text
 		
 		try:
 			return float(self.c_count[c])/float(self._c_cache_count_tot)
+		except ZeroDivisionError:
+			"""No chunk have been counted yet"""
+			return 0
+	
+	def get_c_frequency_norm(self,c):
+		"""
+		Chunk frequency, normalized in [0,1], where 1 is the maximum frequency
+		in the database.
+		
+		This value is useful to be used as a feature in scores where the max 
+		possible value should be represented as 1 (which would not happen with
+		the simple frequency).
+		"""
+		c = c.text
+		
+		try:
+			return float(self.c_count[c])/float(self._c_cache_count_max)
 		except ZeroDivisionError:
 			"""No chunk have been counted yet"""
 			return 0
@@ -76,6 +96,10 @@ class ML(object):
 		self.c_count[c] += 1
 		
 		self._c_cache_count_tot += 1
+		
+		# (m) TODO-OPT: number of accesses to array can be reduced
+		if (self.c_count[c] > self._c_cache_count_max):
+			self._c_cache_count_max = self.c_count[c]
 	
 	#
 	# Core methods - Class-conditional count
@@ -106,6 +130,33 @@ class ML(object):
 	#
 	# Core methods - Alignments
 	#
+	
+	def get_alignment_frequency_norm(self,c1,c2):
+		"""
+		Returns the fraction of all the alignment mass that is occupied by the
+		c1,c2 alignment, normalized in [0,1], where 1 is the maximum fraction
+		in memory (i.e. the strongest alignment)
+		
+		NOTE: because of the order-invariant properties of the mass, the result
+		      can be given respect to both c1 and c2. The average of the two
+		      is returned.
+		      
+		NOTE: this function is meant as a replacement of get_alignment_score
+		"""
+		
+		if c1.text == c2.text:
+			return 1
+		
+		m   = self._get_alignment_mass(c1,c2)
+		m2  = self._get_alignment_mass(c2,c1)
+		mm1 = self._get_alignment_max(c1)
+		mm2 = self._get_alignment_max(c2)
+		
+		try:
+			return ( (m/mm1) + (m2/mm2) ) / 2
+		except ZeroDivisionError:
+			#~ sys.stderr.write("except: "+str(ML.DEFAULT_SCORE)+"\n")
+			return ML.DEFAULT_SCORE
 	
 	def get_alignment_score(self,c1,c2):
 		"""
@@ -266,6 +317,7 @@ class ML(object):
 		for k,v in self.c_count.items():
 			f_cfreq.write(k+u"\t"+unicode(v)+"\t;\n")
 		f_cfreq.write(u"\nT\t"+unicode(self._c_cache_count_tot))
+		f_cfreq.write(u"\nM\t"+unicode(self._c_cache_count_max))
 		f_cfreq.close()
 		
 		for k_i,v_i in self.cc_count.items():
@@ -281,9 +333,12 @@ class ML(object):
 			for k_j,v_j in v_i.items():
 				f_afreq.write(k_i+u"\t"+k_j+u"\t"+unicode(v_j)+u"\t;\n")
 		f_afreq.write(u"\n")
-		for k,v in self._a_cache_mass_c.items():
+		for k,v in self._a_cache_mass_c_tot.items():
 			f_afreq.write(u"T\t"+k+u"\t"+unicode(v)+u"\n")
+		for k,v in self._a_cache_mass_c_max.items():
+			f_afreq.write(u"M\t"+k+u"\t"+unicode(v)+u"\n")
 		f_afreq.write(u"\nT\t"+unicode(self._a_cache_mass_tot))
+		f_afreq.write(u"\nM\t"+unicode(self._a_cache_mass_max))
 		f_afreq.close()
 
 	#
@@ -313,6 +368,19 @@ class ML(object):
 	# Private methods - Alignment frequencies
 	#
 	
+	def _get_alignment_max(self,c=None):
+		"""
+		_get_alignment_mass()       - Global max alignment score mass
+		_get_alignment_mass(c)      - Max score mass of the alignments involving c
+		"""
+		
+		if c is None:
+			return self._a_cache_mass_max
+		
+		c = c.text
+		
+		return self._a_cache_mass_c_max[c]
+	
 	def _get_alignment_mass(self,c1=None,c2=None):
 		"""
 		_get_alignment_mass()       - Total alignment score mass
@@ -334,7 +402,7 @@ class ML(object):
 			         This is because the default value would be stored in the 
 			         dictionary otherwise, adding unexistent mass to c1.
 			"""
-			return self._a_cache_mass_c.get(c1,ML.DEFAULT_MASS)
+			return self._a_cache_mass_c_tot.get(c1,ML.DEFAULT_MASS)
 		
 		c2 = c2.text
 		
@@ -370,11 +438,40 @@ class ML(object):
 		assert self.a_mass[c1][c2] == m
 		
 		"""Update c1 cache"""
-		self._a_cache_mass_c[c1] += m_diff
-		#~ self._a_cache_mass_c[c2] += m_diff ← bidirectional update, for simmetry hack
-
+		self._a_cache_mass_c_tot[c1] += m_diff
+		#~ self._a_cache_mass_c_tot[c2] += m_diff ← bidirectional update, for simmetry hack
+		
 		"""Update total cache"""
 		self._a_cache_mass_tot += m_diff
+		
+		"""Update max cache: mass increased"""
+		if m_diff > 0.0:
+			
+			"""Global max"""
+			if (m > self._a_cache_mass_max):
+				self._a_cache_mass_max = m
+				
+			"""c1 max"""
+			if (m > self._a_cache_mass_c_max[c1]):
+				self._a_cache_mass_c_max[c1] = m
+			
+			"""Update max cache: mass decreased"""
+		elif m_diff < 0.0:
+			
+			"""Only if the value was the maximum"""
+			if (m-m_diff) >= self._a_cache_mass_max:
+				assert (m-m_diff) == self._a_cache_mass_max
+				
+				# TODO: implement by making sure that the new value is still the 
+				#       maximum, and otherwise replace it with the new one.
+				raise NotImplementedError
+			
+			if (m-m_diff) >= self._a_cache_mass_c_max[c1]:
+				assert (m-m_diff) == self._a_cache_mass_c_max[c1]
+				
+				# TODO: implement by making sure that the new value is still the 
+				#       maximum, and otherwise replace it with the new one.
+				raise NotImplementedError
 
 	#
 	# Private methods - I/O
@@ -406,12 +503,14 @@ class ML(object):
 				
 				self.c_count[chunk] = count
 			except:
-				"""Try to parse as a total count line (2 elements)"""
+				"""Try to parse as a total or max count line (2 elements)"""
 				try:
-					if unicode(tokens[0]) != "T":
+					if unicode(tokens[0]) == "T":
+						self._c_cache_count_tot = int(tokens[1])
+					elif unicode(tokens[0]) == "M":
+						self._c_cache_count_max = int(tokens[1])
+					else:
 						raise Exception
-						
-					self._c_cache_count_tot = int(tokens[1])
 				except:
 					sys.stderr.write("lu.ml: Error processing ml.cfreq line "+unicode(ln)+". Skipping.\n")
 					continue
@@ -496,20 +595,25 @@ class ML(object):
 			except:
 				"""Try to parse as a marginal meaning mass line (3 elements)"""
 				try:
-					if unicode(tokens[0]).strip() != "T":
-						raise Exception
-					
-					chunk = unicode(tokens[1])
-					mass  = float(tokens[2].strip())
+					if unicode(tokens[0]).strip() == "T":
+						chunk = unicode(tokens[1])
+						mass  = float(tokens[2].strip())
 
-					self._a_cache_mass_c[chunk] = mass
+						self._a_cache_mass_c_tot[chunk] = mass
+					elif unicode(tokens[0]).strip() == "M":
+						chunk = unicode(tokens[1])
+						c_max  = float(tokens[2].strip())
+
+						self._a_cache_mass_c_max[chunk] = c_max
 				except:
 					"""Try to parse as a total mass line (2 elements)"""
 					try:
-						if unicode(tokens[0]).strip() != "T":
+						if unicode(tokens[0]).strip() == "T":
+							self._a_cache_mass_tot = float(tokens[1].strip())
+						elif unicode(tokens[0]).strip() == "M":
+							self._a_cache_mass_max = float(tokens[1].strip())
+						else:
 							raise Exception
-						
-						self._a_cache_mass_tot = float(tokens[1].strip())
 					except:
 						sys.stderr.write("lu.ml: Error processing ml.afreq line "+unicode(ln)+". Skipping.\n")
 						continue

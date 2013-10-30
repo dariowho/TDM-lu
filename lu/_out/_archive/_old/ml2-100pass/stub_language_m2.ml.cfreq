@@ -1,0 +1,40 @@
+# This is an automatically generated ML data file, containing
+# chunk frequency data.
+# Its content is meant to be updated by a scoring system,
+# handmade modifications are likely to break its consistency.
+
+the volume	600
+volume louder	100
+make the volume	200
+increase the	100
+down	100
+louder	100
+decrease	100
+make the volume lower	100
+increase	100
+increase the volume	100
+down the volume	100
+make	200
+up the	100
+turn up the volume	100
+turn down	100
+the volume lower	100
+volume	600
+up the volume	100
+the volume louder	100
+decrease the	100
+make the volume louder	100
+make the	200
+turn up the	100
+decrease the volume	100
+lower	100
+volume lower	100
+turn down the	100
+up	100
+turn up	100
+turn	200
+down the	100
+the	600
+turn down the volume	100
+
+T	5200.0

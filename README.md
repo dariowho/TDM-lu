@@ -8,6 +8,7 @@ System requirements
 
 The code requires Python 2.7 (http://www.python.org/download/releases/2.7/) and the NLTK (http://nltk.org/)
 
+The temporary chunk enforcement modification requires a modified version of the pyStatParser package, as it is shipped in the 3rdparty/ directory.
 
 Running the code
 ================

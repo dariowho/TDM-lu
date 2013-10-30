@@ -230,7 +230,7 @@
                 {FACULTY NAME (IN BLOCK CAPITALS)}}
 %----------------------------------------------------------------------------------------    
 
-\PROJECTNAME{MPlay }
+\PROJECTNAME{SVPlay }
 
 % The default title page, this is not used in this www.latextemplates.com version            
 \renewcommand\maketitle{

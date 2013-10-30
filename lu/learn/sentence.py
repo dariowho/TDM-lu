@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+"""
+Sentence - Sentence learning
+============================
+
+Given an input sentence and its meaning lable, the purpose of this module is to 
+update the system's knowledge base to include the new example.
+"""
+
 import lu.ml
 import lu.score.chunk
 

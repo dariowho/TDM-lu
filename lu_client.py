@@ -86,8 +86,8 @@ $(\"#content li > a\").click(function() {\n\
 	<div id=\"left\">")
 
 
-l.understand_debug("increase the volume please")
-#l.understand_debug("turn up the volume")
+#~ l.understand_debug("increase the volume please")
+l.understand_debug("turn up the volume")
 
 print("	</div>\
 <script>\

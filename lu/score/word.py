@@ -33,7 +33,20 @@ class WordScore(Score):
 		self.s_to   = self.s_to_tree   = s_to
 		
 		# Hand-crafted weights
-		self.weights  = array('f',[0.5,0.05,0.0,0.05,0.4])
+		self.weights  = array('f',[0.3,0.05,0.1,0.15,0.4])
+
+	def get_score(self):
+		"""
+		HACK the original method to return 1 if chunks are the same. No time to
+		work on the features to achieve this
+		
+		TODO: work on the features to achieve this or something similar
+		"""
+		
+		if self.s_from.text == self.s_to.text:
+			return 1.0
+		
+		return super(WordScore,self).get_score()
 
 #
 # Hooks (must match the order of the names in WordScore)

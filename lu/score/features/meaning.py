@@ -36,6 +36,7 @@ def _sentence_similarity_features(score,meaning_in,sentence_in):
 	sentence similarities
 	"""
 	
+	max_score = None
 	max_score_value = 0.0
 	sum_scores = 0.0
 	for s in meaning_in.sentences:
@@ -45,6 +46,7 @@ def _sentence_similarity_features(score,meaning_in,sentence_in):
 		# Max score
 		if s_score_value > max_score_value:
 			max_score_value = s_score_value
+			max_score = s_score
 			
 		# Sum (for average)
 		sum_scores = sum_scores + s_score_value
@@ -55,6 +57,8 @@ def _sentence_similarity_features(score,meaning_in,sentence_in):
 	score.set_feature(score.MAX_SSCORE,max_score_value)
 	score.set_feature(score.AVG_SSCORE,sum_scores/len(meaning_in.sentences))
 
+	# Save full score of the best match
+	score.max_sscore_full = max_score
 
 def _ccsum_compute(c,m):
 	"""Base case, no need for further recursion"""

@@ -82,4 +82,5 @@ def c_ml_afreq(score,word_from,word_to):
 	previous examples.
 	"""
 	
-	score.set_feature(score.ML_AFREQ,lu.ml.get_alignment_score(word_from,word_to))
+	#~ score.set_feature(score.ML_AFREQ,lu.ml.get_alignment_score(word_from,word_to))
+	score.set_feature(score.ML_AFREQ,lu.ml.get_alignment_frequency_norm(word_from,word_to))

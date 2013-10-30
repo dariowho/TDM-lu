@@ -1,6 +1,19 @@
 # -*- coding: utf-8 -*-
 
+"""
+This module defines the Chunk Scoring routines.
+
+TODO: code labeled as TODO-TMP-CHUNKER serves the function of enforcing good 
+      chunking through corpus-based methods. This is only necessary when the
+      scoring system is not good on its own, and thus is meant to be removed
+      in the future, when a better combination of features and weights will
+      allow to perform good chunking based on the given training data. 
+"""
+
 from array import array
+
+# TODO-TMP-CHUNKER: remove when good scoring is achieved
+from stat_parser.chunker import Chunker
 
 from . import Score,word
 from lu import ChunkedChunk,Chunk
@@ -18,14 +31,15 @@ class ChunkScore(Score):
 	"""
 	
 	# Total number of features
-	N_FEATURES = 5
+	N_FEATURES = 6
 	
 	# Constant feature names (must define N_FEATURES names)
 	AAVG, \
 	LEN, \
 	STRAIGHT, \
 	ML_AFREQ, \
-	ML_CFREQ = range(N_FEATURES)
+	ML_CFREQ, \
+	TMP_CHUNKER = range(N_FEATURES)   # TODO-TMP-CHUNKER
 
 	def __init__(self,s_from,s_to):
 		super(ChunkScore,self).__init__()
@@ -35,7 +49,7 @@ class ChunkScore(Score):
 		self.is_feature_set = array('b',[False]*ChunkScore.N_FEATURES)
 
 		# Test weights: first and last features only
-		self.weights  = array('f',[0.35,0.1,0.0,0.35,0.2])
+		self.weights  = array('f',[0.35,0.1,0.0,0.35,0.0,0.2])
 
 		# Extra information
 		self.alignment = None
@@ -44,13 +58,29 @@ class ChunkScore(Score):
 		self.s_from  = s_from
 		self.s_to    = s_to
 		self.s_table = None
+	
+	def get_score(self):
+		"""
+		HACK the original method to return 1 if chunks are the same. No time to
+		work on the features to achieve this
+		
+		TODO: work on the features to achieve this or something similar
+		"""
+		
+		if self.s_from.text == self.s_to.text:
+			return 1.0
+		
+		return super(ChunkScore,self).get_score()
 
 # Hooks (must match the order of the names in WordScore)
 _f = [ features.chunk.c_aavg, \
        features.chunk.c_len, \
        features.chunk.c_straight, \
        features.chunk.c_ml_afreq, \
-       features.chunk.c_ml_cfreq ]
+       features.chunk.c_ml_cfreq, \
+       features.chunk.c_tmp_chunker ]
+
+assert len(_f) == ChunkScore.N_FEATURES
 
 class M2Table(object):
 	"""
@@ -89,12 +119,21 @@ class M2Table(object):
 def get_score_m2(chunk_from,chunk_to):
 	"""
 	Runs the actual score computing function, initialized with an empty M2Table
+	
+	NOTE: even though it is only useful for debug purposes, the last score is
+	      pushed into the table (which will be accessible through the
+	      ChunkScore object)
 	"""
 
-	# Note that, even though it is only useful for debug purposes, the last 
-	# score is pushed into the table (which will be accessible through the
-	# ChunkScore object)
 	table = M2Table(chunk_from,chunk_to)
+
+	# TODO-TMP-CHUNKER: put the chunked sentences in the table
+	chunker = Chunker()
+	chunks_from = chunker.get_phrases( chunker.chunk( chunk_from.text.lower() ) )
+	chunks_to   = chunker.get_phrases( chunker.chunk( chunk_to.text.lower() ) )
+	table.tmp_chunks_from = chunks_from
+	table.tmp_chunks_to   = chunks_to
+
 	r = _get_score_m2(chunk_from,chunk_to,table)
 	table.set_score(r,chunk_from,chunk_to)
 	
