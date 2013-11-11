@@ -42,9 +42,12 @@ Constants
 """
 
 # Tuple elements of Language.understand() return value
-R_LABEL   = 0
-R_SCORE_F = 1
-R_SCORE   = 2
+U_LABEL   = 0
+U_SCORE_F = 1
+U_SCORE   = 2
+
+# Extra elements in case of TDM-specific understanding (see learn.interaction)
+U_QUESTIONS = 3
 
 """
 The Language class
@@ -111,8 +114,13 @@ class Language:
 			
 		r.sort(key=lambda t: t[1], reverse=True)
 		
+		# HACK: bypass everything if top score is 1 (i.e. exact sentence match)
+		if r[0][U_SCORE_F] == 1:
+			return [ r[0] ]
+		# END HACK
+		
 		for s in r:
-			s[R_SCORE_F] = s[R_SCORE_F]/scores_sum
+			s[U_SCORE_F] = s[U_SCORE_F]/scores_sum
 		
 		# DEBUG
 		print("\n[LU.Language] understand(): Printing debug output")
@@ -132,6 +140,26 @@ class Language:
 		s = Sentence(sentence_text_in)
 		m = self.meaning[ self.m_label.index(meaning_label_in) ]
 		learn.sentence.learn(s,m)
+	
+	def solve_top_ground_issue(self,result):
+		"""
+		Solves the top element in the open grounding hypotheses stack (see 
+		learn.interaction)
+		
+		NOTE: temp method for thesis purposes only
+		"""
+		
+		if result == 1:
+			_tmp = "positive"
+		else:
+			_tmp = "negative"
+		
+		hypothesis = learn.interaction.tdm_ground_stack.pop()
+		
+		# TODO: implement
+		print(u"\n[LU.Language] solve_top_ground_issue() Solving "+unicode(hypothesis)+" as "+_tmp)
+		
+		return hypothesis[0]
 	
 	def understand_debug(self,sentence_in):
 		"""

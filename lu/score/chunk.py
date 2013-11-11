@@ -49,7 +49,9 @@ class ChunkScore(Score):
 		self.is_feature_set = array('b',[False]*ChunkScore.N_FEATURES)
 
 		# Test weights: first and last features only
-		self.weights  = array('f',[0.35,0.1,0.0,0.35,0.0,0.2])
+		#~ self.weights  = array('f',[0.35,0.1,0.0,0.35,0.0,0.2])
+		# Test weights: tmp_chunker is aavg or 0 if chunks are not linguistic
+		self.weights  = array('f',[0.0,0.1,0.0,0.35,0.0,0.55])
 
 		# Extra information
 		self.alignment = None

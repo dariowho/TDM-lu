@@ -39,7 +39,7 @@ import pdb
 
 from lu.score.word import WordScore
 
-ALPHA = 0.8
+ALPHA = 0.7
 BETA  = 0.3
 
 GAMMA = 0.5
@@ -49,6 +49,8 @@ E_SMALLALPHA = 2
 E_BIGBETA    = 3
 
 PREFIX = "[LU.learn.interaction] "
+
+tdm_ground_stack = []	# This is just for hacked TDM interaction
 
 def get_plan(u):
 	"""
@@ -86,50 +88,69 @@ def get_plan(u):
 
 def get_plan_tdm(u):
 	"""
-	Get an OpenTDM compatible plan. This function is specific for thesis, and 
-	very likely not to be useful in a general-purpose library.
+	Get an OpenTDM compatible plan.
+	
+	NOTE: This function is specific for thesis, and very likely not to be 
+	      useful in a general-purpose library.
 	
 	INPUT
 	   'u' is a list of tuples (meaning_label, score_float, score), output of
 	       Language.understand()
 	
 	OUTPUT
-		A list of tuples (meaning_label, score_float, score) that can be
-		interpreted by OpenTDM to perform the move, ground a move, disambiguate
-		between multiple meanings or ask to rephrase 
+		A list of tuples (meaning_label, score_float, score, questions) that 
+		can be interpreted by OpenTDM to perform the move, ground a move, 
+		disambiguate between multiple meanings or ask to rephrase; 'questions'
+		is a list of natural language questions that are meant to be asked.
+		
+		As a side-effect, every time a grounding issue is generated, this is 
+		pushed in a stack of open grounding issues. This stack will be used to
+		handle future yes/no user answers.
+		Note that this is a thesis-purposes hack to make things work in TDM,
+		should be removed in any stable version of the library.
 	"""
 
 	u_plan = get_plan(u)
 	
 	if len(u_plan) == 0:
 		"""No possible interpretations: rephrase"""
-		return [ [ 'request(_rephrase)', 1.0, None ] ]
+		return [ [ 'request(_rephrase)', 1.0, None, [] ] ]
 	
 	if len(u_plan) == 1:
 		"""One possible interpretation"""
 		if u_plan[0][1] > ALPHA:
 			"""Perform"""
+			u_plan[0].append([])
 			return u_plan
 		else:
 			"""Ground"""
-			return [ [ 'request(_ground)', 1.0, None ] ]
+			questions = get_questions(u_plan)
+			tdm_ground_stack.append([u_plan[0][0],\
+			                         u_plan[0][2].meaning,\
+			                         u_plan[0][2].sentence])
+			return [ [ 'request(_ground)', 1.0, None, questions ] ]
 	
 	"""Multiple interpretations: disambiguate"""
-	# TODO: change with appropriate disambiguation action
-	return [ [ 'request(_ground)', 1.0, None ] ]
+	# TODO: change with appropriate disambiguation action (at the moment 
+	#       this is dealt with as in the single-sentence grounding)
+	questions = get_questions([ u_plan[0] ])
+	tdm_ground_stack.append([u_plan[0][0],\
+						     u_plan[0][2].meaning,\
+						     u_plan[0][2].sentence])
+	return [ [ 'request(_ground)', 1.0, None, questions ] ]
 
 
 
-def get_questions(meaning_scores_list):
+def get_questions(understanding_list):
 	"""
 	WIP
 	"""
 	
-	if (len(meaning_scores_list)==1):
-		return _get_questions_chunk(meaning_scores_list[0][2].max_sscore_full)
+	if (len(understanding_list)==1):
+		return _get_questions_chunk(understanding_list[0][2].max_sscore_full)
 	else:
 		r = []
-		for m in meaning_scores_list:
+		for m in understanding_list:
 			l = ["Does "+unicode(m[2].sentence)+" mean "+\
 			     unicode(m[2].max_sscore_full.s_to)+"?"]
 			l.append(_get_questions_chunk(m[2].max_sscore_full))

@@ -5,3 +5,19 @@
 03-cnorm: Chunk frequency replaced with Normalized chunk frequency
 04-anorm: Alignment frequency normalized per chunk. One parsing with old ml data,
           one with re-trained system
+05-lm: Language Model; uses the pyStatParser to determine linguistically 
+       significant chunks. This preference is set as an extra feature, thus 
+       adding unwanted mass to the alignment (good chunking is not index of 
+       good similarity)
+06-lm_mul: Language model feature is multiplied by the AAVG feature to fix the
+           unwanted mass problem.
+           NOTE: Language model, per chunk pair is 1 if both chunk respect 
+                 parser chunking, 0 otherwise. Thus the LM feature is a dupli-
+                 cate of AAVG, but for non-linguistic alignments, for whitch it
+                 is 0.
+           01-prevweight: previous ML data and same feature weights (meaning
+                          that AAVG is duplicated when chunking is good)
+           02-alltmp: previous ML data, no weight to AAVG, all to the LM
+                      feature (TMP_CHUNKER), meaning that AAVG is given only 
+                      when chunking is good
+           03-newml: like 02, but with newly computed ML data

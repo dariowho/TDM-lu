@@ -14,13 +14,24 @@ future/open questions
    "increase" or "decrease", then conditional relevance of " the volume" becomes
    0 and you can disambiguate the verb.
    
+- Parameters handling (eg. play all the songs by <X:ARTIST>, where system has a
+  model for the parameter type "ARTIST")
+
 - Cache partial scores to make computation faster
  
    $\rightarrow$ Update with math instead of recomputing features
    
    $\rightarrow$ Degree of confidence above which scores are no more computed
    
+   $\rightarrow$ $\rightarrow$ Break and return if perfect match is found
+   
 - coarse-to-fine matching (restrict candidates with cosine -> M2 on remaining)
+ 
+- Keep a connectionist-like model of matches across utterances: the matches or 
+  words fired with the previous utterances remain active in memory for some 
+  time before decaying. A model of decay can also be envisioned, which controls
+  the time before stuff decays (eg. if one utterance is "nevermind", the model
+  can force immediate decay of everything)
  
 - Machine Learning on weights
  

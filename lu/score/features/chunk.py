@@ -103,7 +103,8 @@ def c_tmp_chunker(score,C_F,C_T,table):
 	corpus-based chunk list, 0 otherwise. 
 	"""
 	
-	_r = 1
+	#~ _r = 1
+	_r = 1*score.get_feature(score.AAVG)
 	
 	for c in C_F:
 		if c.text.lower() not in table.tmp_chunks_from:

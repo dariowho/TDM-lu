@@ -126,10 +126,10 @@ Here I consider \textbf{three features} based on Statistical Language Processing
 % Relative frequency across all sentences
 % Used to select good chunks
 Let's consider the following pair of sentences:
-\begin{quote}
-Pump up the volume\\
-Turn up the volume
-\end{quote}
+%\begin{quote}
+\enumsentence{Pump up the volume} %\\
+\enumsentence{Turn up the volume}
+%\end{quote}
 
 As an English-speaking human being I immediately associate the phrase "pump up" with "turn up" and "the volume" with its analogue. One of the reasons I make this association rather than, for instance, associating "pump" with "turn" and "up the volume" with its analogue, is that I have good experience of the phrase "the volume" being used in different contexts, while fewer times I encounter "up the volume".
 
@@ -143,11 +143,11 @@ Note that this feature is completely unsupervised, in that it does not require a
 % frequency in class / frequency overall
 % Used to weight more chunks that are representative for one class
 Let's consider the following three sentences:
-\begin{quote}
-Increase the volume\\
-I would appreciate if you could increase a bit the the volume\\
-Decrease the volume
-\end{quote}
+%\begin{quote}
+\enumsentence{Increase the volume} %\\
+\enumsentence{I would appreciate if you could increase a bit the the volume} %\\
+\enumsentence{Decrease the volume}
+%\end{quote}
 
 With a reasonable approximation, the first two sentences have the same meaning, while the last says the opposite, although the first and the last sentence are much more similar from a syntactic point of view. Nevertheless, no English speaker would bother wondering about hidden meanings behind phrases like "I would appreciate", or "if you could": everyone could tell that the second sentence is no more than the first one, with some more formal dressing.
 
@@ -164,10 +164,10 @@ This feature can be used to weight the score of different chunks in the sentence
 % Recursive score of alignments
 % Used to align chunks correctly
 Let's consider the following pair of sentences:
-\begin{quote}
-Skip this track \\
-Jump over this song
-\end{quote}
+%\begin{quote}
+\enumsentence{Skip this track} %\\
+\enumsentence{Jump over this song}
+%\end{quote}
 Again, English speakers can easily associate the meaning of "skip" with the one of "jump over", and the meaning of "track" with the one of "song".
 
 One device that the algorithm uses to solve this problem is the \textbf{Wordnet} Path Lenght measure for word comparison. However, it has been noticed that this measure has its limits. In particular

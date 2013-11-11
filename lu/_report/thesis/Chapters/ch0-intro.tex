@@ -52,24 +52,22 @@ Lastly, we can point out that when we talk of such things like \emph{realization
 
 \section{This thesis project} \label{ch:intro:project}
 
-The aim of this thesis project is to design and implement language learning capabilities for an existing dialogue system, focusing on the \textbf{realization level}. That is, given a fixed list of meanings, the system should be able to classify every sentence into its correct meaning. A client application has also been developed, that makes use of the dialog system to solve a real user experience task.
+The aim of this thesis project is to design and implement language learning capabilities for an existing dialogue system, focusing on the \textbf{realization level}. That is, given a fixed list of meanings, the system should be able to classify every given sentence into its correct meaning. A client application has also been developed, that makes use of the dialogue system to solve a real user experience task.
 
 Such an application is a voice-controlled music player, which has been named \textbf{\pname}. The task of such an application is to to get natural language input from the user and translate it into an appropriate corresponding behaviour. For example, when the input is ``Play Pictures at an exhibition", the system should start playing the famous suite by Modest Mussorgsky.
 
-In this domain, each \textbf{meaning} is an action that the player can perform (eg. play a song, jump to the next track, increase the volume, etc.), and is defined by a set of representative sentences, being its surface forms. For instance, the action of increasing the volume level can be defined by the following set of sentences:
-\begin{itemize}
-	\item \textit{Increase the volume}
-	\item \textit{Increase the volume level}
-	\item \textit{Raise the volume}
-	\item \textit{Increase the volume please}
-\end{itemize}
+In this domain, each \textbf{meaning} corresponds to an action that the player can perform (e.g.\ play a song, jump to the next track, increase the volume, etc.), and is defined by a set of representative sentences, being its surface forms. For instance, the action of increasing the volume level can be defined by the following set of sentences:
+\enumsentence{Increase the volume}
+\enumsentence{Increase the volume level}
+\enumsentence{Raise the volume}
+\enumsentence{Increase the volume please}
 
 The \textbf{task} for the application is, given an arbitrary input sentence and a context (the point of the conversational episode being realized), to reply appropriately, and perform the correct action, that is, \textbf{associate} that sentence with its correct meaning. Furthermore, the system should be able to \textbf{learn} new realizations for each meaning, as unknown sentences are given in input and processed.
 
-Note that such processing might be more or less \textbf{semantically intensive}. As an example, it can be argued that, given the above definition of the action to increase the volume, matching \textit{``Raise the volume please"} is an easier task than classifying \textit{``Turn up the volume"}. This is because the first sentence can be seen as a mere, string-wise, fusion of the two existing examples \textit{``Raise the volume"} and \textit{``Increase the volume please"}, whereas the second one requires a model of \textit{``Turn up"} being a string that carries the same meaning of different strings like \textit{``Increase"} or \textit{``Raise"}.
+Note that such processing might be more or less \textbf{semantically intensive}. As an example, it can be argued that, given the above definition of the action to increase the volume, matching \textit{``Raise the volume please"} is an easier task than classifying \textit{``Turn up the volume"}. This is because the first sentence can be seen as a mere, string-wise, fusion of the two existing examples \textit{``Raise the volume"} and \textit{``Increase the volume please"}, whereas the second one requires a model of \textit{``Turn up"} being a string that carries the same meaning as other strings like \textit{``Increase"} or \textit{``Raise"}.
 
-Also, an unknown input sentence should be given a \textbf{confidence score} for each candidate meaning it is associated to, in order for the system to model the uncertainty in the classification of unknown examples.
+Also, an unknown input sentence should be given a \textbf{confidence score} for each candidate meaning it is associated to, in order for the system to model the uncertainty in the classification of unknown examples. This is important because, depending on the degree of confidence of an interpretation, the system may change its interaction plans (e.g.\ asking the user for clarification).
 
-Finally, the system should be able to narrow possible needs for \textbf{clarification} down to single sentence components, eventually asking the user for disambiguation as specifically as possible. This is to enforce the learning of small components that may appear again in further unknown example.
+Finally, the system should be able to narrow possible needs for \textbf{clarification} down to single sentence components, eventually asking the user for disambiguation as specifically as possible. This is to enforce the learning of small components that may appear again in further unknown examples.
 
 This document is structured as follows. Chapter \ref{ch:rw} reviews the \textbf{related work} that has been previously done; chapter \ref{ch:arch} describes the \textbf{architecture} of the solution that has been developed; chapter \ref{ch:M2} delves into the \textbf{M2 algorithm}, which is the core of the meaning matching feature of the application; chapter ...\ldots

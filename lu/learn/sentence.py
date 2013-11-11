@@ -10,6 +10,8 @@ update the system's knowledge base to include the new example.
 
 import lu.ml
 import lu.score.chunk
+from lu.score.chunk import M2Table
+from lu.score.word import WordScore
 
 def learn(sentence_in,meaning_in,m2tables = None):
 	"""
@@ -25,8 +27,21 @@ def learn(sentence_in,meaning_in,m2tables = None):
 		for s in meaning_in.sentences:
 			_s = lu.score.chunk.get_score_m2(sentence_in,s)
 			assert _s is not None
-			m2tables.append(_s.s_table)
 			
+			if isinstance(_s,WordScore):
+				"""If WordScore (single word utterances) skip"""
+				# TODO: they should be processed somehow, but there is no time to
+				#       code that...
+				#~ continue
+				table = M2Table(_s.s_from,_s.s_to)
+				table.set_score(_s,_s.s_from,_s.s_to)
+				m2tables.append(table)
+			else:
+				"""Otherwise queue the score table for processing"""
+				m2tables.append(_s.s_table)
+			
+	# Assertion removed because single word utterances are skipped
+	# TODO: process them and set this assertion back
 	assert len(m2tables) == len(meaning_in.sentences)
 	
 	"""Update alignment frequencies with table scores"""
