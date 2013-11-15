@@ -9,28 +9,184 @@
 %----------------------------------------------------------------------------------------
 %	INTRO TEXT
 %----------------------------------------------------------------------------------------
-This chapter describes how the \pname software is able to exploit the information contained into an unknown input sentence, to make \textbf{pertinent questions} to the user about the meaning of its single components, and learn from the interaction. 
+In the previous chapter we have seen how the Language Unit is able to associate utterances from the user with their most likely meaning; due to the nature of the problem, it cannot be guaranteed that the output meaning is actually the one realizing the utterance. However, we have also seen that such an association is the result of a fuzzy matching process, where the utterance receives a comparison score with each of the candidate meanings. When these scores are accurate, they provide an important \textbf{estimate of the confidence} wether the understanding is correct or not.
+
+This chapter describes how the Language Unit exploits the information derived from the matching scores, to decide on wether a grounding interaction with the user is needed, in case asking \textbf{pertinent questions} about the meaning of single sentence components, and learn from this interaction. 
+
+Section \ref{ch:interaction:mmw} describes how the best interaction policy is selected; Section \ref{ch:interaction:afl} explains how the software locates the minimal unclear constituents in the input sentence; Section \ref{ch:interaction:episode} deals with how the Language Unit interact with TDM to produce the grounding episodes; Section \ref{ch:interaction:learn} describes how the user answers are used to learn new information about the language.
+
+%----------------------------------------------------------------------------------------
+%	MEANING MATCHING WORKFLOW
+%----------------------------------------------------------------------------------------
+
+\section{Meaning matching workflow} \label{ch:interaction:mmw}
+The first problem the Language Unit has to face, is to determine wether the understanding of an input utterance is good enough to be taken as correct, or it rather needs to be grounded with the user. To this respect, four different scenarios are possible:
+\begin{enumerate}
+	\item There is a best matching meaning, and its confidence score is high.
+	\item There is a best matching meaning, but its confidence score is low.
+	\item There are two or more meaning with a high confidence score.
+	\item No meaning has a good confidence score.
+\end{enumerate}
+These different situations can be easily associated with as many \textbf{interaction policies}:
+\begin{enumerate}
+	\item Accept the best meaning without interaction.
+	\item Ask wether the understanding of the best meaning is correct.
+	\item Ask the user to disambiguate between the top candidates.
+	\item Ask the user to rephrase his utterance.
+\end{enumerate}
+
+\subsection{The \texttt{get\_plan()} function} \label{ch:interaction:mmw:getplan}
+The work of \textbf{deciding on the policy} to adopt is done by the \texttt{lu.learn.interaction} module, and especially by the \texttt{get\_plan()} function. This function takes a list of candidate meanings (and their confidence scores) as input, and outputs the plan that the dialogue manager should follow. In the case of TDM, the \texttt{get\_plan\_tdm()} function can be called, which returns the plan in the form of TDM-compatible dialogue moves\footnote{Due to the lack of documentation of the TDM code, it was not possible to integrate the grounding moves into the dialogue management library. Instead, a generic entry-point-move is used to start grounding episodes that are in fact controlled by the Language Unit. More details will be given in \ref{ch:interaction:episode}.}.
+
+At first, \texttt{get\_plan()} \textbf{normalizes} the input scores, so that they head up to 1. This makes easy to express each score in terms of its proportion with the others. Note that, even if this is not done in the current implementation, one could think of using the un-normalized values to have an idea of the absolute confidence of the matches.
+
+When the scores are normalized, \textbf{confidence thresholds} can be set in order to detect the four cases showed in \ref{ch:interaction:mmw}:
+\begin{enumerate}
+	\item The best score is greater than a constant $\alpha$. The value of $\alpha$ should be chosen so that $\alpha > 0.5$; in this way it is guaranteed that at most one meaning will be selected with maximum confidence.
+	\item There is one and only one meaning whose confidence score is greater than a constant $\beta$, and yet smaller than $\alpha$. The value of $\beta$ should be chosen so that $\beta < \alpha$.
+	\item There are two or more meaning whose confidence score is greater than $\beta$ and smaller than $\alpha$. In order to allow for this possibility, $\beta$ should be chosen so that $\beta < 0.5$
+	\item None of the confidence scores is greater than $\beta$.
+\end{enumerate}
+
+At this point, \textbf{cases 1 and 4} are trivial to handle: \texttt{get\_plan()} will return the best matched meaning in the first case, and the meta-goal \texttt{\_rephrase}\footnote{Note that, since \texttt{get\_plan()} is called by TDM to interpret user utterances, formally this means ``User asked System to ask User to rephrase". A more elegant way of solving this issue would be to integrate rephrase requests in TDM, but this, again, was not possible due to lack of documentation.} in the latter. \texttt{\_rephrase} has the effect of terminating the interaction with the system utterance
+\enumsentence{I do not quite understand what do you mean, can you rephrase please?}
+
+Cases \textbf{2 and 3} require a more sophisticated handling. In this cases, the Language Unit will first try to locate specific parts of the utterance that are particularly unclear (see \ref{ch:interaction:afl}), and then use them to produce a dialogue episode to ground the correct meaning of the user utterance (see \ref{ch:interaction:episode}).
 
 %----------------------------------------------------------------------------------------
 %	MINIMAL AMBIGUOUS FRAGMENT
 %----------------------------------------------------------------------------------------
 
-\section{Ambiguous fragments location}
+\section{Ambiguous fragments location} \label{ch:interaction:afl}
+When the Language Unit is not sure about the meaning of one or more utterances, a procedure is used to reduce the uncertainty to the \textbf{smallest possible costituents} of the sentence. This is done by analyzing the similarity between the user utterance and the best matching sentence from each of the candidate meanings.
 
-\ldots software looking for minimal ambiguous fragments in the input sentence to ask questions about\ldots
+As an example, if the question
+\enumsentence{What is this song?} \label{ch:interaction:afl:whatisthis}
+matches the meaning \texttt{ask(?X.current\_song(X))}, and achieves its best score with the sentence 
+\enumsentence{What is the current song?} \label{ch:interaction:afl:whatis}
+The software should then return ``the current" and ``this" as the minimal uncertain alignment, as all the other parts are \textbf{perfectly matched}. Of course, the algorithm should have a margin of tolerance as to the constituents whose match should be considered accepted. As an example, the sentence
+\enumsentence{What's this song?}
+shouldn't raise concerns about the ``What's"/``What is" alignment, when compared against \ref{ch:interaction:afl:whatis}; this is because, even though the match between ``What's" and ``What is" is not perfect, it is expected to achieve a sufficiently high score.
+
+\subsection{The algorithm}
+\begin{algorithm}
+  \SetKwData{Left}{left}
+  \SetKwData{Up}{up}
+  \SetKwFunction{WWScore}{$\tau$}
+  \SetKwFunction{CCScore}{$\tilde{\sigma}$}
+  \SetKwFunction{from}{from}
+  \SetKwFunction{to}{to}
+  \SetKwFunction{getalignment}{get\_alignment}
+  \SetKwFunction{getscore}{get\_score}
+  \SetKwFunction{min}{min}
+  \SetKwFunction{Length}{Length}
+  \SetKwFunction{Split}{Split}
+  \SetKwFunction{Set}{Set}
+  \SetKwFunction{Append}{Append}
+  \SetKwFunction{Max}{Max}
+  \SetKwInOut{Input}{input}
+  \SetKwInOut{Output}{output}
+  \SetKw{In}{in}
+
+  \SetKwFunction{algo}{locate\_fragments}
+  
+  \SetKwProg{myalg}{Procedure}{}{}
+  \myalg{\algo{}}{
+\lIf{s is WordScore}{\Return{s.\from, s.\to}} \label{ch:interaction:afl:algo:recstep1}
+  \BlankLine
+  $s_1\leftarrow$ s.\getalignment{$1$}.\getscore{}\; \label{ch:interaction:afl:algo:al1}
+  $s_2\leftarrow$ s.\getalignment{$2$}.\getscore{}\; \label{ch:interaction:afl:algo:al2}
+  $s_{1_N} \leftarrow \frac{s_1}{s_1+s_2}$\;  \label{ch:interaction:afl:algo:norm1}
+  $s_{2_N} \leftarrow \frac{s_2}{s_1+s_2}$\;  \label{ch:interaction:afl:algo:norm2}
+  \BlankLine
+  \eIf{$|s_{1_N}-s_{2_N}|>\gamma$}{\label{ch:interaction:afl:algo:if}
+	\Return{\algo{\min{$s_1,s_2$}}}
+  }{
+	\Return{s.\from, s.\to}
+  } \label{ch:interaction:afl:algo:endif}
+  }
+\caption{The minimal ambiguous fragment location algorithm\label{ch:interaction:afl:algo}}
+\end{algorithm}
+
+Algorithm \ref{ch:interaction:afl:algo} defines the \texttt{locate\_fragments()} function, which is used to locate, in the utterance from the user, the \textbf{constituents} that are especially unclear.
+
+\texttt{locate\_fragments()} is a \textbf{recursive} function, that receives a Sentence Score $s$ as input\footnote{Note that, both here and in the actual implementation, a Score is not just a numeric value, but also contains information about the matched elements. For instance, scores define the fields \texttt{from} and \texttt{to}, containing the two elements (sentences, chunks, or words) the score refers to.} (it will be fed with the score between the user utterance and the best matching sentence in every candidate meaning of it), and outputs the two minimal constituents for which the alignment is uncertain (e.g.\ respect to the example mentioned in \ref{ch:interaction:afl}, it is expected to output the two chunks ``the current" and ``this"). This information will be used to produce \textbf{questions} for the user (e.g.\ ``Do you mean `the current' when you say `this'?").
+
+We can see at \textbf{line \ref{ch:interaction:afl:algo:recstep1}} that one reason that ends the recursion is when a \texttt{WordScore} object is given as input. This is clearly because no smaller constituents can be found in a score between two words.
+
+If the input score is not a \texttt{WordScore}, it must then be a \texttt{ChunkScore}\footnote{It could also be a \texttt{SentenceScore}: this happens in the first call to the algorithm. However, in the current implementation, the \texttt{SentenceScore} class is just an alias for \texttt{ChunkScore} (see \ref{ch:arch:LU:scores:sentence})}. We know from Chapter \ref{ch:M2} that every score between two chunks builds on two scores of smaller chunks; for instance, the score between sentences \ref{ch:interaction:afl:whatisthis} and \ref{ch:interaction:afl:whatis}, $\sigma_S$(``What's this song",``What is the current song"), will ideally contain the scores $\sigma_C$(``what's",``what is") and $\sigma_C$(``the current song",``this song"). \textbf{Lines \ref{ch:interaction:afl:algo:al1} and \ref{ch:interaction:afl:algo:al2}} retrieve the scores of these two smaller alignments from the main score object.
+
+\textbf{Lines \ref{ch:interaction:afl:algo:norm1} and \ref{ch:interaction:afl:algo:norm2}} normalize the inner alignment scores so that they head up to 1. This is to uniform the values the algorithm will deal with in the next steps.
+
+The final \texttt{if} construct (\textbf{lines \ref{ch:interaction:afl:algo:if} to \ref{ch:interaction:afl:algo:endif}}) looks at the difference between the scores of the inner alignments: if there is a significant difference between these two scores ($\gamma$ is a free parameter) then repeat the algorithm on the weakest alignment (because it means that it contains the misunderstood part, while the other was understood with good confidence), otherwise return the whole chunks contained in the input score (because it means that both the alignments are somehow weak).
 
 %----------------------------------------------------------------------------------------
 %	INTERACTION EPISODE
 %----------------------------------------------------------------------------------------
 
-\section{Production of the interaction episode}
+\section{Production of the interaction episode} \label{ch:interaction:episode}
+In \ref{ch:interaction:mmw} wew have encountered two cases in which an interaction with the user is necessary to ensure the correctness of the interpretation:
+\begin{itemize}
+	\item The best matched meaning did not achieved enough confidence to be taken as correct
+	\item More than one meaning achieved an equally high level of confidence
+\end{itemize}
 
-\ldots generation of the questions and storage of the answers\ldots
+Even though these two situations could be approached in two different ways, only \textbf{one grounding episode} have been designed. and that is identified by the label \texttt{\_ground}.
+
+This episode, also because of technical restriction (as it will be explained in \ref{ch:interaction:episode:impl}), is very simple, and consists of a single question, that can be answered affirmatively or negatively by the user. The following is an example of a \texttt{\_ground} episode:
+
+\texttt{S> How can I help you? \\
+U> what is the title of this song \\
+S> Does `title of this song' mean `current song'? \\
+U> yes \\
+S> Thank you for the feedback! \\
+S> Young Lust, by Pink Floyd}
+
+Note that the grounding question is always given in the form of ``Does X mean Y", where X and Y are the chunks returned by \texttt{locate\_fragments()} (see \ref{ch:interaction:afl}).
+
+If there is only \textbf{one candidate} meaning, the question will be referred to that meaning, \textbf{otherwise} the question will be about the meaning that achieved the best score. Note that in fact this mean that the two cases are \textbf{not distinguished} in any ways from each other. However, it is also worth to note that, even though only the simplest part of it is implemented in the dialogue manager, the plan produced by the Language Unit does differenciate the two situations, and includes nested questions, which utterance is conditioned on the answer of the top level ones.
+
+\subsection{Implementation} \label{ch:interaction:episode:impl}
+
+As it has already been mentioned, the TDM library comes with no technical documentation. This prevented the design of anything but extremely simple grounding interactions. For the same reason, the design and implementation of such interaction, which is described in this section, is to be considered as a substantial \textbf{workaround}, wich does not fit the design principles of neither TDM or LU: an integral rewrite should be considered upon availability of TDM's documentation.
+
+Every time the \texttt{get\_plan()} function of the \textbf{Language Unit} (see \ref{ch:interaction:mmw:getplan}) encounters one of the situations mentioned in \ref{ch:interaction:episode}, instead of returning an ordinary dialogue move, it performs the following operations: 
+\begin{enumerate}
+	\item Pushes the uncertain meaning in a stack of open grounding issues. This stack is defined in \texttt{lu.learn.interaction} as \texttt{tdm\_ground\_stack}.
+	\item Returns the \texttt{request(\_ground)} meta-move to TDM, that called the LU in the first place. This call is made from \texttt{tdm.lu\_grammar}, by the method \texttt{utterance\_to\_moves} of the class \texttt{LuGrammar}, which is itself called by method \texttt{interpret} of class \texttt{InterpretModule}, defined in \texttt{tdm.interpret}. Along with the grounding request, the LU also sends the English question that will be asked to the user.
+\end{enumerate}
+
+The following actions are performed by \textbf{TDM} upon receival of the \texttt{request(\_ground)}:
+\begin{enumerate}
+	\item Changes the realization string for the meaning \texttt{ask(?X.\_ground\_X\_to\_Y(X))} (which will be later used to ask the question to the user)  into the question provided by the LU.
+	\item Executes the normal plan associated with  \texttt{\_ground}.
+\end{enumerate}
+
+The \texttt{\_ground} \textbf{plan} is made of two parts:
+\begin{enumerate}
+	\item \texttt{findout(?X.\_ground\_X\_to\_Y(X))}, where the system question generated by the Language Unit is answered with yes or no.
+	\item \texttt{dev\_perform(Ground, MplayDevice)}; the \texttt{Ground} device action is triggered to handle the answer to the previous question.
+\end{enumerate}
+
+The \texttt{Ground} \textbf{device} action terminates the interaction with the user. If the grounding was negative (X does not mean Y), then it simply concludes the interaction asking the user to rephrase its utterance. Otherwise, if the grounding was positive, the following operations are performed:
+\begin{enumerate}
+	\item Contacts the Language Unit to solve the top open grounding issue. This will pop the top element of the stack of open grounding issues, and possibly start the learning process.
+	\item Execute the action the user wanted in the first place.
+\end{enumerate}
+
+The second point is somehow tricky, in that there is no known way for the device to interfer with the dialogue management operations. The solution to this problem is particularly inelegant: the device imports the Turn Manager, wich has been extended with a \texttt{ground\_hack()} method. This method has the evvect of posting the ad-hoc \texttt{GROUND\_HACK} event in the system, with attached the meaning label of the action to run. A handler for this event has been written in the \texttt{tdm.interpret} module, which receives the meaning string, parses it, and finally throws the \texttt{INTERPRETATION} event that will run the action.
 
 %----------------------------------------------------------------------------------------
 %	KNOWLEDGE UPDATE
 %----------------------------------------------------------------------------------------
 
-\section{Knowledge update}
+\section{Knowledge update} \label{ch:interaction:learn}
 
-\ldots update of the database\ldots
+Every time a new labeled example (sentence + meaning label) is encountered, the Language Unit updates its knowledge about the language. In the current implementation, learning a \textbf{new sentence} consists of
+\begin{itemize}
+	\item Adding the new example to the set of the sentences that realize its meaning
+	\item Updating the global chunk count (see \ref{ch3:ml:cl}) for every possible substring of the input sentence
+	\item Updating the class-conditional chunk count (see \ref{ch3:ml:cc}) for every possible substring of the input sentence
+	\item Updating the alignment mass (see \ref{ch3:ml:al}) for every possible alignment of every substring of the input sentences with the substrings of the already known sentences realizing its meaning.
+\end{itemize}
+These operations are done by the \texttt{lu.learn.sentence} module, and especially by its \texttt{learn()} method.

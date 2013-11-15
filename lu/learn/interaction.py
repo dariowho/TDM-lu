@@ -201,7 +201,7 @@ def _get_questions_chunk(s):
 	s1 = s1/_sum
 	s2 = s2/_sum
 	
-	if (s1-s2 > GAMMA):
+	if (abs(s1-s2) > GAMMA):
 		if (s1<s2):
 			return _get_questions_chunk(s.alignment[0])
 		else:
