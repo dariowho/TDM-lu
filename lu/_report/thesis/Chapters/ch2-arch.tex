@@ -148,8 +148,6 @@ In the application, a Chunk Score is represented by the \texttt{ChunkScore} clas
 	\item \texttt{ChunkScore.ML\_CFREQ} - The Chunk Likelihood. This features is meant to enforce good linguistic splitting of the input chunks, as it sets a preference for chunks that occur more in the language base (eg. the chunk ``the volume" is supposed to occur more often that ``increase the"). Such a value is based on Machine Learning from previous examples, and it is implemented as the sum of the relative counts of the two chunks. A more detailed explanation of this will be given in \ref{ch3:ml:cl}.
 
 	\item \texttt{ChunkScore.ML\_AFREQ} - The Alignment Likelihood. Such a value is based on Machine Learning from previous examples, and it is implemented as the relative count of the times the two input chunks have been found aligned together. A more detailed explanation of this feature will be given in  \ref{ch3:ml:al}. 
-	
-	
 \end{itemize}
 
 \subsubsection{Word Score} \label{ch:arch:LU:scores:word}
