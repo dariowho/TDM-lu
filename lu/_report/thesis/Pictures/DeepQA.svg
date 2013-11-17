@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="46cm" height="23cm" viewBox="29 -21 902 452" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <rect style="fill: #ffffff" x="40" y="220" width="79.25" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="40" y="220" width="79.25" height="54"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="79.625" y="242.9">
+      <tspan x="79.625" y="242.9">Question</tspan>
+      <tspan x="79.625" y="258.9">analysis</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="140" y="220" width="116.1" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="140" y="220" width="116.1" height="54"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="198.05" y="242.9">
+      <tspan x="198.05" y="242.9">Query</tspan>
+      <tspan x="198.05" y="258.9">decomposition</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="79.7889" y1="121.004" x2="79.6741" y2="209.262"/>
+    <polygon style="fill: #000000" points="79.6643,216.762 74.6773,206.755 79.6741,209.262 84.6773,206.768 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="79.6643,216.762 74.6773,206.755 79.6741,209.262 84.6773,206.768 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="120.254" y1="247" x2="129.26" y2="247"/>
+    <polygon style="fill: #000000" points="136.76,247 126.76,252 129.26,247 126.76,242 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="136.76,247 126.76,252 129.26,247 126.76,242 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="280" y="220" width="93.1" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="280" y="220" width="93.1" height="54"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="326.55" y="242.9">
+      <tspan x="326.55" y="242.9">Hypothesis</tspan>
+      <tspan x="326.55" y="258.9">generation</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="400" y="220" width="71.55" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="400" y="220" width="71.55" height="54"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="435.775" y="242.9">
+      <tspan x="435.775" y="242.9">Soft</tspan>
+      <tspan x="435.775" y="258.9">filtering</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="500" y="220" width="130.8" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="500" y="220" width="130.8" height="54"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="565.4" y="242.9">
+      <tspan x="565.4" y="242.9">Hypothesis and</tspan>
+      <tspan x="565.4" y="258.9">evidence scoring</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="660" y="227" width="83.7" height="38"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="660" y="227" width="83.7" height="38"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="701.85" y="249.9">
+      <tspan x="701.85" y="249.9">Synthesis</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="800" y="220" width="120" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="800" y="220" width="120" height="54"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="860" y="242.9">
+      <tspan x="860" y="242.9">Final merging</tspan>
+      <tspan x="860" y="258.9">and ranking</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="257.1" y1="247" x2="269.317" y2="247"/>
+    <polygon style="fill: #000000" points="276.817,247 266.817,252 269.317,247 266.817,242 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="276.817,247 266.817,252 269.317,247 266.817,242 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="374.103" y1="247" x2="389.259" y2="247"/>
+    <polygon style="fill: #000000" points="396.759,247 386.759,252 389.259,247 386.759,242 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="396.759,247 386.759,252 389.259,247 386.759,242 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="472.556" y1="247" x2="489.261" y2="247"/>
+    <polygon style="fill: #000000" points="496.761,247 486.761,252 489.261,247 486.761,242 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="496.761,247 486.761,252 489.261,247 486.761,242 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="631.801" y1="246.513" x2="649.265" y2="246.385"/>
+    <polygon style="fill: #000000" points="656.765,246.33 646.802,251.404 649.265,246.385 646.729,241.404 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="656.765,246.33 646.802,251.404 649.265,246.385 646.729,241.404 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="744.669" y1="246.271" x2="789.336" y2="246.553"/>
+    <polygon style="fill: #000000" points="796.836,246.601 786.805,251.537 789.336,246.553 786.868,241.537 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="796.836,246.601 786.805,251.537 789.336,246.553 786.868,241.537 "/>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="280" y="300" width="93.1" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="280" y="300" width="93.1" height="54"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="326.55" y="322.9">
+      <tspan x="326.55" y="322.9">Hypothesis</tspan>
+      <tspan x="326.55" y="338.9">generation</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="400" y="300" width="71.55" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="400" y="300" width="71.55" height="54"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="435.775" y="322.9">
+      <tspan x="435.775" y="322.9">Soft</tspan>
+      <tspan x="435.775" y="338.9">filtering</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="500" y="300" width="130.8" height="54"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="500" y="300" width="130.8" height="54"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="565.4" y="322.9">
+      <tspan x="565.4" y="322.9">Hypothesis and</tspan>
+      <tspan x="565.4" y="338.9">evidence scoring</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="374.103" y1="327" x2="389.259" y2="327"/>
+    <polygon style="fill: #000000" points="396.759,327 386.759,332 389.259,327 386.759,322 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="396.759,327 386.759,332 389.259,327 386.759,322 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="472.556" y1="327" x2="489.261" y2="327"/>
+    <polygon style="fill: #000000" points="496.761,327 486.761,332 489.261,327 486.761,322 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="496.761,327 486.761,332 489.261,327 486.761,322 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="198.05,275.007 198.05,327 270.264,327 "/>
+    <polygon style="fill: #000000" points="277.764,327 267.764,332 270.264,327 267.764,322 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="277.764,327 267.764,332 270.264,327 267.764,322 "/>
+  </g>
+  <g>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="630.8,327 701.85,327 701.85,274.736 "/>
+    <polygon style="fill: #000000" points="701.85,267.236 706.85,277.236 701.85,274.736 696.85,277.236 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="701.85,267.236 706.85,277.236 701.85,274.736 696.85,277.236 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="860.293" y1="274.985" x2="861.071" y2="349.267"/>
+    <polygon style="fill: #000000" points="861.149,356.767 856.045,346.82 861.071,349.267 866.044,346.715 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="861.149,356.767 856.045,346.82 861.071,349.267 866.044,346.715 "/>
+  </g>
+  <g>
+    <path style="fill: #ffffff" d="M 533 -7.33333 C 549,-16.8333 557,-20 573,-20 C 589,-20 597,-16.8333 613,-7.33333 L 613,43.3333 C 597,52.8333 589,56 573,56 C 557,56 549,52.8333 533,43.3333 L 533,-7.33333z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 533 -7.33333 C 549,-16.8333 557,-20 573,-20 C 589,-20 597,-16.8333 613,-7.33333 L 613,43.3333 C 597,52.8333 589,56 573,56 C 557,56 549,52.8333 533,43.3333 L 533,-7.33333"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 533 -7.33333 C 549,2.16667 557,5.33333 573,5.33333 C 589,5.33333 597,2.16667 613,-7.33333"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="573" y="20.3333">
+      <tspan x="573" y="20.3333">Evidence</tspan>
+      <tspan x="573" y="36.3333">sources</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="220" y="80" width="80" height="80"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="220" y="80" width="80" height="80"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="260" y="115.9">
+      <tspan x="260" y="115.9">Primary</tspan>
+      <tspan x="260" y="131.9">search</tspan>
+    </text>
+  </g>
+  <g>
+    <polygon style="fill: #ffffff" points="44.5588,80 129.632,80 115.074,120 30,120 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="44.5588,80 129.632,80 115.074,120 30,120 "/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="79.8162" y="103.9">
+      <tspan x="79.8162" y="103.9">Question</tspan>
+    </text>
+  </g>
+  <g>
+    <polygon style="fill: #ffffff" points="819.478,360 929.098,360 903.621,430 794,430 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="819.478,360 929.098,360 903.621,430 794,430 "/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="861.549" y="382.9">
+      <tspan x="861.549" y="382.9">Answer</tspan>
+      <tspan x="861.549" y="398.9">and</tspan>
+      <tspan x="861.549" y="414.9">confidence</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="323" y="80" width="91.65" height="83"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="323" y="80" width="91.65" height="83"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="368.825" y="109.4">
+      <tspan x="368.825" y="109.4">Candidate</tspan>
+      <tspan x="368.825" y="125.4">answer</tspan>
+      <tspan x="368.825" y="141.4">generation</tspan>
+    </text>
+  </g>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="301.002" y1="120.565" x2="321.998" y2="120.855"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="281.483" y1="160.997" x2="311.874" y2="218.994"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="354.507" y1="164.005" x2="335.973" y2="219.026"/>
+  <g>
+    <rect style="fill: #ffffff" x="473" y="80" width="92.45" height="80"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="473" y="80" width="92.45" height="80"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="519.225" y="107.9">
+      <tspan x="519.225" y="107.9">Supporting</tspan>
+      <tspan x="519.225" y="123.9">evidence</tspan>
+      <tspan x="519.225" y="139.9">retrieval</tspan>
+    </text>
+  </g>
+  <g>
+    <rect style="fill: #ffffff" x="583" y="80" width="80.15" height="79"/>
+    <rect style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x="583" y="80" width="80.15" height="79"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="623.075" y="107.4">
+      <tspan x="623.075" y="107.4">Deep</tspan>
+      <tspan x="623.075" y="123.4">evidence</tspan>
+      <tspan x="623.075" y="139.4">scoring</tspan>
+    </text>
+  </g>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="534.131" y1="160.997" x2="555.217" y2="218.994"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="604.752" y1="160.005" x2="578.045" y2="219.047"/>
+  <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="566.447" y1="119.773" x2="581.995" y2="119.698"/>
+  <g>
+    <path style="fill: #ffffff" d="M 272 -7.33333 C 288,-16.8333 296,-20 312,-20 C 328,-20 336,-16.8333 352,-7.33333 L 352,43.3333 C 336,52.8333 328,56 312,56 C 296,56 288,52.8333 272,43.3333 L 272,-7.33333z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 272 -7.33333 C 288,-16.8333 296,-20 312,-20 C 328,-20 336,-16.8333 352,-7.33333 L 352,43.3333 C 336,52.8333 328,56 312,56 C 296,56 288,52.8333 272,43.3333 L 272,-7.33333"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 272 -7.33333 C 288,2.16667 296,5.33333 312,5.33333 C 328,5.33333 336,2.16667 352,-7.33333"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="312" y="20.3333">
+      <tspan x="312" y="20.3333">Answer</tspan>
+      <tspan x="312" y="36.3333">sources</tspan>
+    </text>
+  </g>
+  <g>
+    <path style="fill: #ffffff" d="M 740 280.667 C 752,271.167 758,268 770,268 C 782,268 788,271.167 800,280.667 L 800,331.333 C 788,340.833 782,344 770,344 C 758,344 752,340.833 740,331.333 L 740,280.667z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 740 280.667 C 752,271.167 758,268 770,268 C 782,268 788,271.167 800,280.667 L 800,331.333 C 788,340.833 782,344 770,344 C 758,344 752,340.833 740,331.333 L 740,280.667"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" d="M 740 280.667 C 752,290.167 758,293.333 770,293.333 C 782,293.333 788,290.167 800,280.667"/>
+    <text style="fill: #000000;text-anchor:middle;font-size:12.7998;font-family:sanserif;font-style:normal;font-weight:normal" x="770" y="308.333">
+      <tspan x="770" y="308.333">Trained</tspan>
+      <tspan x="770" y="324.333">models</tspan>
+    </text>
+  </g>
+</svg>

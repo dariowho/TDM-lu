@@ -29,11 +29,25 @@ The way sentences are compared in \pname takes into account the aspects of all t
 \section{Machine Learning for Language Processing}
 The task of labeling an unknown sentence with its correct meaning can be easily expressed in terms of Machine Learning. In fact, it is a standard supervised \textbf{classification problem} to learn a class' model from examples, and later use that model to label new data points. In this view, a data point is a natural language sentence, and a label is its meaning. 
 
-Accordingly, another source of inspiration for this work is represented by \textbf{statistic}, corpus-based methods in Computational Linguistics; a significant example comes from The IBM models for Statistical \textbf{Machine Translation} \citep{Brown:1993:MSM:972470.972474}, that first introduced the idea of feeding statistically intensive \textbf{Machine Learning} algorithms with big data from corpora, which nowadays is the dominant paradigm in MT; insightful is also the work on Data Oriented Parsing, and particularly the U-DOP model for \textbf{Unsupervised Language Learning} \citep{Bod:2006:UPU:1596276.1596293}, which core idea is to initially assume all the possible syntax trees for a set of sentences as equally possible, and then use all the possible sub-trees of them to compute the most probable parse trees, letting the structure of the language emerge from the data.
+\subsection{Computational Linguistics}
+Another source of inspiration for this work is represented by \textbf{statistic}, corpus-based methods in Computational Linguistics; a significant example comes from The IBM models for Statistical \textbf{Machine Translation} \citep{Brown:1993:MSM:972470.972474}, that first introduced the idea of feeding statistically intensive \textbf{Machine Learning} algorithms with big data from corpora, which nowadays is the dominant paradigm in MT; insightful is also the work on Data Oriented Parsing, and particularly the U-DOP model for \textbf{Unsupervised Language Learning} \citep{Bod:2006:UPU:1596276.1596293}, which core idea is to initially assume all the possible syntax trees for a set of sentences as equally possible, and then use all the possible sub-trees of them to compute the most probable parse trees, letting the structure of the language emerge from the data.
 
-Particularly inspiring for the development of this thesis was the work done by IBM on Watson. Watson is \ldots 
+This work in Computational Linguistics is well reflected in our project, as a strong part of it consists of finding \textbf{alignments} of strings sharing similar meanings. We will see (Chapters \ref{ch:arch} and \ref{ch:M2}) that the computation of these alignments happens in a similar setting as in corpus-based Machine Translation: every alignment is initially considered plausible\footnote{It is worth to note that, where in classic Machine Translation every alignment is initially considered possible with equal probability, here we use some heuristics to provide a clever initialization, in order to cope with the limited amount of training data we have.}, but recurrent ones are reinforced more often, and will thus achieve better and better scores as the model is trained with more examples Also, the same procedure that computes the alignments is used to let \textbf{syntactic structures} emerge from training data, and from processing new input sentences.
 
-CL\&DOP \ldots
+\subsection{IBM Watson}
+Particularly inspiring for the development of this thesis was the work done by IBM on Watson. \textbf{IBM Watson} is a question answering computer system that applies advanced Artificial Intelligence techniques to the field of open domain question answering \citep{Ferrucci:2011:IW:2024723.2019525}. That is, a software capable of crawling a database of knowledge looking for an answer to any specific English question given as input; along with the answer, the system outputs also a confidence value, that accurately reflects the probability of the answer being correct. Watson was in the headlines in 2011 for competing in the popular American quiz show \textit{Jeopardy!}, defeating former winners  Brad Rutter and Ken Jennings, and thus winning the \$1 million first prize.
+
+What is interesting about Watson, respect to our work, is the feature-based approach to \textbf{evidence scoring} that is used to select the correct answers. Figure \ref{ch:rw:ml:watson} \citep{journals/aim/FerrucciBCFGKLMNPSW10} shows a bird-eye view of the whole Watson architecture; the part of this process that is especially interesting for us is the \textit{Hypothesis and evidence scoring}: at that point, the system receives a set of candidate answers for the input question; each of this answers will be run through a series of procedures whose purpose is to find evidence supporting that answer. Most of these procedures are not particularly sophisticate, in fact the clever part of the algorithm is to combine a \textbf{high number of features} to obtain an accurate final score value. This is done by training Watson's hypermodel with data from previous \textit{Jeopardy!} games; the hypermodel consists of a set of weights, that are then used to produce the optimal linear combination of the features.
+
+Even though this latter meta-learning aspect is not implemented in our work, we will find a similar feature-based scoring approach in the core matching algorithm of the Language Unit, discussed in detail in Chapter \ref{ch:M2}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=12cm]{Pictures/DeepQA.pdf}
+	\caption{Watson's high level architecture}
+	\label{ch:rw:ml:watson}
+\end{figure}
+
 
 
 %----------------------------------------------------------------------------------------
