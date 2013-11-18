@@ -56,14 +56,48 @@ Even though this latter meta-learning aspect is not implemented in our work, we 
 
 \section{Dialogue Systems}
 
-Research on dialogue systems has been carried on since the \textbf{early days} of Artificial Intelligence. A milestone in the early work on this field is ELIZA \citep{Weizenbaum:1966:ECP:365153.365168}, which provides the user with a basic human-like interaction based on pattern matching; another example is the SHRDLU system \citep{winograd1971procedure}, which interfaces the user with a simple spatial domain by listening to the user's utterances (e.g.\ ``Would you please put the green pyramid in the box?"), and performing actions accordingly in the domain, resolving, if necessary, ambiguous or implicit references to the entities in it.
+Research on dialogue systems has been carried on since the \textbf{early days} of Artificial Intelligence. A milestone in the early work on this field is ELIZA \citep{Weizenbaum:1966:ECP:365153.365168}, which provides the user with a basic human-like interaction based on pattern matching; Figure \ref{ch:rw:ds:ELIZA} shows an instance of these patterns.
+
+Another example is the SHRDLU system \citep{winograd1971procedure}, which interfaces the user with a simple spatial domain by listening to the user's utterances (e.g.\ ``Would you please put the green pyramid in the box?"), and performing actions accordingly in the domain, resolving, if necessary, ambiguous or implicit references to the entities in it.
+
+\begin{figure}
+\begin{Verbatim}[frame=single]
+["dream", 3, [
+ ["*", [
+     "What does that dream suggest to you ?",
+     "Do you dream often ?",
+     "What persons appear in your dreams ?",
+     "Do you believe that dreams have something to do
+      with your problem ?"
+  ]]
+]]
+\end{Verbatim}
+\caption{One of the patterns included in ELIZA's DOCTOR script. It simply tells the system that the user input can be answered with any of the given sentences, whenever it contains the word ``dream".}
+\label{ch:rw:ds:ELIZA}
+\end{figure}
+
+\subsection{Task vs Nontaks}
 
 According to \cite{Jokinen2009}, modern dialogue systems can be divided in \textbf{two main types}: task-oriented and nontask-oriented. Intuitively, systems in the first category are meant to deal with a specific task such as making a hotel booking, or booking a plane ticket; an example in this category is the MIT Mercury system, a vocal interface to a flight database \citep{Seneff:2000:DMM:1605285.1605288}. On the other hand, nontask-oriented systems are meant to engage in conversations without a specific purpose to fulfill, but the one of delivering a realistic simulation; ELIZA itself is an example of nontask-oriented dialogue system.
 
 Task-oriented systems can be very simple, as simple and well-formalized the task is;  many applications, such as travel service or call routing, can be successfully solved by \textbf{slot-based} systems: each step of the conversation requires some pieces of information, modeled as slots, to be filled in by the user (departure city, arrival city, date, and so on); given the slots to be filled, the dialogue task can be solved with a formal grammar of interaction. As the complexity increases, more phenomena of human interaction have to be modeled, such as turn-taking, multimodality or grounding
 %\ignore{CITE RAQUEL'S CHAPTER}
-, as well as semantic structures such as quantification and negation; slot-based systems are not sufficient to model these scenarios \citep{Gabsdil03clarificationin}, that require more advanced frameworks such a the Information State Update (ISU) one \citep{TraumLarsson03p325}.
+, as well as semantic structures such as quantification and negation; slot-based systems are not sufficient to model these scenarios \citep{Gabsdil03clarificationin}, that require more advanced frameworks such a the Information State Update (ISU) one, which will be tackled in \ref{ch:rw:ds:isu}.
 
-\subsection{Information State Update Dialogue Management}
+\subsection{Information State Update Dialogue Management}\label{ch:rw:ds:isu}
+The ISU approach to Dialogue Management, as it is described by \cite{TraumLarsson03p325}, can be seen as an attempt to reduce the gap between ``theories of dialogue that linguists or philosophers of language may devise and theories directly implemented in dialogue systems".
 
-\ldots
+The linguistic and philosophical roots of this theory can be found in the notion of \textbf{common ground}, as it is defined by [STALNAKER CITE]; on Stalnaker's account, the common ground consists of an unstrucrured set of all the possible worlds that are compatible with the propositions asserted so far in the dialogue. A slightly more sophisticated formulation of the same concept comes from [LEWIS, CITE], who, drawing a parallel between dialogues and baseball, introduces the notion of ``conversational scoreboard", to keep track of the participants' moves. Even closer to the model of Traum and Larsson is \textbf{Ginzburg's dialogue gameboard} [CITATION]; one of the main differences between this model and the other two is represented by the inner structure of the scoreboard, which in Ginzburg is not just a set of propositions, but rather provides a structure made of facts, questions under discussion (QUD) and moves.
+
+Traum and Larsson's notion of \textbf{Information State} takes Ginzburg's DGB one step further, by extending it with a formal representation of what Ginzburg calls the unpublished part of a dialogue partner's mental state (UNPUB-MS), and that will become the private part of the Information State. Figure \ref{ch:rw:ds:isu:ibisis} shows a simple Information State type, as it is implemented in the IBiS1 system \citep[p. 36]{Larsson02issue-baseddialogue}. It can be easily noticed that the IS is split in two sections, ``Private" and ``Shared", each of them containing formal representations of informational components: an agenda of actions being executed, a plan for future actions and a set of beliefs for the \textbf{private} part, the set of propositions in the common ground, a stack of questions under discussion, and the last utterance in the \textbf{shared} part.
+
+The central concept of ISU-based systems is to \textbf{update} this, initially empty, Information State, according to the dialogue moves performed by the DPs. A \textbf{dialogue move} is tipycally a natural language utterance, but, in more complex systems, can also be a different form of interaction, like a gesture. The system detects this interactions, and is able to modify the IS accordingly (e.g.\ inserting a new question under discussion, or marking an action as completed, and so on) thanks to a set of \textbf{update rules}, and an \textbf{update strategy}, to decide on which rules to apply when more than one can be selected.
+
+\begin{figure}
+	\centering
+	\includegraphics{Pictures/ibis1_is.png}
+	\caption{Information State, as it is implemented in IBiS1}
+	\label{ch:rw:ds:isu:ibisis}
+\end{figure}
+
+This work is relevant to us, as our software builds on the TDM dialogue management library (see \ref{ch:arch:TDM}), which implements the Information State Update framework.
