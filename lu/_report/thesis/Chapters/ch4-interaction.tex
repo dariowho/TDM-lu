@@ -19,7 +19,7 @@ Section \ref{ch:interaction:mmw} describes how the best interaction policy is se
 %	MEANING MATCHING WORKFLOW
 %----------------------------------------------------------------------------------------
 
-\section{Meaning matching workflow} \label{ch:interaction:mmw}
+\section{Meaning Matching Workflow} \label{ch:interaction:mmw}
 The first problem the Language Unit has to face, is to determine whether the understanding of an input utterance is good enough to be taken as correct, or it rather needs to be grounded with the user.
 
 \subsection{Overview}
@@ -43,7 +43,7 @@ These different situations can be easily associated with as many \textbf{interac
 	\item Ask the user to rephrase his utterance.
 \end{enumerate}
 
-\subsection{Implementation: the \texttt{get\_plan()} function} \label{ch:interaction:mmw:getplan}
+\subsection{Implementation: the \texttt{get\_plan()} Function} \label{ch:interaction:mmw:getplan}
 The work of \textbf{deciding on the policy} to adopt is done by the \texttt{lu.learn.interaction} module, and especially by the \texttt{get\_plan()} function. This function takes a list of candidate meanings (and their confidence scores) as input, and outputs the plan that the dialogue manager should follow. In the case of TDM, the \texttt{get\_plan\_tdm()} function can be called, which returns the plan in the form of TDM-compatible dialogue moves\footnote{Due to the lack of documentation of the TDM code, it was not possible to integrate the grounding moves into the dialogue management library. Instead, a generic entry-point-move is used to start grounding subdialogues that are in fact controlled by the Language Unit. More details will be given in \ref{ch:interaction:episode}.}.
 
 At first, \texttt{get\_plan()} \textbf{normalizes} the input scores, so that they sum up to 1. This allows us to compare them scores more easily\footnote{Note that, even if this is not done in the current implementation, one could think of using the un-normalized values to have an idea of the absolute confidence of the matches.}.
@@ -76,7 +76,7 @@ Cases \textbf{2 and 3} require a more sophisticated handling. In this cases, the
 %	MINIMAL AMBIGUOUS FRAGMENT
 %----------------------------------------------------------------------------------------
 
-\section{Ambiguous fragment location} \label{ch:interaction:afl}
+\section{Ambiguous Fragment Location} \label{ch:interaction:afl}
 When the Language Unit is not sure about the meaning of the user utterance, a procedure is used to reduce the uncertainty to the \textbf{smallest possible constituents} of the sentence. This is done by analyzing the similarity between the user utterance and the best matching sentence within each of the candidate meanings.
 
 \subsection{Overview}
@@ -90,7 +90,7 @@ Of course, the algorithm should have a \textbf{margin of tolerance} as to the co
 \enumsentence{What's this song? \label{ch:interaction:afl:whats}}
 
 
-\subsection{Implementation: the \texttt{locate\_fragments()} function} \label{ch:interaction:afl:impl}
+\subsection{Implementation: the \texttt{locate\_fragments()} Function} \label{ch:interaction:afl:impl}
 Algorithm \ref{ch:interaction:afl:algo} defines the \texttt{locate\_fragments()} function, which is used to locate, in the utterance from the user, the \textbf{constituents} that are especially unclear.
 
 \begin{algorithm}
@@ -146,7 +146,7 @@ The final \texttt{if} construct (\textbf{lines \ref{ch:interaction:afl:algo:if} 
 %	INTERACTION EPISODE
 %----------------------------------------------------------------------------------------
 
-\section{Production of the interaction episode} \label{ch:interaction:episode}
+\section{Production of the Interaction Episode} \label{ch:interaction:episode}
 Once the need for grounding is enstablished (\ref{ch:interaction:mmw}), and the software has detected the core of the uncertainty (\ref{ch:interaction:afl}), it is necessary to produce a dialogue with the user, to put the clarification plan into practice.
 
 \subsection{Overview}
@@ -205,7 +205,7 @@ The second point is somehow tricky, in that there is no known way for the device
 %	KNOWLEDGE UPDATE
 %----------------------------------------------------------------------------------------
 
-\section{Knowledge update} \label{ch:interaction:learn}
+\section{Knowledge Update} \label{ch:interaction:learn}
 
 Every time a new labeled example (sentence + meaning label) is encountered, the Language Unit updates its knowledge about the language. In the current implementation, learning a \textbf{new sentence} consists of
 \begin{itemize}

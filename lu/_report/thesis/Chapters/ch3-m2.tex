@@ -28,7 +28,7 @@ This chapter is \textbf{structured} as follows. Section \ref{algo} describes the
 %Section \ref{example} walks through a toy example.
 Section \ref{learning} describes possible extensions and improvements. Section \ref{conclusions} draws the conclusion of the paper.
 
-\section{The M2 matching algorithm} \label{algo}
+\section{The M2 Matching Algorithm} \label{algo}
 \begin{algorithm}
   \SetKwData{Left}{left}
   \SetKwData{Up}{up}
@@ -113,7 +113,7 @@ The last operation done in the loop, at line \ref{main:cappend}, is to combine t
 
 At line \ref{main:return} the function returns the \textbf{maximum of the candidate} score, that is, the split that produced the best score (eg. for ``increase the volume" vs ``raise the volume", the score of ``increase $\vert$ the volume" vs ``raise $\vert$ the volume" is likely to produce a better score than ``increase $\vert$ the volume" vs. ``raise the $\vert$ volume"). Note that this decision determines the branching of one level of the recursion tree; once the algorithm is done computing the score between two sentences, a traceback of the selected splits can be interpreted as a parse tree for the two input sentences.
 
-%\section{An example} \label{example}
+%\section{An Example} \label{example}
 
 \section{Machine Learning Possibilities} \label{learning}
 The basic algorithm described in section \ref{algo} only deals with \textbf{static features} to measure similarities: the score of two words is derived from equality, edit distance, Wordnet path length and so on; the score of chunks is the average of the scores of the best alignments of their components.
@@ -122,7 +122,7 @@ In this section I address the question whether it is possible, and how, for the 
 
 Here I consider \textbf{three features} based on Statistical Language Processing methods to address this problem: chunk likelihood, class-conditional chunk weight and alignments likelihood.
 
-\subsection{Chunk likelihood} \label{ch3:ml:cl}
+\subsection{Chunk Likelihood} \label{ch3:ml:cl}
 % Relative frequency across all sentences
 % Used to select good chunks
 Let's consider the following pair of sentences:
@@ -139,7 +139,7 @@ l(c)=\frac{\text{\# of }c}{\text{\# of total chunks}}
 $$
 
 Note that this feature is completely unsupervised, in that it does not require a Meaning label to be computed.
-\subsection{Class-conditional chunk weight} \label{ch3:ml:cc}
+\subsection{Class-conditional Chunk Weight} \label{ch3:ml:cc}
 % frequency in class / frequency overall
 % Used to weight more chunks that are representative for one class
 Let's consider the following three sentences:
@@ -160,7 +160,7 @@ $$
 
 This feature can be used to weight the score of different chunks in the sentence, so for more informative chunks to influence more of the total score mass.
 %l(c|m,M)?
-\subsection{Alignment likelihood}\label{ch3:ml:al}
+\subsection{Alignment Likelihood}\label{ch3:ml:al}
 % Recursive score of alignments
 % Used to align chunks correctly
 Let's consider the following pair of sentences:

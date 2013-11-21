@@ -20,7 +20,7 @@ Section \ref{ch:arch:client} describes the \pname client, Section \ref{ch:arch:T
 %	CLIENT
 %----------------------------------------------------------------------------------------
 
-\section{The client application} \label{ch:arch:client}
+\section{The Client Application} \label{ch:arch:client}
 \pname is a client application for OpenTDM, a dialogue management library based on the work by \cite{Larsson02issue-baseddialogue}. An OpenTDM application can be seen as a container for domain-specific \textbf{parameters} for the dialogue manager. These parameters consist of:
 \begin{itemize}
 \item A \textbf{device} class, containing variables and methods that directly control the actions of the application. The \textit{device} file of a music player application will contain, for instance, variables holding the current playlist, or the current volume level, and methods to play/stop the music, lookup for a song and so forth.
@@ -60,7 +60,7 @@ The following are the main capabilities implemented in the Language class:
 \subsection{Scores}
 The way the Language Unit understands a sentence is based on a number of nested comparisons, resulting into as many comparison scores. A \textbf{score} is a linear combination of separate features. The top-level task is to score the sentence against every meaning in the application database; for each of them a \textbf{Meaning Score} (see \ref{ch:arch:LU:scores:meaning}) is computed, representing how likely the input sentence is to be a realization of that meaning. This score is based on the similarity of the input sentence with the known sentences realizing the meaning; the \textbf{Sentence Score} (see \ref{ch:arch:LU:scores:sentence}) represents the similarity between two sentences. This score is based on how similar the (linguistic or non-linguistic) components of the two sentences are; any sub-string of a sentence is called Chunk, and the \textbf{Chunk Score} (see \ref{ch:arch:LU:scores:chunk}) represents the similarity between two chunks. The Chunk Score is based on the similarity of the words contained in the two chunks; the \textbf{Word Score} (see \ref{ch:arch:LU:scores:word}) represents the similarity between two words.
 
-\subsubsection{The \texttt{Score} data structure}
+\subsubsection{The \texttt{Score} Data Structure}
 Scores in the application are modeled by the \textbf{\texttt{Score} class} (\texttt{lu/score/\_\_init\_\_.py}). A \texttt{Score} object defines the following \textbf{fields}:
 \begin{itemize}
 	\item \texttt{Score.features}, an array of N features that are used to form the final score. A feature is represented as a floating-point (\texttt{float}) number.

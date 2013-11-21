@@ -18,7 +18,64 @@ In the early days of computing, the so-called \textbf{batch interfaces} were non
 
 From this brief spot on computing history, and in a way from common sense, we can draw the rather trivial, yet crucial, conclusion that the trend in user interfaces development is to \textbf{close the gap} between humans and machines by moving the needle of the interface languages from a machine-centered space towards the human language itself. To this respect, the studies on Natural Language Processing (NLP) assume a dramatically central role, as dramatically central is natural language in the interaction of humans with each other.
 
-For this reason, the focus of this thesis work is the area of \textbf{dialogue systems}. A spoken dialogue system, or conversational agent (CA), allows humans and machines to interact through an intermediate language which is as close as possible to the \textbf{human language}, and through conversational episodes that implement as close as possible the human dialogue modalities.
+For this reason, the focus of this thesis work is the area of \textbf{dialogue systems}.
+
+%----------------------------------------------------------------------------------------
+%	DIALOGUE SYSTEM
+%----------------------------------------------------------------------------------------
+
+\section{General Architecture of a Dialogue System}
+A dialogue system, or conversational agent (CA), is a computer software that allows humans and machines to interact through an intermediate language which is as close as possible to the \textbf{human language}, and through conversational episodes that implement as close as possible the human dialogue modalities.
+
+The \textbf{basic architecture} of a dialogue system is shown in Figure \ref{ds_arch}. The figure represents the flow of information during the interaction between the system and a human user.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=15cm]{Pictures/ds_arch.pdf}
+	\caption{The basic architecture of a dialogue system}
+	\label{ds_arch}
+\end{figure}
+ 
+ \begin{enumerate}
+	\item The user produces a dialogue act to be entered in the system, that receives it through its \textbf{input module}. As an example, the user may start a conversation by asking \textit{``What's your name?"}. Note that, although we will only address text-based interaction, spoken dialogue systems exist, where the input module is an Automatic Speech Recognition software.
+	\item The \textbf{language understanding} module receives the user utterance, and interprets it into a logical form that the system can work with. In the previous example, the language understanding module would receive the string \texttt{"What's your name"} as input, and may output something like \texttt{"ask(?X.my\_name(X))"}.
+	\item The result of the interpretation is given to the \textbf{dialogue manager} (DM). This component is the core of the system, as it has to model and keep track of the dialogue context and, within this context, integrate the user moves and plan the system answers. The dialogue manager can also access external resources in order to satisfy the user requests. In the example, the DM receives the interpreted user move \texttt{"ask(?X.my\_name(X))"}; its will then process this information, which broadly means:
+	\begin{enumerate}
+		\item Update the context, to include the pending user request.
+		\item Find an answer for the user request
+		\item Output the answer in the form of a system move (in the example, \\ \texttt{"answer(my\_name(`HAL9000'))"})
+	\end{enumerate}
+	\item The system move is received by the \textbf{response generation} module, whose purpose is to express that move with a natural language sentence, In the example, a proper output would be the string \texttt{"My name is HAL9000"}.
+	\item Finally, the response string is received by the \textbf{output module}, which presents it to the user. This module can simply print the sentence on the screen, but it can also implement Text-To-Speech technology to allow spoken interaction with the user.
+\end{enumerate}
+
+As we will see in the next chapters, our work will be focused on the language understanding and response generation modules, that together form what we call the \textbf{Language Unit}. Our goal is to implement advanced language understanding and learning capabilities for this part of the system\footnote{This also includes minor modifications to the dialogue manager, as it will be explained in Chapter \ref{ch:interaction}}. 
+ 
+Research on dialogue systems has been carried on since the \textbf{early days} of Artificial Intelligence. A milestone in the early work on this field is ELIZA \citep{Weizenbaum:1966:ECP:365153.365168}, which provides the user with a basic human-like interaction based on pattern matching; Figure \ref{ch:rw:ds:ELIZA} shows an instance of these patterns.
+
+Another example is the SHRDLU system \citep{winograd1971procedure}, which interfaces the user with a simple spatial domain by listening to the user's utterances (e.g.\ ``Would you please put the green pyramid in the box?"), and performing actions accordingly in the domain, resolving, if necessary, ambiguous or implicit references to the entities in it.
+
+\begin{figure}
+\begin{Verbatim}[frame=single]
+["dream", 3, [
+ ["*", [
+     "What does that dream suggest to you ?",
+     "Do you dream often ?",
+     "What persons appear in your dreams ?",
+     "Do you believe that dreams have something to do
+      with your problem ?"
+  ]]
+]]
+\end{Verbatim}
+\caption{One of the patterns included in ELIZA's DOCTOR script. It simply tells the system that the user input can be answered with any of the given sentences, whenever it contains the word ``dream".}
+\label{ch:rw:ds:ELIZA}
+\end{figure}
+
+According to \cite{Jokinen2009}, modern dialogue systems can be divided in \textbf{two main types}: task-oriented and nontask-oriented. Intuitively, systems in the first category are meant to deal with a specific task such as making a hotel booking, or booking a plane ticket; an example in this category is the MIT Mercury system, a vocal interface to a flight database \citep{Seneff:2000:DMM:1605285.1605288}. On the other hand, nontask-oriented systems are meant to engage in conversations without a specific purpose to fulfill, but the one of delivering a realistic simulation; ELIZA itself is an example of nontask-oriented dialogue system.
+
+Task-oriented systems can be very simple, as simple and well-formalized the task is;  many applications, such as travel service or call routing, can be successfully solved by \textbf{slot-based} systems: each step of the conversation requires some pieces of information, modeled as slots, to be filled in by the user (departure city, arrival city, date, and so on); given the slots to be filled, the dialogue task can be solved with a formal grammar of interaction. As the complexity increases, more phenomena of human interaction have to be modeled, such as turn-taking, multimodality or grounding
+%\ignore{CITE RAQUEL'S CHAPTER}
+, as well as semantic structures such as quantification and negation; slot-based systems are not sufficient to model these scenarios \citep{Gabsdil03clarificationin}, that require more advanced frameworks such a the Information State Update (ISU) one, which will be tackled in \ref{ch:rw:ds:isu}.
 
 %----------------------------------------------------------------------------------------
 %	LEARNING TO TALK
@@ -70,4 +127,6 @@ Also, an unknown input sentence should be given a \textbf{confidence score} for 
 
 Finally, the system should be able to narrow possible needs for \textbf{clarification} down to single sentence components, eventually asking the user for disambiguation as specifically as possible. This is to enforce the learning of small components that may appear again in further unknown examples.
 
-This document is structured as follows. Chapter \ref{ch:rw} reviews the \textbf{related work} that has been previously done; chapter \ref{ch:arch} describes the \textbf{architecture} of the solution that has been developed; chapter \ref{ch:M2} delves into the \textbf{M2 algorithm}, which is the core of the meaning matching feature of the application; chapter ...\ldots
+\subsection{Overview}
+
+This work is structured as follows. Chapter \ref{ch:rw} reviews the \textbf{related work} that has been previously done; chapter \ref{ch:arch} describes the \textbf{architecture} of the solution that has been developed; chapter \ref{ch:M2} delves into the \textbf{M2 algorithm}, which is the core of the meaning matching feature of the application; chapter \ref{ch:interaction} describes how the system can learn though the \textbf{interaction} with the user; chapter \ref{ch:conclusions} draws the \textbf{conclusions} of the whole project and illustrates future work that could take steps from it.
