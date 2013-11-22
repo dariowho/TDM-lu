@@ -170,10 +170,20 @@ A Word Score $\sigma_W(w_\text{from},w_\text{to})$ represents how similar the wo
 	\item \texttt{WordScore.ML\_AFREQ} - The Alignment Likelihood. This feature has already been described in \ref{ch:arch:LU:scores:chunk}.
 \end{itemize}
 
-\section{Summary}[ht]
+\section{Summary}
+In this chapter we described the architecture of \pname in general, and of its sentence scoring system in particular.
+
+\pname is a client application for the \textbf{OpenTDM} library. The application defines its plans, language and device actions, while OpenTDM takes care of the dialogue management, being the execution of the plans that are appropriate to the context (e.g.\ to increase the volume when the user issues ``Increase the volume").
+
+The \textbf{Language Unit} is a drop-in replacement for OpenTDM's default language processing system (the Grammatical Framework); its main duty is to provide flexible understanding of user utterances. This is done through nested, score-centric, feature-based comparisons between the input sentence and the sentences representing each of the meanings available in the application. The interpretation of an input sentence is given as a list of Meaning Scores, representing how likely the sentence is to realize each of the meanings.
+
+Figure \ref{scoresbreakdown} shows a breakdown of a \textbf{Meaning Score}. From this figure we can see that a Meaning Score is made of three features, one of which relies on Machine Learning data (\texttt{ML\_CCSUM}), and the other two (\texttt{MAX\_SSCORE} and \texttt{AVG\_SSCORE}) are based on single Sentence Scores, representing the similarity between the input sentence and the ones in the meaning. A \textbf{Sentence Score} is just a Chunk Score. A \textbf{Chunk Score} represents the similarity between two chunks of text, and has five features; two of them make use of ML data (\texttt{ML\_CFREQ} and \texttt{ML\_AFREQ}), and one is derived either from other, smaller, Chunk Scores, or from a Word Score (the way smaller scores are combined into a bigger one will be better explained in the next chapter). A \textbf{Word Score} has four features, one of which (\texttt{ML\_AFREQ}) makes use of ML data.
+
+The result of every comparison is also used to update the ML model (e.g.\ incrementing the count of the chunks that have been encountered). This aspect will be tackled in \ref{learning}.
+
+
 \begin{sidewaysfigure}
 \includegraphics[width=23cm]{Pictures/scores_diagram.pdf}
 \caption{Scores' structure}
+\label{scoresbreakdown}
 \end{sidewaysfigure}
-
-\ldots

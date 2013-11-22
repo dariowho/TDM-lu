@@ -6,17 +6,36 @@
 
 \lhead{Chapter \ref{ch:conclusions}. \emph{Conclusions}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
 
+We have presented \pname, a ... [CONTRIBUTION]
 
-future/open questions
+\section{Evaluation}
+ - Some accuracy statistics
+ 
+ - Tabu game to get corpus
+
+\section{future work}
+
+\subsection{Accuracy improvements}
+- Machine Learning on weights
+
+- maybe dynamic weights (eg. disregard other Word features if Equals=1)
 
 - Multi-pass matching: restricting the match candidates changes the
    conditional probabilities of chunks (eg. with "the volume") you select
    "increase" or "decrease", then conditional relevance of " the volume" becomes
    0 and you can disambiguate the verb.
    
-- Parameters handling (eg. play all the songs by <X:ARTIST>, where system has a
-  model for the parameter type "ARTIST")
+- Weighting of sources (use confidence of sentences)
 
+- Insert user's negative feedback on wrongly understood sentences
+
+- Reinforcement propagation through fuzzy synsets
+
+- "Economy" of reinforcements: now "Volume" gets ~300 times the mass of other
+   chunks: might be useful to enforce subtraction from somewhere where it is
+   necessary to add somewhere else 
+
+\subsection{Efficiency improvements}
 - Cache partial scores to make computation faster
  
    $\rightarrow$ Update with math instead of recomputing features
@@ -27,44 +46,27 @@ future/open questions
    
 - coarse-to-fine matching (restrict candidates with cosine -> M2 on remaining)
  
+\subsection{Extra features}
+
+- Syntactic compositionality: understanding 2 moves with a sentence
+
 - Keep a connectionist-like model of matches across utterances: the matches or 
   words fired with the previous utterances remain active in memory for some 
   time before decaying. A model of decay can also be envisioned, which controls
   the time before stuff decays (eg. if one utterance is "nevermind", the model
   can force immediate decay of everything)
- 
-- Machine Learning on weights
- 
-- maybe dynamic weights (eg. disregard other Word features if Equals=1)
- 
-- Tabu game to get corpus
- 
-- Weighting of sources (use confidence of sentences)
- 
-- Better integration with OpenTDM (requires documentation)
- 
-- Syntactic compositionality: understanding 2 moves with a sentence
- 
+
 - Meta-learning of episodes (eg. new ways to do disambiguation interactions)
- 
-- Insert user's negative feedback on wrongly understood sentences
- 
-- Reinforcement propagation through fuzzy synsets
- 
-- "Economy" of reinforcements: now "Volume" gets ~300 times the mass of other
-   chunks: might be useful to enforce subtraction from somewhere where it is
-   necessary to add somewhere else 
-   
+
+- Parameters handling (eg. play all the songs by <X:ARTIST>, where system has a
+  model for the parameter type "ARTIST")
+  
 - How to deal with holes and plugs in training sentences (eg. "clean X up")
- 
+
+- Better integration with OpenTDM (requires documentation)
 
 
-----
-
-Classification
-
-- Perceptron
- 
-- Decision stumps
- 
-- Naive Bayes
+%Classification
+%- Perceptron
+%- Decision stumps
+%- Naive Bayes

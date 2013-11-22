@@ -219,3 +219,14 @@ These operations are done by the \texttt{lu.learn.sentence} module, and especial
 Adding the new example to the meaning definition is trivial, and incrementing the counters is straightforward as well: a procedure loops through every possible substring of the new sentence, and increments the corresponding global and class-conditional counter. Nevertheless, it is worth to spend some words on the last one, the \textbf{alignment mass update}. To update this value, the new sentence is scored against all the other sentences in the meaning; as we have already seen, every Score object carries information about the internal alignments of the two sentences (i.e.\ a Score is either a \texttt{WordScore}, or is built upon two smaller scores). What the learning procedure does is looping through this boxed scores, and for each of them adds its numeric value to the alignment mass already occupied by that score.
 
 It is also useful to remember that, at the moment of learning, the user gave us information about the most \textbf{uncertain alignment} in the sentence (see \ref{ch:interaction:afl}), confirming that it is a valid alignment. This information is used to enhance the learning process, because, without the user answer, that alignment would receive a small mass increment, as its score is not expected to be high. But, considering the user input, the alignment can be reinforced by a significant value (e.g.\ 1), increasing the probability of it being recognised correctly in other contexts.
+
+\section{Summary}
+In this chapter we have described the way the Language Unit deals with potentially misinterpreted utterances.
+
+The first step of the process is to \textbf{detect} whether the interpretation contains uncertainty or not. This is done by looking at the confidence score of the interpretation; four cases can be identified: no uncertainty, uncertainty with one candidate meaning, uncertainty with two or more candidate meanings, uncertainty with no candidate meanings.
+
+When there is uncertainty and at least one candidate meaning, the software will proceed to \textbf{locate} the uncertainty, that is, finding the most specific possible constituent in the user utterance that caused the misinterpretation. This is done analyzing recursively the components of the score the input sentence achieved with the most similar example in each of the candidate meanings.
+
+The next step will be to start a \textbf{clarification} subdialog with the user, to determine whether the uncertain alignment was legit or not. This dialog is always given in the form of a single modal question.
+
+When the answer to the clarification question is positive, meaning that the software guess on the interpretation was correct, the software \textbf{learns} from the episode, adding the new sentence to the realizations of its meaning, and especially reinforcing the uncertain alignment, in order for it to be recognised in further situations.
