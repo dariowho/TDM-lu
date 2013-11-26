@@ -1,9 +1,178 @@
 % Appendix A
 
-\chapter{Appendix Title Here} % Main appendix title
+\chapter{An Information State Update Example} % Main appendix title
 
-\label{AppendixA} % For referencing this appendix elsewhere, use \ref{AppendixA}
+\label{a:isu} % For referencing this appendix elsewhere, use \ref{isu}
 
-\lhead{Appendix A. \emph{Appendix Title Here}} % This is for the header on each page - perhaps a shortened title
+\lhead{Appendix A. \emph{An Information State Update Example}} % This is for the header on each page - perhaps a shortened title
 
-Write your Appendix content here.
+This appendix shows how SVPlay's Information State (IS) is updated during a \textbf{simple user interaction}, where the latter asks for the current song title. The interaction, at input/output level, is the following:
+\begin{verbatim}
+S> How can I help you?
+U> what is the current song  
+S> It's All Over Now, by The Rolling Stones
+\end{verbatim}
+
+As a premise, it is necessary to point out that, as OpenTDM comes with \textbf{no documentation}, the information contained in this appendix was derived from our analysis of the software's source code and log files. For this reason, it is possible that our explanation will not cover some parts of the process, either irrelevant or still obscure.
+
+At t=0 the information state of the application is \textbf{empty}. While for the next steps we will only consider a subset of the OpenTDM's Total Information State (TIS), Figure \ref{a:isu:tis} shows the complete TIS, as it was reconstructed from the application's log. We can immediately spot, in the figure, the two main parts of the IS: private and shared. The most relevant parts of the \textbf{private} are
+\begin{itemize}
+	\item The list of the system's private \textbf{beliefs} (\texttt{bel})
+	\item The stack of \textbf{plan} items that the system will execute.
+\end{itemize}
+
+From the \textbf{shared} part of the IS is important to highlight the stack of \textbf{questions under discussion} (\texttt{qud}), representing the issues that user and system will cooperatively try to solve. For the sake of record, we report that the \texttt{lu} field contains the \textit{last utterance} to be pronounced, either by the system or by the user; similarly, \texttt{pm} stands for \textit{previous move}, and \texttt{com} for \textit{common ground}.
+
+\begin{figure}
+\centering
+$\left[\begin{tabular}{l l}
+application &	\texttt{Application(`svplay', <Ontology>, <Domain>)} \\
+device\_outputs &	\texttt{stack([])} \\
+devices &	\texttt{\{`MplayDevice': <Device>\}} \\
+input\_event &	\texttt{Event(START)} \\
+latest\_moves & \texttt{open\_queue([`\#'])} \\
+latest\_speaker & \texttt{None} \\
+next\_utterance & 	$\left[\begin{tabular}{l l}
+				alts & \texttt{[]} \\
+				context & \texttt{\{\}} \\
+				moves & \texttt{open\_queue([`\#'])} \\
+				plan\_item & \texttt{None} \\
+				\end{tabular}\right]$ \\
+output & \  \\
+passive\_mode & \texttt{False} \\
+PRIVATE &	$\left[\begin{tabular}{l l}
+			agenda & \texttt{open\_queue([`\#'])} \\
+			bel & \texttt{\{\}} \\
+			nim & \texttt{open\_queue([`\#'])} \\
+			plan & \texttt{stack([do(top)])} \\
+			\end{tabular}\right]$ \\
+program\_state & \texttt{RUN} \\
+recognised\_utterance & \texttt{None} \\
+SHARED &	$\left[\begin{tabular}{l l}
+			actions & \texttt{stackset([top])} \\
+			com & \texttt{\{\}} \\
+			issues & \texttt{stackset([])} \\
+			lu &	$\left[\begin{tabular}{l l}
+				moves & \texttt{\{\}} \\
+				speaker & \texttt{None} \\
+				turn\_count & \texttt{\{\}} \\
+				\end{tabular}\right]$ \\
+			pm & \texttt{\{\}} \\
+			previous\_action & \texttt{None} \\
+			qud & \texttt{stackset([])} \\
+			\end{tabular}\right]$ \\
+sys\_truns & 0 \\
+timeout & 	$\left[\begin{tabular}{l l}
+			duration & \texttt{None} \\
+			enabled & \texttt{False} \\
+			\end{tabular}\right]$ \\
+\end{tabular}\right]$
+
+\caption{An empty Total Information State in OpenTDM}
+\label{a:isu:tis}
+\end{figure}
+
+We notice that \texttt{Event(START)} is pushed by default in the \texttt{input\_event} fileld (\texttt{application} and \texttt{device\_outputs} are filled as well, but they just hold static information, that will not change during the execution). This is because OpenTDM is \textbf{event-driven}: everything happening in the system is a consequence of an event, and \texttt{START} is the one that starts the causal chain. The complete list of events is defined in the \texttt{maharani.event} module.
+
+As a consequence of the \texttt{START} event. the software will plan his first dialogue move. This is done by pushing the top plan in the \textbf{private plan} section. The top plan is defined in the application ontology;
+\begin{verbatim}
+["forget_all",
+ "findout(?set([issue(?X.current_song(X)), issue(?X.my_name(X)),
+	                action(increase_volume)]))"]
+\end{verbatim}
+This clears all the current believes and raises the issue of determine \textbf{what the user wants to do}. Literally, the \texttt{findout()} statement aims to decide whether the user wants to know the title of the current song, know the system's name or increase the volume. As a matter of fact, \pname supports more than these three actions, but the logic form of the top plan could not be changed accordingly because of the lack of documentation.
+
+This plan has the effect of producing a \texttt{SYSTEM\_MOVES} event, that will prompt the user with the \textbf{question} ``How can I help you?". Note that the surface form of this question will be provided by the Language Unit, and is defined in \texttt{language/<APP><LANG>Prod.py}, in the application directory. Once the question is asked, it can be pushed in the ``questions under discussion" part of the \textbf{shared} IS.
+
+The following is the resulting Information State:
+
+\begin{table}[ht]
+\small
+$\left[\begin{tabular}{l l}
+input\_event &	\texttt{Event(SYSTEM\_MOVES,} \\
+\ & \texttt{[(Move(ask(?set([issue(?X.current\_song(X)),} \\
+\ & \texttt{\hspace*{11em} issue(?X.my\_name(X)),} \\
+\ & \texttt{\hspace*{11em} action(increase\_volume)])),} \\
+\ & \texttt{\hspace*{3em} speaker=SYS, modality=speech),} \\
+\ & \texttt{\hspace*{3em} `How can I help you?')])} \\
+latest\_speaker & \texttt{SYS} \\
+PRIVATE &	$\left[\begin{tabular}{l l}
+			bel & \texttt{\{\}} \\
+			plan & \texttt{stack([findout(?set([issue(?X.current\_song(X)),}\\
+\ &			\texttt{\hspace*{5em}issue(?X.my\_name(X)),}\\
+\ &			\texttt{\hspace*{5em} action(increase\_volume)]))])} \\
+			\end{tabular}\right]$ \\
+recognised\_utterance & \texttt{None} \\
+SHARED &	$\left[\begin{tabular}{l l}
+			com & \texttt{\{\}} \\
+			qud & \texttt{stackset([?set([issue(?X.current\_song(X)),}\\
+\ &			\texttt{\hspace*{5em}issue(?X.my\_name(X)),}\\
+\ &			\texttt{\hspace*{5em} action(increase\_volume)]))])} \\
+			\end{tabular}\right]$ \\
+\end{tabular}\right]$
+\end{table}
+
+At this point, the \textbf{user} inputs the sentence ``What is the current song". This input is given to the language unit, that will return its formal interpretation, \texttt{ask(?X.current\_song(X))}. OpenTDM receives this interpretation (in the \texttt{tdm.interpret} module), and triggers a \texttt{USER\_MOVES} event.
+
+This event causes the system to look for a \textbf{plan} in the domain that matches this user move. This plan exists, and its content is
+\begin{verbatim}
+dev_query(?X.current_song(X), MplayDevice)
+\end{verbatim}
+Which simply means to \textbf{query} the device for the title of the current song. Note that this new issue is also pushed in the shared questions under discussion.
+
+The Information state is now the following:
+
+\begin{table}[ht]
+\small
+$\left[\begin{tabular}{l l}
+input\_event &	\texttt{Event(USER\_MOVES,} \\
+\ & \texttt{open\_queue([Move(ask(?X.current\_song(X)),} \\
+\ & \texttt{\hspace*{8em} speaker=USR, modality=speech), '\#']))} \\
+latest\_speaker & \texttt{USR} \\
+PRIVATE &	$\left[\begin{tabular}{l l}
+			bel & \texttt{\{\}} \\
+			plan & \texttt{stack([device\_query(?X.current\_song(X))])} \\
+			\end{tabular}\right]$ \\
+recognised\_utterance & \texttt{What is the current song} \\
+SHARED &	$\left[\begin{tabular}{l l}
+			com & \texttt{\{\}} \\
+			qud & \texttt{stackset([?X.current\_song(X)]),} \\
+\ &			\texttt{\hspace*{5em}?set([issue(?X.current\_song(X)),}\\
+\ &			\texttt{\hspace*{8em}issue(?X.my\_name(X)),}\\
+\ &			\texttt{\hspace*{8em}action(increase\_volume)]))}\\
+			\end{tabular}\right]$ \\
+\end{tabular}\right]$
+\end{table}
+
+The device answer to the query has the effect of creating a new \textbf{belief} in the private part of the IS:
+\begin{verbatim}
+current_song(`It's All Over Now, by The Rolling Stones')
+\end{verbatim}
+Which trivially states author and title of the song that the device is currently playing. This information is \textbf{output} with a \texttt{SYSTEM\_MOVES} event\footnote{Note that here the language unit receives the logical form \texttt{answer(current\_song(`It's All Over Now, by The Rolling Stones'))}, to be turned into a English sentence. In this case the logical form, that comes from the device, contains a complete English realization. A more elegant way of solving the problem would be to have the device output just the song name and author, and let the LU form the sentence.}.
+
+After the system answer, the ``current song" issue is removed from the shared questions under discussion\footnote{Here the system also removes the top plan from \texttt{qud}; the reasons behind this choice are not clear.}, and the answer is added to the \textbf{common ground} (being the set of propositions that are considered to be in the beliefs of both the dialogue partners), along with the fact itself that the question has been answered.
+
+The following is the information state after the system answer.
+
+\begin{table}[ht]
+\small
+$\left[\begin{tabular}{l l}
+input\_event &	\texttt{Event(SYSTEM\_MOVES, } \\
+\ & \texttt{[(Move(answer(current\_song(`It's All Over Now, [...]')), } \\
+\ & \texttt{\hspace*{8em} speaker=SYS, modality=speech), }\\
+\ & \texttt{\hspace*{8em} `It's All Over Now, by The Rolling Stones')])} \\
+latest\_speaker & \texttt{SYS} \\
+PRIVATE &	$\left[\begin{tabular}{l l}
+			bel & \texttt{current\_song(`It's All Over Now, by [...]')} \\
+			plan & \texttt{stack([])} \\
+			\end{tabular}\right]$ \\
+recognised\_utterance & \texttt{What is the current song} \\
+SHARED &	$\left[\begin{tabular}{l l}
+			com & \texttt{\{current\_song(`It's All Over Now, by [...]'),}\\
+\ &			\texttt{\hspace*{7em}resolved(?X.current\_song(X))\}} \\
+			qud & \texttt{stackset([])}\\
+			\end{tabular}\right]$ \\
+\end{tabular}\right]$
+\end{table}
+
+After the felicitous utterance, the system will run out of plan elements to execute, and will thus load the \texttt{top plan} again.

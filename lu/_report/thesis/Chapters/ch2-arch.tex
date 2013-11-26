@@ -26,7 +26,29 @@ Section \ref{ch:arch:client} describes the \pname client, Section \ref{ch:arch:T
 \item A \textbf{device} class, containing variables and methods that directly control the actions of the application. The \textit{device} file of a music player application will contain, for instance, variables holding the current playlist, or the current volume level, and methods to play/stop the music, lookup for a song and so forth.
 \item An \textbf{ontology}, whose main purpose is to define predicates and actions that will be used at dialogue management level. In the case of \pname, an example of predicate is \texttt{current\_song(X)}, that identifies the song currently being played (note that such a predicate must be mirrored in the device file as a variable\footnote{The actual implementation consists of an inner \texttt{current\_song} class of the device class, which access the proper, private, variable of the device file through a \texttt{perform()} method. The reasons that led to such an implementative choice were not made known by the authors of OpenTDM.}); an example of action is \texttt{increase\_volume} that, intuitively, identifies the action of increasing the volume (actions are mirrored as well in the device class, in the same way predicates are).
 \item A \textbf{domain} file, whose main purpose is to contain the list of plans that will control the dialogue episodes. For instance, the TOP plan of an application is to find out what the user wants to do. Another example of a plan in \pname is the \texttt{increase\_volume} plan: step 1 of the plan is to ask the user for how much the volume should be increased, step 2 is to perform the actual action through the device.
-\item A \textbf{grammar} implemented using the Grammatical Framework\footnote{http://www.grammaticalframework.org/} \citep{citeulike:346448}. This part will not be discussed, since, as it is explained in Section \ref{ch:arch:LU}, the Grammatical Framework in OpenTDM has been replaced with a specifically created module called Language Unit.
+
+Figure \ref{ch:arch:client:increaseplan} shows the plan item, as it is defined in the application domain: we notice that the \texttt{plan} section is a list of two elements, a \texttt{findout()} function, that will ask the user for the amount of volume to increase, and a \texttt{dev\_perform()} function, that will fire the volume increasing method in the device.
+\begin{figure}
+\begin{Verbatim}[frame=single]
+{
+  "goal": "increase_volume",
+  "plan": [
+              "findout(?X.volume_to_increase(X))",
+              "dev_perform(
+			   IncreaseVolume,
+			   MplayDevice,
+			   {postconfirm=True}
+			  )"
+	   ],
+  "postconds": ["done(IncreaseVolume)"]
+}
+\end{Verbatim}
+\caption{The \texttt{increase\_volume} plan of \pname.}
+\label{ch:arch:client:increaseplan}
+\end{figure}
+\item A \textbf{grammar} implemented using the Grammatical Framework\footnote{http://www.grammaticalframework.org/} \citep{citeulike:346448}. This part will not be discussed, since, as it is explained in Section \ref{ch:arch:LU}, the Grammatical Framework in OpenTDM has been replaced with a specifically created module called Language Unit (LU). However, the purpose of the two modules is the same, and covers what in Section \ref{ch:introduction:arch} we called language understanding and response generation. That is, mapping natural language user utterances to their formal representations and vice versa.
+
+In the example of Figure \ref{ch:arch:client:increaseplan}, a language understanding use of the Language Unit is to take, for instance, the input sentence ``Increase the volume" and turn it into a \texttt{request(increase\_volume)} user move, that will be used to load the proper plan from the domain. A response generation use of the LU will be, for instance, to take the \texttt{ask(?X.volume\_to\_increase(X))} system move (that will be produced by the \texttt{findout()} part of the plan), and turn into a sentence like ``By how much you want the volume to be increased?".
 \end{itemize}
 
 The dialogue management logic is left to OpenTDM, that will be discussed in the next section.
@@ -37,18 +59,20 @@ The dialogue management logic is left to OpenTDM, that will be discussed in the 
 %----------------------------------------------------------------------------------------
 
 \section{OpenTDM} \label{ch:arch:TDM}
-OpenTDM is a dialogue management library developed and maintained by Talkmatic\footnote{http://talkamatic.se/} based on the Information State Update framework
+OpenTDM is a \textbf{dialogue management library} developed and maintained by Talkmatic\footnote{http://talkamatic.se/} based on the Information State Update framework (see \ref{ch:rw:ds:isu}). OpenTDM is a Python 2.7 port of the TRINDI Dialogue Move Engine Toolkit \citep{Larsson:2000:ISD:973935.973943}, that was originally implemented in Prolog.
 
-\ldots
+The purpose of OpenTDM is to keep track of the Information State (IS), updating it on new user utterances, and planning the system moves accordingly. This is done by applying the standard ISU rules and policies \citep{Larsson02issue-baseddialogue} to the resources defined by the application (ontology, domain, device and language). Appendix \ref{a:isu} presents an example of how SVPlay's information state changes during an interaction with the user.
+
+It is worth to note that OpenTDM is not yet available to the public, and comes with \textbf{no documentation}. This has significantly limited us in the design of the solution, preventing us from both implementing elaborated extensions of it (e.g.\ more complex learning interactions than the ones described in Chapter \ref{ch:interaction}), and respecting the software architecture best practicses, as many of the OpenTDM extensions that we have implemented rely consistently on hacks and temporary workarounds.
 
 %----------------------------------------------------------------------------------------
 %	LU
 %----------------------------------------------------------------------------------------
 \section{The Language Unit} \label{ch:arch:LU}
-The Language Unit (LU) is a Python library that has been specifically created to support \pname's utterances understanding ability. The purpose of this library is to perform the classification task as it has been defined so far, that is, assigning every input sentence to its correct meaning label.
+The Language Unit (LU) is a Python library that has been specifically created to support \pname's utterances understanding ability, serving as a drop-in replacement for the Grammatical Framework, that is used in the main OpenTDM branch. The purpose of this library is to perform the classification task as it has been defined so far, that is, assigning every input sentence to its correct meaning label.
 
 \subsection{Language}
-The \texttt{Language} class is the main class of LU, its purpose is to model a natural language under the following abstraction: a Language is defined by a finite set of Meanings (labels); a Meaning is defined by a finite set of Sentences expressing that Meaning. As an example, the \pname language consists of a number of meanings, each of them defining an action for the application to perform; one of these meanings can be the one to pause the current song; this meaning will be realized by a number of English sentences, like ``Pause the song", ``Suspend the music", or ``Pause the current track". For the purpose of language understanding, a Sentence can be brougth down to any of its (linguistic or non-linguistic) constituents called Chunks or Phrases. A chunk is formed by one or more Words.
+The \texttt{Language} class is the main class of LU, its purpose is to model a natural language under the following \textbf{abstraction}: a Language is defined by a finite set of Meanings (labels); a Meaning is defined by a finite set of Sentences expressing that Meaning. As an example, the \pname language consists of a number of meanings, each of them defining an action for the application to perform; one of these meanings can be the one to pause the current song; this meaning will be realized by a number of English sentences, like ``Pause the song", ``Suspend the music", or ``Pause the current track". For the purpose of language understanding, a Sentence can be brougth down to any of its (linguistic or non-linguistic) constituents called Chunks or Phrases. A chunk is formed by one or more Words.
 
 The following are the main capabilities implemented in the Language class:
 \begin{itemize}
@@ -57,7 +81,7 @@ The following are the main capabilities implemented in the Language class:
 	\item \textbf{Understand} an input sentence. The core task of the Language Unit is to associate an input sentence with its correct meaning. While this operation is trivial when the input sentence is already present in the language, it becomes hard for unknown examples. In this latter case the LU computes a score for the sentence against each of the meanings that are present in the language; the meaning that achieves the best score is given as an output, along with the score itself, representing the degree of confidence for the output to be correct. The way sentences are scored is presented in the next section.
 \end{itemize}
 
-\subsection{Scores}
+\subsection{Scores} \label{ch:arch:LU:scores}
 The way the Language Unit understands a sentence is based on a number of nested comparisons, resulting into as many comparison scores. A \textbf{score} is a linear combination of separate features. The top-level task is to score the sentence against every meaning in the application database; for each of them a \textbf{Meaning Score} (see \ref{ch:arch:LU:scores:meaning}) is computed, representing how likely the input sentence is to be a realization of that meaning. This score is based on the similarity of the input sentence with the known sentences realizing the meaning; the \textbf{Sentence Score} (see \ref{ch:arch:LU:scores:sentence}) represents the similarity between two sentences. This score is based on how similar the (linguistic or non-linguistic) components of the two sentences are; any sub-string of a sentence is called Chunk, and the \textbf{Chunk Score} (see \ref{ch:arch:LU:scores:chunk}) represents the similarity between two chunks. The Chunk Score is based on the similarity of the words contained in the two chunks; the \textbf{Word Score} (see \ref{ch:arch:LU:scores:word}) represents the similarity between two words.
 
 \subsubsection{The \texttt{Score} Data Structure}
