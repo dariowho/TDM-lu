@@ -76,26 +76,37 @@ Another way of improving the speed of meaning matching would be to exploit the \
 
 Finally, a \textbf{coarse-to-fine} matching procedure could be devised, that first restricts the set of possible meanings using computationally inexpensive features (e.g.\ TF-IDF measures alone), and then runs the full matching algorithm on this restricted set to find the correct answer.
 
-\subsection{Extra features}
+\subsection{Extra features}\label{ch:conclusions:fw:extra}
+In addition to performance improvements, we propose here some features that could naturally \textbf{extend the software} as it is now.
 
-- Syntactic compositionality: understanding 2 moves with a sentence
+First and foremost, the \textbf{OpenTDM integration} should be improved, upon availability of its technical documentation. This would allow for the creation of more sophisticated and natural dialogues with the user, especially in the grounding case that we have described in Section \ref{ch:interaction:episode:impl}.
 
-- Keep track of the context at both domain (e.g.\ refer to things is being talked about) and meta level (e.g.\ giving the possibility for the user to correct the software's interpretations)
+A next step in the development of the Language Unit would be the inclusion of parametrized sentences. As an example, let's consider the sentence in \ref{ch:conclusions:fw:extra:beet}. At the moment the software could not support this kind of sentences, as it is not possible to associate part of the input with external parameters. This functionality could be integrated by making it possible to define models for \textbf{parameter types} in the client application. Sentence \ref{ch:conclusions:fw:extra:beetpar} shows how a parametrized sentence could look like; parameters models are needed to allow the LU to tell how likely a chunk of text is to belong to type \texttt{TITLE} or \texttt{AUTHOR}.
 
-- Keep a connectionist-like model of matches across utterances: the matches or 
-  words fired with the previous utterances remain active in memory for some 
-  time before decaying. A model of decay can also be envisioned, which controls
-  the time before stuff decays (eg. if one utterance is "nevermind", the model
-  can force immediate decay of everything)
+\enumsentence{Play the Ninth Symphony by Beethoven}\label{ch:conclusions:fw:extra:beet}
+\vspace{-0.7cm}
+\enumsentence{Play \texttt{<X:TITLE>} by \texttt{<Y:AUTHOR>}}\label{ch:conclusions:fw:extra:beetpar}
 
-- Meta-learning of episodes (eg. new ways to do disambiguation interactions)
+Another interesting step to take would be to include models for \textbf{meaning compositionality}. For instance, a user may want to say something like ``Skip this song and decrease the volume"; the software should then be able to recognise that the meaning expressed by this utterance is a combination of the meanings of its two parts.
 
-- Parameters handling (eg. play all the songs by <X:ARTIST>, where system has a
-  model for the parameter type "ARTIST")
-  
-- How to deal with holes and plugs in training sentences (eg. "clean X up")
+In the normal dialogue interaction, participants often keep track of the objects that are being referenced across different moments of the conversation. A \textbf{rich context} representation would be useful in automatic systems as well; as an example, let's consider the following dialogue:
+\begin{verbatim}
+U: Play California Dreaming
+S: Ok
+U: Also, put it in my Favourites playlist
+D: Done adding ``California Dreaming" to the Favourites playlist
+\end{verbatim}
+A dialogue like this would not be possible at the moment, as the software, by default, erases any common ground every time an interaction ends. Note that this kind of references would also be useful on the meta-level,for instance allowing the user to correct the system interpretation of previous sentences.
 
-- Better integration with OpenTDM (requires documentation)
+%- Keep a connectionist-like model of matches across utterances: the matches or 
+%  words fired with the previous utterances remain active in memory for some 
+%  time before decaying. A model of decay can also be envisioned, which controls
+%  the time before stuff decays (eg. if one utterance is "nevermind", the model
+%  can force immediate decay of everything)
+
+A final extension proposal for \pname is concerned with the fact that, at the moment, all the interaction subdialogues are predefined and static (i.e.\ every dialogue plan produces a specific sequence of invariable system utterances). It would be interesting (given the availability of a proper corpus) to apply a data-driven, \textbf{machine learning} approach to the \textbf{meta-level} of the interaction, being the structure of the dialogues between the system and the user, achieving human-machine conversations that are even closer to the natural human ones.
+
+%- How to deal with holes and plugs in training sentences (eg. "clean X up")
 
 
 %Classification
