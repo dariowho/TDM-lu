@@ -46,10 +46,11 @@ Another example is the SHRDLU system \citep{winograd1971procedure}, which interf
 
 According to \cite{Jokinen2009}, modern dialogue systems can be divided in \textbf{two main types}: task-oriented and nontask-oriented. Intuitively, systems in the first category are meant to deal with a specific task such as making a hotel booking, or booking a plane ticket; an example in this category is the MIT Mercury system, a vocal interface to a flight database \citep{Seneff:2000:DMM:1605285.1605288}. On the other hand, nontask-oriented systems are meant to engage in conversations without a specific purpose to fulfill, but the one of delivering a realistic simulation; ELIZA itself is an example of nontask-oriented dialogue system.
 
-Task-oriented systems can be very simple, as simple and well-formalized the task is;  many applications, such as travel service or call routing, can be successfully solved by \textbf{slot-based} systems: each step of the conversation requires some pieces of information, modeled as slots, to be filled in by the user (departure city, arrival city, date, and so on); given the slots to be filled, the dialogue task can be solved with a formal grammar of interaction. As the complexity increases, more phenomena of human interaction have to be modeled, such as turn-taking, multimodality or grounding
+Task-oriented systems can be very simple, as simple and well-formalized the task is;  many applications, such as travel service or call routing, can be successfully solved by \textbf{slot-based} systems: each step of the conversation requires some pieces of information, modeled as slots, to be filled in by the user (departure city, arrival city, date, and so on); given the slots to be filled, the dialogue task can be solved with a formal grammar of interaction. As the complexity increases, more phenomena of human interaction have to be modeled, such as turn-taking, multimodality or grounding (see Section \ref{ch:rw:ds:grounding})
 %\ignore{CITE RAQUEL'S CHAPTER}
 , as well as semantic structures such as quantification and negation; slot-based systems are not sufficient to model these scenarios \citep{Gabsdil03clarificationin}, that require more advanced frameworks such a the Information State Update (ISU) one, which will be tackled in \ref{ch:rw:ds:isu}.
 
+In this thesis, we are concerned with \textbf{task-oriented} dialogue, that we will augment with more sophisticated language understanding, learning and grounding capabilities.
 
 %----------------------------------------------------------------------------------------
 %	DIALOGUE SYSTEMS
@@ -76,6 +77,7 @@ The \textbf{basic architecture} of a dialogue system is shown in Figure \ref{ds_
 		\item Find an answer for the user request
 		\item Output the answer in the form of a system move (in the example, \\ \texttt{"answer(my\_name(`HAL9000'))"})
 	\end{enumerate}
+	Many classes of dialogue managers exist, from basic, slot-based ones \citep{Jokinen2009}, to more sophisticated approaches, like Information State Update system (see Section \ref{ch:rw:ds:isu}).
 	\item The system move is received by the \textbf{response generation} module, whose purpose is to express that move with a natural language sentence, In the example, a proper output would be the string \texttt{"My name is HAL9000"}.
 	\item Finally, the response string is received by the \textbf{output module}, which presents it to the user. This module can simply print the sentence on the screen, but it can also implement Text-To-Speech technology to allow spoken interaction with the user.
 \end{enumerate}
@@ -107,7 +109,9 @@ We can identify some \textbf{ideal features} we would like to have implemented i
 	\item Learning a \textbf{``grammar" of conversation}, to place the correct utterance at each step of a conversational episode. -- eg. an appropriate answer to the utterance ``My name is Bill" can be ``Nice to meet you", whereas ``I like cookies" would not sound as much appropriate.
 	%~ \item Learning to talk about its \textbf{meta} level, that is, the structures that control the production of utterances, like the syntax according to which new utterances are formed, or the ``grammar" of conversation of the previous point. 
 \end{itemize}
-Lastly, we can point out that when we talk of such things like \emph{realizations}, \emph{meanings} and \emph{episodes} we cannot provide exact, sharply bounded definitions, as it can be argued for \textbf{recursive and compositional} structures at any level of their interpretation. As an example, let's consider the sentence \enumsentence{I am pronouncing a sentence that contains two verbs and three nouns} The meaning of such a sentence describes structural elements of the sentence itself (which is the realization of the same meaning) and also the conversational episode that starts when the sentence is stated.
+Lastly, we can point out that when we talk of such things like \emph{realizations}, \emph{meanings} and \emph{episodes} we cannot provide exact, sharply bounded definitions, as it can be argued for \textbf{recursive and compositional} structures at any level of their interpretation. As an example, let's consider the following meta-sentence \enumsentence{I am pronouncing a sentence that contains two verbs and three nouns} The meaning of such a sentence describes structural elements of the sentence itself (which is the realization of the same meaning) and also the conversational episode that starts when the sentence is stated.
+
+This point is important not to forget that, while in most systems (including ours) realizations, meanings and dialogue structures are handled separately by different parts of the application, this separation is an \textbf{abstraction} that may be discussed and relaxed in future developments of dialogue systems.
 
 %----------------------------------------------------------------------------------------
 %	THIS THESIS PROJECT
@@ -138,4 +142,4 @@ Finally, the system should be able to narrow possible needs for \textbf{clarific
 
 \subsection{Overview}
 
-This work is structured as follows. Chapter \ref{ch:rw} reviews the \textbf{related work} that has been previously done; chapter \ref{ch:arch} describes the \textbf{architecture} of the solution that has been developed; chapter \ref{ch:M2} delves into the \textbf{M2 algorithm}, which is the core of the meaning matching feature of the application; chapter \ref{ch:interaction} describes how the system can learn though the \textbf{interaction} with the user; chapter \ref{ch:conclusions} draws the \textbf{conclusions} of the whole project and illustrates future work that could take steps from it.
+This work is structured as follows. Chapter \ref{ch:rw} reviews some of the \textbf{related work} that is relevant to our project; chapter \ref{ch:arch} describes the \textbf{architecture} of the application we developed and its meaning matching system; chapter \ref{ch:M2} delves into the \textbf{M2 algorithm}, which is the core of the meaning matching feature of the application; chapter \ref{ch:interaction} describes how the system can learn though the \textbf{interaction} with the user; chapter \ref{ch:conclusions} draws the \textbf{conclusions} of the whole project and illustrates future work that could take steps from it.
