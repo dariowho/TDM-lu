@@ -142,7 +142,7 @@ The result of this procedure is \textbf{multiplied} to the \texttt{AAVG} feature
 
 Note that the choice of performing this multiplication, rather than having the chunk likelihood as a stand-alone feature, is also beneficial in that keeps the chunk likelihood, which can be considered as a \textbf{language modeling} feature, from occupying part of the final mass, which should be considered as an alignment mass.
 
-\subsection{Class-conditional Chunk Weight} \label{ch3:ml:cc}
+\subsection{Class-conditional Chunk Likelihood} \label{ch3:ml:cc}
 % frequency in class / frequency overall
 % Used to weight more chunks that are representative for one class
 Let's consider the following three sentences:
@@ -188,6 +188,17 @@ l(c_2|c_1)=\frac{\text{\# of }c_1-c_2\text{ alignments }}{\text{\# of }c_1\text{
 $$
 Note that, since no alignment labels are provided in the dataset (each sentence is labeled with a meaning, but its syntactic structure is hidden), this measure have to be trained in an unsupervised fashion. This problem shares a lot with the alignment likelihood in \textbf{Machine Translation}, even though here we can take advantage of the chunks sharing the same language (thus allowing some clever initialization of unsupervised methods with sensible guesses based, for instance, on Wordnet). On the other side our problem presents less precise training data, in that, while MT alignments are trained on sentence pairs, here we have a group of sentences sharing a same meaning; it can be argued that this cannot allow for strong syntactic assumptions.
 % MT: T: more similar syntactic structure (label sentence by sentence)
+
+\subsection{Training}
+All the features presented in this section need to be trained on a corpus before being employed. It should be pointed out that our hand-made \textbf{corpus of meanings} is not big enough for good results to be expected from it, as it includes only six meanings, each one defined by a set of three or four sentences. As fare as we know, there is no existing corpus that could be used for this purpose. In Section \ref{ch:conclusions:fw:eval} we propose a method to produce such a corpus, that would however require a separate future work.
+
+The training of the \textbf{chunk likelihood} and \textbf{class-conditional chunk likelihood} parameters is trivial, as it only involves a relative counts of all the possible chunks derived from the existing example sentences.
+
+The training of the \textbf{alignment likelihood} requires more effort, as the training data does not include information about chunk alignments. The natural way of training this parameter would thus be to run an Expectation-Maximization procedure [CITATION], that retrieves alignment hypotheses from the scoring algorithm, and uses these hypoteses to improve the parameters of the algorithm itself in an iterative way. Due to time constraint, this procedure was not implemented.
+
+What happens in fact is that the algorithm is repeatedly run (a fixed number of times) on sentences labeled with the same meaning. As we have seen in \ref{algo}, the algorithm produces a score for every possible alignment of the two input sentences. This score is used to increment the total recorded \textbf{alignment mass} of the alignment, that is then used to draw the statics described in Section \ref{ch3:ml:al}. In this way we achieve an iterative update that is similar to the one performed with EM, but for the fact that the number of iterations is fixed, rather than dependant on EM's variation threshold.
+
+The part of the software that is concerned with training is the \texttt{lu.learn} package; specifically, the procedure described above is contained in the \texttt{lu.learn.sentence} module.
 
 \section{Summary} \label{conclusions}
 In this chapter we described an algorithm to compare the similarity of two input sentences. Its main \textbf{advantages} are the concurrent consideration of many features like word meanings, position and overlapping, as well as the structure of the sentences, having the result in the form of aligned binary trees. The algorithm is recursive and exhaustive in that considers all the possible alignments of all the possible combinations of all the possible binary trees of the two input sentences, maximizing the efficiency with dynamic programming. Due to its modular structure, the algorithm can be easily extended with new features, allowing its integration with well-known Machine Learning techniques in Computational Linguistics (eg. Expectation-Maximization for computing word/phrase alignment probabilities).
