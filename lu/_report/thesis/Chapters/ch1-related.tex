@@ -94,7 +94,17 @@ Our software will be especially concerned with Clark's \textbf{third level}, as 
 
 One more notion that has been used in our work is Gabsdil's classification of different types of \textbf{non-understanding} into cases where no interpretation is available, cases of uncertain interpretation (one interpretation is still available), and cases of ambiguous interpretation (two or more alternatives are available). We will draw on the same classification in \ref{ch:interaction:mmw}, where we will describe how the software deals with utterances that have not been understood. In particular, we will see that the ``no interepretation" case will be answered with a rephrase request, whereas the other two will be solved with a single polar question\footnote{Note that, as Gabsdil also says, the most appropriate way to answer a case of ambiguous interpretation would be with a wh-question; as it will be explained better in Chapter \ref{ch:interaction}, this has not been done mainly for technical reasons.}.
 
-Lastly, Gabsdil also argues for \textbf{partial clarification questions}, being clarification request that are targeted to an especially misunderstood part of the user utterance. The author points out how a particular effort is required to implement this type of questions. We will address partial clarification questions in Chapter \ref{ch:interaction}.
+Lastly, Gabsdil also argues for \textbf{partial clarification questions}, being clarification request that are targeted to an especially misunderstood part of the user utterance. As an example, in the context of music player application, let's consider the dialogue:
+\begin{verbatim}
+U: Put on my favourite from Zappa
+S: I don't understand, can you repeat?
+\end{verbatim}
+In this case the system's clarification question is generic, and doesn't sound as natural as the one in the following example:
+\begin{verbatim}
+U: Put on my favourite from Zappa
+S: You mean `Sheik Yerbouti'?
+\end{verbatim}
+Gabsdil points out how a particular effort is required to implement this type of questions. We will address partial clarification questions in Chapter \ref{ch:interaction}.
 
 \section{Summary}
 In this chapter we have reviewed some of the most relevant work that inspired our project.

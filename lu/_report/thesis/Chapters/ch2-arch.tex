@@ -170,12 +170,14 @@ In the application, a Chunk Score is represented by the \texttt{ChunkScore} clas
 	Where, under the assumption that the best alignment has been determined by \texttt{ChunkScore.AAVG}, a \textbf{straight} alignment happens when the first sub-string of $c$ is aligned to the first sub-string of $d$, and the second sub-string of $c$ is aligned with the second sub-string of $d$; a \textbf{half-straight} alignment happens when both the sub-strings of $c$ are aligned to the same sub-string of $d$; a \textbf{crossed} alignment happens when the first sub-string of $c$ is aligned to the second sub-string of $d$, and the second sub-string of $c$ is aligned with the first sub-string of $d$.
 
 	\item \texttt{ChunkScore.ML\_CFREQ} - The Chunk Likelihood. This features is meant to enforce good linguistic splitting of the input chunks, as it sets a preference for chunks that occur more in the language base (eg. the chunk ``the volume" is supposed to occur more often that ``increase the"). Such a value is based on Machine Learning from previous examples, and it is implemented as the sum of the relative counts of the two chunks. A more detailed explanation of this will be given in \ref{ch3:ml:cl}.
+	
+	Note that this feature does not measure the goodness of the alignment, but should rather be considered as a \textbf{language modeling} feature; this has the drawback of contributing to the overall score every times the two input chunks are linguistically plausible, even if they should not be aligned together. Furthermore, a good amount of training data is required to prevent \textbf{data sparsity} problems. Both of these issues will be addressed in \ref{ch3:ml:cl} as well.
 
 	\item \texttt{ChunkScore.ML\_AFREQ} - The Alignment Likelihood. Such a value is based on Machine Learning from previous examples, and it is implemented as the relative count of the times the two input chunks have been found aligned together. A more detailed explanation of this feature will be given in  \ref{ch3:ml:al}. 
 \end{itemize}
 
 \subsubsection{Word Score} \label{ch:arch:LU:scores:word}
-A Word Score $\sigma_W(w_\text{from},w_\text{to})$ represents how similar the word $w_\text{from}$ is to the word $w_\text{to}$. It is represented in the application by the \texttt{WordScore} class (\texttt{lu/score/word.py}), which is a subclass of \texttt{Score}. Such a class defines the following \textbf{four features}:
+A Word Score $\sigma_W(w_\text{from},w_\text{to})$ represents how similar the word $w_\text{from}$ is to the word $w_\text{to}$. It is represented in the application by the \texttt{WordScore} class (\texttt{lu/score/word.py}), which is a subclass of \texttt{Score}. Such a class defines the following \textbf{five features}:
 \begin{itemize}
 	\item \texttt{WordScore.EQUALS} - Boolean equality.
 	\begin{displaymath}
@@ -189,12 +191,18 @@ A Word Score $\sigma_W(w_\text{from},w_\text{to})$ represents how similar the wo
 	\end{displaymath}
 	Where $f(w_\text{from},w_\text{to})$ is the edit distance between $w_\text{from}$ and $w_\text{to}$, as it is implemented in the Python Natural Language ToolKit \citep{Loper:2002:NNL:1118108.1118117}.
 	
+	\item \texttt{WordScore.POSITION\_DISTANCE} - inversely proportional to the difference between the position of $w_\text{from}$ in its sentence and the position of $w_\text{to}$ in its sentence.
+	\begin{displaymath}
+		\sigma_{W,\text{POSITION\_DISTANCE}}(w_\text{from},w_\text{to}) = \left(\frac{1}{|p(w_\text{from})-p(w_\text{to})|}\right)^\alpha
+	\end{displaymath}
+	Where $p(w)$ is the position of the word $w$ in its sentence, and $\alpha$ is a free parameter.
+	
 	\item \texttt{WordScore.WN\_MAX\_PATH\_SIMILARITY} - The length of the shortest path between the two words in the WordNet onthology \citep{Miller:1995:WLD:219717.219748}. This measure is implemented in the NLTK as well.
 	
 	\item \texttt{WordScore.ML\_AFREQ} - The Alignment Likelihood. This feature has already been described in \ref{ch:arch:LU:scores:chunk}.
 \end{itemize}
 
-\section{Summary}
+\section{Summary}\label{ch:arch:LU:summary}
 In this chapter we described the architecture of \pname in general, and of its sentence scoring system in particular.
 
 \pname is a client application for the \textbf{OpenTDM} library. The application defines its plans, language and device actions, while OpenTDM takes care of the dialogue management, being the execution of the plans that are appropriate to the context (e.g.\ to increase the volume when the user issues ``Increase the volume").

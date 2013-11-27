@@ -11,16 +11,16 @@
 %----------------------------------------------------------------------------------------
 In the previous chapter we have seen how the Language Unit is able to associate utterances from the user with their most likely meaning; due to the nature of the problem, it cannot be guaranteed that the output meaning is actually the one intended by the user. However, we have also seen that such an association is the result of a fuzzy matching process, where the utterance receives a comparison score with each of the candidate meanings. When these scores are accurate, they provide an important \textbf{estimate of the confidence} whether the understanding is correct or not.
 
-This chapter describes how the Language Unit exploits the information derived from the matching scores, to decide on whether a grounding interaction with the user is needed, and in case asking \textbf{pertinent questions} about the meaning of single sentence components. Also, an explanation of the \textbf{learning} process is given, that is, how the LU makes use of the user answers to update its knowledge about the language.
+This chapter describes how the Language Unit exploits the information derived from the matching scores, to decide on whether a grounding interaction with the user is needed, and in this case asking \textbf{pertinent clarification questions} about the meaning of single sentence components. Also, an explanation of the \textbf{learning} process is given, that is, how the LU makes use of the user answers to update and improve its knowledge about the language.
 
-Section \ref{ch:interaction:mmw} describes how the best interaction policy is selected; Section \ref{ch:interaction:afl} explains how the software locates the minimal unclear constituents in the input sentence; Section \ref{ch:interaction:episode} deals with how the Language Unit interact with TDM to produce the grounding subdialogues; Section \ref{ch:interaction:learn} describes how the user answers are used to learn new information about the language.
+Section \ref{ch:interaction:mmw} describes how the best interaction policy is derived from the match scores; Section \ref{ch:interaction:afl} explains how the software locates the minimal unclear constituents in the input sentence; Section \ref{ch:interaction:episode} deals with how the Language Unit interact with TDM to produce the grounding subdialogues; Section \ref{ch:interaction:learn} describes how the user answers are used to learn new information about the language.
 
 %----------------------------------------------------------------------------------------
 %	MEANING MATCHING WORKFLOW
 %----------------------------------------------------------------------------------------
 
 \section{Meaning Matching Workflow} \label{ch:interaction:mmw}
-The first problem the Language Unit has to face, is to determine whether the understanding of an input utterance is good enough to be taken as correct, or it rather needs to be grounded with the user.
+The first problem the Language Unit has to face, is to determine whether the understanding of an input utterance is good enough to be taken as correct, or it rather \textbf{needs to be clarified} interacting with the user.
 
 \subsection{Overview}
 Let's consider the following situation:
@@ -28,7 +28,7 @@ Let's consider the following situation:
 \texttt{S> How can I help you? \\
 U> what is the title of this song}
 
-At this point, four different scenarios are possible:
+At this point, four different \textbf{scenarios} are possible:
 \begin{enumerate}
 	\item There is one best matching meaning, and its confidence score is high.
 	\item There is one best matching meaning, but its confidence score is low.
@@ -77,7 +77,7 @@ Cases \textbf{2 and 3} require a more sophisticated handling. In this cases, the
 %----------------------------------------------------------------------------------------
 
 \section{Ambiguous Fragment Location} \label{ch:interaction:afl}
-When the Language Unit is not sure about the meaning of the user utterance, a procedure is used to reduce the uncertainty to the \textbf{smallest possible constituents} of the sentence. This is done by analyzing the similarity between the user utterance and the best matching sentence within each of the candidate meanings.
+When the Language Unit faces uncertainty in the interpretation of the user utterance, a procedure is used to reduce the uncertainty to the \textbf{smallest possible constituents} of the sentence. This is done by analyzing the similarity between the user utterance and the best matching sentence within each of the candidate meanings.
 
 \subsection{Overview}
 Let's consider, as an example, the meaning \texttt{ask(?X.current\_song(X))}, defined by the sentences in \ref{ch:interaction:afl:meaning}, and the question in \ref{ch:interaction:afl:whatisthis}. If this question matches this meaning, achieving its best score with the sentence in  \ref{ch:interaction:afl:meaningmatch}, the software should then return ``the current" from \ref{ch:interaction:afl:whatisthis} and ``this" from \ref{ch:interaction:afl:meaningmatch} as the minimal uncertain alignment, because all the other parts are \textbf{perfectly matched}. The way this especially unclear constituents are detected will de described in \ref{ch:interaction:afl:impl}.
@@ -146,13 +146,13 @@ The final \texttt{if} construct (\textbf{lines \ref{ch:interaction:afl:algo:if} 
 %	INTERACTION EPISODE
 %----------------------------------------------------------------------------------------
 
-\section{Production of the Interaction Episode} \label{ch:interaction:episode}
-Once the need for grounding is enstablished (\ref{ch:interaction:mmw}), and the software has detected the core of the uncertainty (\ref{ch:interaction:afl}), it is necessary to produce a dialogue with the user, to put the clarification plan into practice.
+\section{Production of the Interaction Subdialogue} \label{ch:interaction:episode}
+Once the need for clarification is enstablished (\ref{ch:interaction:mmw}), and the software has located the uncertainty (\ref{ch:interaction:afl}), it is necessary to produce a subdialogue with the user, to put the \textbf{clarification plan} into practice.
 
 \subsection{Overview}
 In \ref{ch:interaction:mmw} we have encountered \textbf{two cases} in which an interaction with the user is necessary to ensure the correctness of the interpretation:
 \begin{itemize}
-	\item The best matched meaning did not achieved enough confidence to be taken as correct
+	\item The best matched meaning did not achieve enough confidence to be taken as correct
 	\item More than one meaning achieved an equally high level of confidence
 \end{itemize}
 
@@ -169,9 +169,11 @@ S> Young Lust, by Pink Floyd}
 
 Note that the \textbf{clarification question} can be any string, and can make use of the information returned by \texttt{locate\_fragments()}, that is, the two chunk of text whose alignment is uncertain. In the current implementation, this question is always given in the form of ``Does X mean Y", where X and Y are the chunks returned by \texttt{locate\_fragments()} (see \ref{ch:interaction:afl}); different formulations could be thought, to obtain a more natural interaction with the user (e.g.\ simply asking ``You mean `current song'?").
 
-If there is only \textbf{one candidate} meaning (case 2 in \ref{ch:interaction:mmw}), the question will be referred to that meaning, \textbf{otherwise} (case 3 in \ref{ch:interaction:mmw}) the question will be about the meaning that achieved the best score. Note that in fact this mean that the two cases are \textbf{not distinguished} in any way from each other. However, it is also worth to note that, even though only the simplest part of it is implemented in the dialogue manager, the plan produced by the Language Unit does differenciate the two situations, and includes nested questions, which utterance is conditioned on the answer of the top level ones.
+If there is only \textbf{one candidate} meaning (case 2 in \ref{ch:interaction:mmw}), the question will be referred to that meaning, \textbf{otherwise} (case 3 in \ref{ch:interaction:mmw}) the question will be about the meaning that achieved the best score. Note that in fact this mean that the two cases are \textbf{not distinguished} in any way from each other.
 
-\subsection{Implementation} \label{ch:interaction:episode:impl}
+However it is also worth to note that the full plan produced by the Language Unit, even though not implemented because of technical limitations, \textbf{does differenciate} the two situations, and includes alternative questions for more precise disambiguation.
+
+\subsection{Implementation: the \texttt{\_ground} plan} \label{ch:interaction:episode:impl}
 
 As it has already been mentioned, the TDM library comes with no technical documentation. This unfortunately limited us to the design of extremely simple grounding interactions. For the same reason, the design and implementation of such interaction, which is described in this section, is to be considered as a substantial \textbf{workaround}, wich does not fit the design principles of neither TDM or LU: an integral rewrite should be considered upon availability of TDM's documentation.
 
