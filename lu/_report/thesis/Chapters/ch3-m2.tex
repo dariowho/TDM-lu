@@ -1,13 +1,13 @@
 
-\chapter{Sentence similarity computation} % Main chapter title
+\chapter{Sentence Similarity Computation} % Main chapter title
 
 \label{ch:M2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
-\lhead{Chapter \ref{ch:M2}. \emph{The M2 matching algorithm}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+\lhead{Chapter \ref{ch:M2}. \emph{Sentence Similarity Computation}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
 
 In the context of sentences \textbf{classification}, where the task is to label an unknown input sentence with the correct meaning, and each meaning is defined by a set of representative natural language sentences (as it was defined in the Introduction), one crucial point is to measure the similarity of the input sentence with each of the sentences defining each meaning.
 
-Computing a \textbf{similarity score} between two natural language \textbf{sentences} is not a trivial problem. Many features can be taken into account to solve it, such as the syntactic structure of the sentence, or the meaning of the single words, or their order (see \ref{ch:rw:sim}); all of these features are informative respect to the meaning of the sentence, and it is reasonable to assume they are all considered by humans solving the same task. Here we describe a recursive, dynamic programming \textbf{algorithm} for sentence comparison aimed to exploit word-based information, as well as the syntactic one, expressed in the form of unsupervised learned binary trees.
+Computing a \textbf{similarity score} between two natural language \textbf{sentences} is not a trivial problem. Many features can be taken into account to solve it, such as the syntactic structure of the sentence, or the meaning of the single words, or their order (see Section \ref{ch:rw:sim}); all of these features are informative respect to the meaning of the sentence, and it is reasonable to assume they are all considered by humans solving the same task. Here we describe a recursive, dynamic programming \textbf{algorithm} for sentence comparison aimed to exploit word-based information, as well as the syntactic one, expressed in the form of unsupervised learned binary trees.
 
 % A bit more on literature, relation to the work would be nice..
 
@@ -84,7 +84,7 @@ Algorithm \ref{main} contains the main loop of the sentence scoring algorithm. B
 
 If the $i$th word is the last word of $c$, it returns a list containing the only element $c$.
 \item \texttt{Append($L,x$)} is the standard \emph{append} operation for lists, adding the element $x$ in the last position of the list $L$.
-\item $\hat{\sigma}(C_1,C_2,T)$ returns the Chunk Score (see \ref{ch:arch:LU:scores:chunk}) of $c_1,c_2$ \textbf{given} a particular 2-split of the two chunks. Such a score is computed combining the ones of the smaller constituents of $c_1,c_2$, which are required to be already present in the table T.
+\item $\hat{\sigma}(C_1,C_2,T)$ returns the Chunk Score (see Section \ref{ch:arch:LU:scores:chunk}) of $c_1,c_2$ \textbf{given} a particular 2-split of the two chunks. Such a score is computed combining the ones of the smaller constituents of $c_1,c_2$, which are required to be already present in the table T.
 
 As it is described in Section \ref{ch:arch:LU:scores:chunk}, a number of features are employed to form a full chunk score, the main one being the \textbf{average} of the scores of the best alignments of the sub-chunks in $C_1$ with the ones in $C_2$.
 
@@ -107,7 +107,7 @@ At line \ref{main:return} the function returns the \textbf{maximum of the candid
 %\section{An Example} \label{example}
 
 \section{Machine Learning} \label{learning}
-The algorithm described in section \ref{algo} is mainly concerned with \textbf{static features} to measure similarities: the score of two words is derived from equality, edit distance, Wordnet path length and so on; the score of chunks is the average of the scores of the best alignments of their components.
+The algorithm described in Section \ref{algo} is mainly concerned with \textbf{static features} to measure similarities: the score of two words is derived from equality, edit distance, Wordnet path length and so on; the score of chunks is the average of the scores of the best alignments of their components.
 
 In this section we address how does the algorithm \textbf{learn} from the sentences it is parsing. In other words, given a sentence of which I know the meaning label, how this information is used to improve the way I process new sentences.
 
@@ -134,7 +134,7 @@ Note that this feature is completely unsupervised, in that it does not require a
 
 It is also important to point out that, in order for this feature to be effective, a fair amount of training data is necessary. We encountered \textbf{data sparsity} problems when training this feature on our reduced corpus of meanings, and therefore in later experiments we decided to replace it with another language model based on corpus-trained parse trees. The purpose of this system is, for every possible chunk of the input sentence, to tell whether that chunk is a linguistic constituent or not of the sentence it is taken from. This is done according to the following procedure:
 \begin{enumerate}
-	\item The entire input sentence is parsed using the CYK algorithm [CITATION] trained on the Penn Wall Street Journal corpus [CITATION]
+	\item The entire input sentence is parsed using a probabilistic implementation of the CYK algorithm \citep{conf/tapd/ChappelierR98} trained on the Penn Wall Street Journal corpus \citep{Marcus:1993:BLA:972470.972475}.
 	\item Every possible constituent is extracted from the parse tree.
 	\item If the input chunk is one of the constituents, 1 is returned, 0 otherwise.
 \end{enumerate}
@@ -163,7 +163,7 @@ $$
 l(c|m)=\frac{\text{\# of }c\text{ in }m}{\text{\# of }c}
 $$
 
-This feature is used in \textbf{Meaning Scores} (see \ref{ch:arch:LU:scores:meaning}) to measure how much the terms in the input sentence are relevant to a certain meaning. Even though this is not done yet, it could also be used to weight the score of different chunks in the sentence, so for more informative chunks to influence more of the total score mass.
+This feature is used in \textbf{Meaning Scores} (see Section \ref{ch:arch:LU:scores:meaning}) to measure how much the terms in the input sentence are relevant to a certain meaning. Even though this is not done yet, it could also be used to weight the score of different chunks in the sentence, so for more informative chunks to influence more of the total score mass.
 %l(c|m,M)?
 \subsection{Alignment Likelihood}\label{ch3:ml:al}
 % Recursive score of alignments
@@ -194,9 +194,9 @@ All the features presented in this section need to be trained on a corpus before
 
 The training of the \textbf{chunk likelihood} and \textbf{class-conditional chunk likelihood} parameters is trivial, as it only involves a relative counts of all the possible chunks derived from the existing example sentences.
 
-The training of the \textbf{alignment likelihood} requires more effort, as the training data does not include information about chunk alignments. The natural way of training this parameter would thus be to run an Expectation-Maximization procedure [CITATION], that retrieves alignment hypotheses from the scoring algorithm, and uses these hypoteses to improve the parameters of the algorithm itself in an iterative way. Due to time constraint, this procedure was not implemented.
+The training of the \textbf{alignment likelihood} requires more effort, as the training data does not include information about chunk alignments. The natural way of training this parameter would thus be to run an Expectation-Maximization procedure \citep{Dempster77maximumlikelihood}, that retrieves alignment hypotheses from the scoring algorithm, and uses these hypoteses to improve the parameters of the algorithm itself in an iterative way. Due to time constraint, this procedure was not implemented.
 
-What happens in fact is that the algorithm is repeatedly run (a fixed number of times) on sentences labeled with the same meaning. As we have seen in \ref{algo}, the algorithm produces a score for every possible alignment of the two input sentences. This score is used to increment the total recorded \textbf{alignment mass} of the alignment, that is then used to draw the statics described in Section \ref{ch3:ml:al}. In this way we achieve an iterative update that is similar to the one performed with EM, but for the fact that the number of iterations is fixed, rather than dependant on EM's variation threshold.
+What happens in fact is that the algorithm is repeatedly run (a fixed number of times) on sentences labeled with the same meaning. As we have seen in Section \ref{algo}, the algorithm produces a score for every possible alignment of the two input sentences. This score is used to increment the total recorded \textbf{alignment mass} of the alignment, that is then used to draw the statics described in Section \ref{ch3:ml:al}. In this way we achieve an iterative update that is similar to the one performed with EM, but for the fact that the number of iterations is fixed, rather than dependant on EM's variation threshold.
 
 The part of the software that is concerned with training is the \texttt{lu.learn} package; specifically, the procedure described above is contained in the \texttt{lu.learn.sentence} module.
 

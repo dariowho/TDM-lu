@@ -1,0 +1,115 @@
+% Chapter Template
+
+\chapter{Conclusions} % Main chapter title
+
+\label{ch:conclusions} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\lhead{Chapter \ref{ch:conclusions}. \emph{Conclusions}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+
+\section{Contribution of This Project}
+We have presented \textbf{SVPlay}, a music player application that is able to process \textbf{natural language} commands and deal with uncertainty in unknown input sentences, by performing fuzzy \textbf{matching} at meaning level, interactive \textbf{clarification} with the user (when necessary), while \textbf{learning} from both matching and interaction.
+
+In particular, we have built a \textbf{client application} for OpenTDM, a dialogue management library that implements the Information State Update (ISU) framework; the client application (see Section \ref{ch:arch:client}) defines terms (ontology), dialogue plans (domain) and actions (device) that are used by the player, and a language file, that defines how the other elements are referred to in English. We designed and implemented the \textbf{Language Unit} (LU, see Section \ref{ch:arch:LU}), a drop-in replacement for OpenTDM's language understanding and generation modules (see Section \ref{ch:introduction:arch}), that is able to match the meaning of unknown input examples. We modified OpenTDM at \textbf{dialogue management} level, to include grounding and clarification capabilities to the system.
+
+We designed the \textbf{matching algorithm} of the LU (see Chapter \ref{ch:M2}) taking into account the following principles:
+\begin{itemize}
+	\item Matching is based on \textbf{nested scores} comparisons, to take into account similarity at different levels. In fact, the score between a sentence and a meaning involves scores between the sentence and other sentences labeled with that meaning; sentence scores in turn are based on scores between the constituents (chunks) of the two sentences, and the chunk scores rely on scores between single words.
+	\item Scores are always expressed as linear combinations of independent \textbf{extensible features}, in a way that is inspired by IBM's work on Watson (see Section \ref{ch:rw:ml:watson}). This allows for future extensions of the comparisons with more features, and favoures developments at meta-model level (see Section \ref{ch:conclusions:fw:accuracy}).
+	\item Comparisons are \textbf{data-driven}, in that feature exist, at every level, that take into account data statistics in an all-fragment fashion, letting similarities and structures emerge from the existing examples, and evolve when new examples are presented.
+\end{itemize}
+
+The \textbf{clarification} interaction features a policy selection procedure, that evaluates the need for interaction on the basis of the match confidence scores (see Section \ref{ch:interaction:mmw}), and an algorithm to locates, as specifically as possible, the input sentence constituents which interpretation was uncertain (see Section \ref{ch:interaction:afl}). When a case of misinterpretation is solved through the interaction with the user, the information provided by the latter is used to \textbf{update} the system's language knowledge, and used to improve the interpretation accuracy on new examples (see Section \ref{ch:interaction:learn}).
+
+\section{Future Work}
+Even though all the functionalities described in this thesis are implemented and working in \pname, the software we produced is still to be considered as a \textbf{prototype}. This section illustrates the steps that separate \pname from the release stage, along with some extra improvements that could be thought for the future.
+
+\subsection{Evaluation} \label{ch:conclusions:fw:eval}
+A first step to take before planning software improvements would be to evaluate its performance at the current stage. This turned out to be a particularly difficult task, because of the nature of the task we are evaluating. To be more precise, there are \textbf{two main tasks} in \pname that should be evaluated; effectiveness at the level of dialogue system and accuracy at the level of meaning matching.
+
+\cite{Jurafsky} suggest three classes of metrics to evaluate a \textbf{algorithm}: user satisfaction, task completion cost and task completion success. All of these three classes of metrics requires a study based on the user interaction with the system; while user satisfaction metrics are based on the subjective opinion of users, the other two take into account statistics on the tasks that are being completed: task completion cost metrics measure negative features of the interaction, such as completion time, number of queries, and so on; task completion success measures draw statistics on the completed tasks (percentage of completed task, correctness of the single answers etc.).
+ 
+The accuracy of the \textbf{meaning matching} algorithm of SVPlay could be evaluated with standard, corpus based, precision and recall statistics. That is, given a corpus of sentences, where each sentence is associated with a meaning label, train the Language Unit's meaning matcher on a training subset of the sentences, and get its classification hypotheses on the remaining, testing, part of the corpus. The labels of the testing sentences can be used as a gold standard to produce accuracy statistics.
+
+The main obstacle against corpus based evaluation is that such a corpus, as far as we know, does not exist. Nevertheless, gamification and crowdsourcing could be used to gather a user-generated corpus of sentences to fit this purposes. This is because of the analogies between the task of building the corpus and the famous game \textbf{\textit{Taboo}}. In this game, the players have to find ways to describe a certain concept to each other, without making use of certain words or expressions related to the concept. An online version of this game can be thought, where the conceps are meaning labels, and the expressions to be avoided are sentences already present in the dataset. Players could compete with each other, gaining more points the more popular their answers are among other players. When the popularity of an expression overcomes a certain threshold, it is added to the dataset, thus filtering out the spam coming from the less cooperative users.
+
+
+\subsection{Accuracy improvements} \label{ch:conclusions:fw:accuracy}
+Another area where \pname could be improved is the \textbf{matching accuracy}. Here we suggest some ways to improve the quality of the matches returned by the Language Unit.
+
+First of all, as we have explained in Section \ref{ch:arch:LU:scores}, every score in the system is a linear combination of single features. The \textbf{weights of this linear combination} are a part of the \textit{hypermodel} of the scoring algorithm that is particularly suited to machine learning training (as it already happens in Watson). An automatic way of optimizing these weight would be beneficial in that would improve the performance of the system as it is, and would allow the definition of a greater number of comparison features, without the risk of losing control of the model parameters. However, machine learning optimization of feature weights requires a labeled corpus of sentences, chunks and words. A way of gathering such a corpus was presented in Section \ref{ch:conclusions:fw:eval}.
+
+It could also be thought of employing \textbf{dynamic weights} for matching, that is, to adapt the feature weights depending on other comparison features (one example would be to disregard all the other Word features when the Equals feature is 1).
+
+Furthermore, we believe that a stricter application of the TF-IDF principles (see Section \ref{ch:rw:sim}) would provide great accuracy improvements. At the moment the software uses a \textit{class-conditional likelihood} feature for meaning scores (see Section \ref{ch:arch:LU:scores:meaning}); this feature is an analog of Term Frequency, as it represents the frequency of chunks from the input sentence in the examples that define the meaning. An analog of \textbf{Inverse Document Frequency} would prevent generally common terms to influence the scores as much as meaning-specific terms do. As an example, let's consider the case of sentence \ref{ch:conclusions:fw:accuracy:whats1} being compared with sentences \ref{ch:conclusions:fw:accuracy:whats2} and \ref{ch:conclusions:fw:accuracy:whats3}. The algorithm will devote a lot of score mass to the similarity of the ``What's" chunk, even though its common use makes it irrelevant de facto in the comparison. A IDF measure would prevent this from happening.
+\enumsentence{What's this track?} \label{ch:conclusions:fw:accuracy:whats1}
+\vspace{-0.7cm}
+\enumsentence{What's your name} \label{ch:conclusions:fw:accuracy:whats2}
+\vspace{-0.7cm}
+\enumsentence{What's the current song} \label{ch:conclusions:fw:accuracy:whats3}
+
+When a IDF measure is on place, it could be thought of performing a \textbf{multi-pass} matching to gradually restrict the list of candidate meanings. As an example, let's consider the case of sentence \ref{ch:conclusions:fw:accuracy:inc1}, matched against sentences \ref{ch:conclusions:fw:accuracy:inc2}, \ref{ch:conclusions:fw:accuracy:inc3} and \ref{ch:conclusions:fw:accuracy:inc4}. Given that the software has no alignment between ``Turn up" and ``Increase", the chunk ``the volume" would be useful at first, to restrict the candidate matches to \ref{ch:conclusions:fw:accuracy:inc2} and \ref{ch:conclusions:fw:accuracy:inc2}. At this point, running the algorithm a second time would have the effect of reducing the IDF of ``the volume" to zero, forcing the system to focus on the comparison between ``Turn up", ``Increase" and ``Decrease".
+
+\enumsentence{Turn up the volume} \label{ch:conclusions:fw:accuracy:inc1}
+\vspace{-0.7cm}
+\enumsentence{Increase the volume} \label{ch:conclusions:fw:accuracy:inc2}
+\vspace{-0.7cm}
+\enumsentence{Decrease the volume} \label{ch:conclusions:fw:accuracy:inc3}
+\vspace{-0.7cm}
+\enumsentence{What's the current song} \label{ch:conclusions:fw:accuracy:inc4}
+
+%- Weighting of sources (use confidence of sentences)
+
+We have seen in Section \ref{ch:interaction:learn} that the user's positive feedback on clarification requests is used to learn new alignments between chunks in the language. However, no learning is performed when the feedback is negative (that is, when the user states that an alignment between chunks of text is not lecit). \textbf{Negative feedback} could be used to improve the model, for instance reducing the score mass associated with the alignment the user said to be wrong.
+
+Also, when a new alignment is learnt between chunks $c_1$ and $c_2$, it can be thought of \textbf{propagating} the new similarity information to the other chunks $c_i$ for which $\sigma_{c}(c_1,c_i)$ is sufficiently high. This would allow for the definition of fuzzy synonym sets where the transitive property of the synonymy relation.
+
+Finally, one of the problems of the current implementation of the alignment features is that the alignment mass of very frequent chunks/words keeps being reinforced, thus becoming disproportionate respect to the others. The result of this is that some alignments are scored less than others, just because the concept they express is less frequent than the concept expressed by others. One way to reduce this problem would be to implement some sort of \textbf{economy} of score masses, where, when needed, an increment of an alignment mass causes the decrement of other value, with the purpose of keeping the values equilibrate, and discouraging improbable alignments.
+
+\subsection{Efficiency improvements}
+One of the issues with the current implementation of \pname is the time required for the system to provide the answers. This is because the matching algorithm is not yet optimized for optimal performance. In this section we propose some ways to \textbf{speed up} the meaning matching process.
+
+We have already mentioned that meaning matching depends on sentence matching, and the latter is an \textit{all-fragments} process: every possible combination of strings from the input sentences is taken into account during the comparison. This is not always necessary, as sometimes the \textbf{degree of confidence} of the alignment between two chunks is high enough to make other alignments options unuseful. A limit case of this is represented by the alignment between identical chunks: at the moment this case is not distinguished  from alignments between different chunks, where it would make sense to directly align identical chunks before matching the remaining ones.
+
+Also often, during the comparison of two sentences, fragments of the sentences are encountered that have been scored before. A \textbf{cache} for these partial score is likely to save a significant amount of computation time.
+
+Another way of improving the speed of meaning matching would be to exploit the \textbf{context} of dialogue: at the moment no information is given from the dialogue manager to the LU circa the range of possible meanings that the user may express at a specific point in the conversation. If this information was given, it could be used to reduce the comparisons to the meanings that are indeed possible. As an example, if, at a certain point in the dialogue, the user is supposed to answer the question ``Do you want to quit?", the LU could match the next user utterance against the only two meanings \texttt{answer(yes)} anb \texttt{answer(no)}.
+
+Finally, a \textbf{coarse-to-fine} matching procedure could be devised, that first restricts the set of possible meanings using computationally inexpensive features (e.g.\ TF-IDF measures alone), and then runs the full matching algorithm on this restricted set to find the correct answer.
+
+\subsection{Extra features}\label{ch:conclusions:fw:extra}
+In addition to performance improvements, we propose here some features that could naturally \textbf{extend the software} as it is now.
+
+First and foremost, the \textbf{OpenTDM integration} should be improved, upon availability of its technical documentation. This would allow for the creation of more sophisticated and natural dialogues with the user, especially in the grounding case that we have described in Section \ref{ch:interaction:episode:impl}.
+
+A next step in the development of the Language Unit would be the inclusion of parametrized sentences. As an example, let's consider the sentence in \ref{ch:conclusions:fw:extra:beet}. At the moment the software could not support this kind of sentences, as it is not possible to associate part of the input with external parameters. This functionality could be integrated by making it possible to define models for \textbf{parameter types} in the client application. Sentence \ref{ch:conclusions:fw:extra:beetpar} shows how a parametrized sentence could look like; parameters models are needed to allow the LU to tell how likely a chunk of text is to belong to type \texttt{TITLE} or \texttt{AUTHOR}.
+
+\enumsentence{Play the Ninth Symphony by Beethoven}\label{ch:conclusions:fw:extra:beet}
+\vspace{-0.7cm}
+\enumsentence{Play \texttt{<X:TITLE>} by \texttt{<Y:AUTHOR>}}\label{ch:conclusions:fw:extra:beetpar}
+
+Another interesting step to take would be to include models for \textbf{meaning compositionality}. For instance, a user may want to say something like ``Skip this song and decrease the volume"; the software should then be able to recognise that the meaning expressed by this utterance is a combination of the meanings of its two parts.
+
+In the normal dialogue interaction, participants often keep track of the objects that are being referenced across different moments of the conversation. A \textbf{rich context} representation would be useful in automatic systems as well; as an example, let's consider the following dialogue:
+\begin{verbatim}
+U: Play California Dreaming
+S: Ok
+U: Also, put it in my Favourites playlist
+D: Done adding `California Dreaming' to the Favourites playlist
+\end{verbatim}
+A dialogue like this would not be possible at the moment, as the software, by default, erases any common ground every time an interaction ends. Note that this kind of references would also be useful on the meta-level,for instance allowing the user to correct the system interpretation of previous sentences.
+
+%- Keep a connectionist-like model of matches across utterances: the matches or 
+%  words fired with the previous utterances remain active in memory for some 
+%  time before decaying. A model of decay can also be envisioned, which controls
+%  the time before stuff decays (eg. if one utterance is "nevermind", the model
+%  can force immediate decay of everything)
+
+A final extension proposal for \pname is concerned with the fact that, at the moment, all the interaction subdialogues are predefined and static (i.e.\ every dialogue plan produces a specific sequence of invariable system utterances). It would be interesting (given the availability of a proper corpus) to apply a data-driven, \textbf{machine learning} approach to the \textbf{meta-level} of the interaction, being the structure of the dialogues between the system and the user, achieving human-machine conversations that are even closer to the natural human ones.
+
+%- How to deal with holes and plugs in training sentences (eg. "clean X up")
+
+
+%Classification
+%- Perceptron
+%- Decision stumps
+%- Naive Bayes

@@ -181,7 +181,7 @@
 %	defined as \examname above so you cite it as \examname
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Learning in Dialogue Interactions} % Your thesis title - this is used in the title and abstract
+\thesistitle{Interactive Language Understanding and Learning in Dialogue Systems} % Your thesis title - this is used in the title and abstract
 %-------------------------------------------------  
 \supervisor{Prof. Raquel \textsc{Fern\'andez}} % You supervisor's name - this is used in the title page
 %-------------------------------------------------   

@@ -29,7 +29,8 @@
 
 \graphicspath{{./Pictures/}} % Specifies the directory where pictures are stored
 
-\usepackage[comma, sort&compress]{natbib} % Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers'
+\usepackage[comma]{natbib}
+%\usepackage[comma, sort&compress]{natbib} % Use the natbib reference package - read up on this to edit the reference style; if you want text (e.g. Smith et al., 2012) for the in-text references (instead of numbers), remove 'numbers'
 \usepackage[utf8]{inputenc}
 \usepackage{float}
 \usepackage{fancyvrb}
@@ -159,13 +160,13 @@ Uno, PKNA \#0
 
 \abstract{\addtocontents{toc}{\vspace{1em}} % Add a gap in the Contents, for aesthetics
 
-As human-computer interaction technologies advance, the gap between the language of computer systems and the one of their users reduces, thanks to the inclusion of typical elements of human-human interaction such as visuals, haptics or natural language. In this sense, developments in the field of \textbf{dialogue systems} are central. In this thesis we address some issues that most of modern dialogue systems are still struggling with.
+As human-computer interaction technologies advance, the gap between the language of computer systems and the one of their users reduces, thanks to the inclusion of typical elements of human-human interaction such as visuals, haptics or natural language. In this sense, developments in the field of \textbf{dialogue systems} are central. In this thesis we address some issues that most modern dialogue systems are still struggling with.
 
 A basic fact about human-human dialogue is that there is often more than one way of talking about any domain. Often language \textbf{understanding} and production abilities of dialogue systems are limited to a static vocabulary of predefined sentences. We propose a system that is able to perform flexible meaning matching to grasp the meaning of sentences that were never encountered before.
 
 Secondly, linguistic abilities in humans evolve, as new interactions are performed, and new expressions are learned. Our system \textbf{learns} new elements of the language from successful interactions with the user.
 
-Lastly, human dialogue is a social activity, in that involves continuous attention of the dialogue partners (DPs) to each other's understanding. The act of establishing mutual knowledge among the DPs is called \textbf{grounding}, and it's still a topic of research in dialogue systems. Our system is able to detect potential misinterpretation of user utterances, interact with him to clarify their meaning, and learn from this interaction.
+Lastly, human dialogue is a social activity, in that it involves continuous attention of the dialogue partners (DPs) to each other's understanding. The act of establishing mutual knowledge among the DPs is called \textbf{grounding}, and it's still a topic of research in dialogue systems. Our system is able to detect potential misinterpretation of user utterances, interact with him to clarify their meaning, and learn from this interaction.
 }
 
 \clearpage % Start a new page
@@ -174,16 +175,16 @@ Lastly, human dialogue is a social activity, in that involves continuous attenti
 %	ACKNOWLEDGEMENTS
 %----------------------------------------------------------------------------------------
 
-\setstretch{1.3} % Reset the line-spacing to 1.3 for body text (if it has changed)
+%\setstretch{1.3} % Reset the line-spacing to 1.3 for body text (if it has changed)
 
-\acknowledgements{\addtocontents{toc}{\vspace{1em}} % Add a gap in the Contents, for aesthetics
+%\acknowledgements{\addtocontents{toc}{\vspace{1em}} % Add a gap in the Contents, for aesthetics
 
-The acknowledgements and the people to thank go here\ldots
+%The acknowledgements and the people to thank go here\ldots
 
 % Other people to acknowledge
 % - The guy who created this template: http://www.latextemplates.com/template/masters-doctoral-thesis
-}
-\clearpage % Start a new page
+%}
+%\clearpage % Start a new page
 
 %----------------------------------------------------------------------------------------
 %	LIST OF CONTENTS/FIGURES/TABLES PAGES
@@ -237,15 +238,19 @@ The acknowledgements and the people to thank go here\ldots
 
 \listofnomenclature{lll} % Include a list of Symbols (a three column table)
 {
-$c$ & chunk of text \\
 $m$ & meaning \\
+$c$ & chunk of text \\
 $s$ & sentence \\
 % Symbol & Name & Unit \\
 
 & & \\ % Gap to separate the Roman symbols from the Greek
 
-$\sigma$ & chunk similarity \\
-$\tau$ & word similarity \\
+$\sigma$ & similarity score \\
+$\sigma_m$ & Meaning Score \\
+$\sigma_s$ & Sentence Score \\
+$\sigma_c$ & Chunk Score \\
+$\sigma_w$ & Word Score \\
+$\tau$ & Word Score \\
 % Symbol & Name & Unit \\
 }
 
@@ -308,7 +313,8 @@ $\tau$ & word similarity \\
 
 \lhead{\emph{Bibliography}} % Change the page header to say "Bibliography"
 
-\bibliographystyle{unsrtnat} % Use the "unsrtnat" BibTeX style for formatting the Bibliography
+\bibliographystyle{plainnat}
+%\bibliographystyle{unsrtnat} % Use the "unsrtnat" BibTeX style for formatting the Bibliography
 
 \bibliography{Bibliography} % The references (bibliography) information are stored in the file named "Bibliography.bib"
 

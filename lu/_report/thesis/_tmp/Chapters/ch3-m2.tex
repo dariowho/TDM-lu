@@ -1,0 +1,221 @@
+
+\chapter{Sentence similarity computation} % Main chapter title
+
+\label{ch:M2} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+\lhead{Chapter \ref{ch:M2}. \emph{The M2 matching algorithm}} % Change X to a consecutive number; this is for the header on each page - perhaps a shortened title
+
+In the context of sentences \textbf{classification}, where the task is to label an unknown input sentence with the correct meaning, and each meaning is defined by a set of representative natural language sentences (as it was defined in the Introduction), one crucial point is to measure the similarity of the input sentence with each of the sentences defining each meaning.
+
+Computing a \textbf{similarity score} between two natural language \textbf{sentences} is not a trivial problem. Many features can be taken into account to solve it, such as the syntactic structure of the sentence, or the meaning of the single words, or their order (see Section \ref{ch:rw:sim}); all of these features are informative respect to the meaning of the sentence, and it is reasonable to assume they are all considered by humans solving the same task. Here we describe a recursive, dynamic programming \textbf{algorithm} for sentence comparison aimed to exploit word-based information, as well as the syntactic one, expressed in the form of unsupervised learned binary trees.
+
+% A bit more on literature, relation to the work would be nice..
+
+The algorithm presented in this thesis aims to provide a similarity measure for two sentences $s_1$ and $s_2$ featuring many of the ideas that have proven to be successful in recent developments of Computational Linguistics. The following are some of the key insights of the algorithm:
+
+\begin{itemize}
+\item \textbf{Every possible} sub-sentence of $s_1$ is compared with every possible sub-sentence of $s_2$.
+\item A score between two chunks of text is build \textbf{recursively} on the best matches of smaller chunks, and always brought down to scores between single words.
+\item \textbf{Dynamic programming} is used to increase the efficiency of the algorithm, preventing it from computing the same result two times.
+\item Other than the similarity score, the algorithm outputs the most probable chunking of each sentence in the form of an unlabeled binary \textbf{parse tree}.
+\item Other than the similarity score and the parse trees, the algorithm outputs the most likely \textbf{alignment} between the chunks of the two sentences.
+\item Every score is expressed as a linear combination of \textbf{features}, designed to be independent and extensible.
+\item The partial computations of the algorithm can be stored and further used to implement a learning model.
+\end{itemize}
+
+%Document structure
+This chapter is \textbf{structured} as follows. Section \ref{algo} describes the algorithm theoretically. %and in a better world a complexity analysis
+%Section \ref{example} walks through a toy example.
+Section \ref{learning} describes possible extensions and improvements. Section \ref{conclusions} draws the conclusion of the paper.
+
+\section{The M2 Matching Algorithm} \label{algo}
+\begin{algorithm}
+  \SetKwData{Left}{left}
+  \SetKwData{Up}{up}
+  \SetKwFunction{WWScore}{$\tau$}
+  \SetKwFunction{CCScore}{$\tilde{\sigma}$}
+  \SetKwFunction{Length}{Length}
+  \SetKwFunction{Split}{Split}
+  \SetKwFunction{Set}{Set}
+  \SetKwFunction{Append}{Append}
+  \SetKwFunction{Max}{Max}
+  \SetKwInOut{Input}{input}
+  \SetKwInOut{Output}{output}
+  \SetKw{In}{in}
+
+\Indm  
+  \Input{$c_1,c_2$ chunks of text; $T$ partial results table}
+  \Output{$\sigma(c_1,c_2)$ Similarity score between $c_1$ e $c_2$}
+\Indp
+  \BlankLine
+  \uIf{c1,c2 are words}{ \label{main:bc1}
+	  \Return{\WWScore{$c_1,c_2$} \label{main:bc2} }
+  }
+  \BlankLine
+  $S\leftarrow[\ ]$\; \label{main:cinit}
+  \For{$i\leftarrow 1$ \KwTo \Length{$c_1$}}{ \label{main:loopi}
+    $C_1 \leftarrow $ \Split{$c_1$,i}\; \label{main:spliti}
+		\For{$j\leftarrow 1$ \KwTo \Length{$c_2$}}{ \label{main:loopj}
+		\lIf{i=\Length{$c_1$} and j=\Length{$c_2$}}{break} \label{main:break}
+		\BlankLine
+		$C_2 \leftarrow $ \Split{$c_2$,j}\; \label{main:splitj}
+		\BlankLine
+		\ForEach{$sc_1$ \In $C_1$}{ \label{main:fe1}
+			\ForEach{$sc_2$ \In $C_2$}{ \label{main:fe2}
+				\uIf{$T[sc_1,sc_2]=\emptyset$}{$T[sc_1,sc_2] \leftarrow \sigma(sc_1,sc_2,T)$ \label{main:tabass} \label{main:tupdate}}
+			}
+		}
+		\BlankLine
+		\Append{$S$,\CCScore{$C_1,C_2,T$}} \label{main:cappend}
+ }
+	}
+	\BlankLine
+	\Return \Max{$R$} \label{main:return}
+\caption{The main algorithm\label{main}}
+\end{algorithm}
+
+Algorithm \ref{main} contains the main loop of the sentence scoring algorithm. Before entering the details of it, it is necessary to say that:
+\begin{itemize}
+\item The input $c_1,c_2$ can be any \textbf{chunks} of text because, while the algorithm is called with two sentences in input, it will recursively call itself on every possible chunk extracted from the two sentences.
+\item The input $T$ (T for Table) is a data structure holding the intermediate results of the algorithm. As we can infer from line \ref{main:tabass} of Algorithm \ref{main}, $T[c_1,c_2]=\sigma(c_1,c_2)$
+\item $\tau(c_1,c_2)$ returns a Word Score, being a similarity measure between two words (see Section \ref{ch:arch:LU:scores:word}). As we have seen in Section \ref{ch:arch:LU:scores}, every Score is a linear combination of independent features. The features that are currently defined for Word Scores are described in Section \ref{ch:arch:LU:scores:word}.
+\item \texttt{Length($c$)} returns the number of words contained in the chunk $c$
+\item \texttt{Split($c,i$)} returns a list of two chunks, one containing the words of $c$ from the first to the $i$th, and the other containing the words of $c$ form the $(i+1)$th to the last.
+
+If the $i$th word is the last word of $c$, it returns a list containing the only element $c$.
+\item \texttt{Append($L,x$)} is the standard \emph{append} operation for lists, adding the element $x$ in the last position of the list $L$.
+\item $\hat{\sigma}(C_1,C_2,T)$ returns the Chunk Score (see Section \ref{ch:arch:LU:scores:chunk}) of $c_1,c_2$ \textbf{given} a particular 2-split of the two chunks. Such a score is computed combining the ones of the smaller constituents of $c_1,c_2$, which are required to be already present in the table T.
+
+As it is described in Section \ref{ch:arch:LU:scores:chunk}, a number of features are employed to form a full chunk score, the main one being the \textbf{average} of the scores of the best alignments of the sub-chunks in $C_1$ with the ones in $C_2$.
+
+For example, given $C_1=[\text{``increase",``the volume"}]$ and $C_2=[\text{``raise"},\\ \text{``the volume"}]$, ``increase" is likely to achieve the best score with ``raise" (eg. $T[\text{``increase",``raise"}]=0.8$), as well as ``the volume" will be aligned with ``the volume" ($T[\text{``the volume",``the volume"}]=1$)). The score of ``increase the volume" and ``raise the volume", in this particular splitting, will thus be the average of the two, 0.9.
+\end{itemize}
+After these premises it is relatively easy to walk through the pseudo-code of Algorithm \ref{main}. Lines \ref{main:bc1} and \ref{main:bc2} handle the base case, that is, when the algorithm is run on \textbf{two words}; in this case the result of the Word Similarity function, which is described above, is returned.
+
+At line \ref{main:cinit} the list of \textbf{candidate results} is initialized as an empty list. This is because more than one score will be computed for $c_1$ and $c_2$, the maximum of which will be returned as a result.
+
+Lines \ref{main:loopi} and \ref{main:loopj} define a nested loop structure, which purpose is to update the two indexes $i$ (from the first to the last word of $c_1$) and $j$ (from the first to the last word of $c_2$) to cover \textbf{every possible combination} of word positions in the two input strings. These indexes are used to \textbf{split} the input chunks in smaller parts (lines \ref{main:spliti} and \ref{main:splitj}). As an example, if the input is given by $c_1=$``increase the volume", $c_2=$``raise the volume", the outer loop will produce the three possible values of $C_1$: [``increase",``the volume"], [``increase the",``volume"] and [``increase the volume"]; each of these values will be combined, in the inner loop, with the three possible values of $C_2$: [``raise",``the volume"], [``raise the",``volume"] and [``raise the volume"].
+
+Note that, while it is reasonable to consider the entire $c_1$ and $c_2$ in the comparisons (eg. if $c_1=$``quit",$c_2=$``quit please", we'd want the whole $c_1$ to be associated with the ``quit" sub-part of $c_2$), it is necessary to prevent the two entire $c_1$ and $c_2$ to be associated at the same time, thus producing an \textbf{infinite loop}; this is done in line \ref{main:break}.
+
+The next part of the inner loop, from line \ref{main:fe1} to line \ref{main:fe2} combines every sub-chunk of $c_1$ ($sc_1 \in C_1$) with every sub-chunk of $c_2$ ($sc_2 \in C_2$); note that $C_1$ and $C_2$ contain either one or two elements. Every combination that is not present in the table is scored with a \textbf{recursive} call to the algorithm itself, and the resulting score is saved in the table (line \ref{main:tupdate}).
+
+The last operation done in the loop, at line \ref{main:cappend}, is to combine the sub-scores that have just been scored in the table to compute the final score of this particular subdivision of $c_1$ and $c_2$. This is a \textbf{candidate score} for $c_1$ and $c_2$, and thus is appended to the list of candidate scores. As we already said, the definition of this combination is open; however it is most reasonable for the $\hat{\sigma}$ function to find the \textbf{best alignment} between the input sub-chunks, and provide a score based on it. It is clear that the definition of $\hat{\sigma}$ is crucial for getting sensible results from the algorithm. Furthermore, $\hat{\sigma}$ is the point where the algorithm can be extended with Machine Learning capabilities, that will be discussed in Section \ref{learning}.
+
+At line \ref{main:return} the function returns the \textbf{maximum of the candidate} score, that is, the split that produced the best score (eg. for ``increase the volume" vs ``raise the volume", the score of ``increase $\vert$ the volume" vs ``raise $\vert$ the volume" is likely to produce a better score than ``increase $\vert$ the volume" vs. ``raise the $\vert$ volume"). Note that this decision determines the branching of one level of the recursion tree; once the algorithm is done computing the score between two sentences, a traceback of the selected splits can be interpreted as a parse tree for the two input sentences.
+
+%\section{An Example} \label{example}
+
+\section{Machine Learning} \label{learning}
+The algorithm described in Section \ref{algo} is mainly concerned with \textbf{static features} to measure similarities: the score of two words is derived from equality, edit distance, Wordnet path length and so on; the score of chunks is the average of the scores of the best alignments of their components.
+
+In this section we address how does the algorithm \textbf{learn} from the sentences it is parsing. In other words, given a sentence of which I know the meaning label, how this information is used to improve the way I process new sentences.
+
+Here I consider \textbf{three features} based on Statistical Language Processing methods to address this problem: chunk likelihood, class-conditional chunk weight and alignments likelihood. As it is summarized in Section \ref{ch:arch:LU:summary}, these features are used at every scoring level in the system.
+
+\subsection{Chunk Likelihood} \label{ch3:ml:cl}
+% Relative frequency across all sentences
+% Used to select good chunks
+Let's consider the following pair of sentences:
+%\begin{quote}
+\enumsentence{Pump up the volume}
+\vspace{-0.7cm}
+\enumsentence{Turn up the volume}
+%\end{quote}
+
+As an English-speaking human being I immediately associate the phrase ``pump up" with ``turn up" and ``the volume" with its analogue. One of the reasons I make this association rather than, for instance, associating ``pump" with ``turn" and ``up the volume" with its analogue, is that I have good experience of the phrase ``the volume" being used in different contexts, while fewer times I encounter ``up the volume".
+
+Thus a feature that can be useful to \textbf{enforce good chunking} of the input sentences is the likelihood of a chunk of text (where a chunk is defined as either a word or a combination of chunks). This feature can be modeled as the relative count of each chunk in the whole pool of the ones that have been recorded:
+$$
+l(c)=\frac{\text{\# of }c}{\text{\# of total chunks}}
+$$
+
+Note that this feature is completely unsupervised, in that it does not require a Meaning label to be computed.
+
+It is also important to point out that, in order for this feature to be effective, a fair amount of training data is necessary. We encountered \textbf{data sparsity} problems when training this feature on our reduced corpus of meanings, and therefore in later experiments we decided to replace it with another language model based on corpus-trained parse trees. The purpose of this system is, for every possible chunk of the input sentence, to tell whether that chunk is a linguistic constituent or not of the sentence it is taken from. This is done according to the following procedure:
+\begin{enumerate}
+	\item The entire input sentence is parsed using the CYK algorithm [CITATION] trained on the Penn Wall Street Journal corpus [CITATION]
+	\item Every possible constituent is extracted from the parse tree.
+	\item If the input chunk is one of the constituents, 1 is returned, 0 otherwise.
+\end{enumerate}
+The result of this procedure is \textbf{multiplied} to the \texttt{AAVG} feature of Chunk Scores (and Word Scores as well), in order to set, in the final score, a preference for linguistically plausible alignments.
+
+Note that the choice of performing this multiplication, rather than having the chunk likelihood as a stand-alone feature, is also beneficial in that keeps the chunk likelihood, which can be considered as a \textbf{language modeling} feature, from occupying part of the final mass, which should be considered as an alignment mass.
+
+\subsection{Class-conditional Chunk Likelihood} \label{ch3:ml:cc}
+% frequency in class / frequency overall
+% Used to weight more chunks that are representative for one class
+Let's consider the following three sentences:
+%\begin{quote}
+\enumsentence{Increase the volume}
+\vspace{-0.7cm}
+\enumsentence{I would appreciate if you could increase a bit the the volume}
+\vspace{-0.7cm}
+\enumsentence{Decrease the volume}
+%\end{quote}
+
+With a reasonable approximation, the first two sentences have the same meaning, while the last says the opposite, although the first and the last sentence are much more similar from a syntactic point of view. Nevertheless, no English speaker would bother wondering about hidden meanings behind phrases like ``I would appreciate", or ``if you could": everyone could tell that the second sentence is no more than the first one, with some more formal dressing.
+
+Especially, when I listen to the second sentence, I can immediately locate ``increase" and ``the volume" as the most informative phrases, while filtering out the rest as less relevant. One of the reasons I am able to do this is that I have memory of ``I would appreciate if you could" used in sentences conveying lots of different meanings, while ``increase" is likely to appear only in situations where something is increased.
+
+A feature that could be useful to spot the \textbf{informativeness} of chunks can be the conditional probability of the chunk, given a certain meaning:
+$$
+l(c|m)=\frac{\text{\# of }c\text{ in }m}{\text{\# of }c}
+$$
+
+This feature is used in \textbf{Meaning Scores} (see Section \ref{ch:arch:LU:scores:meaning}) to measure how much the terms in the input sentence are relevant to a certain meaning. Even though this is not done yet, it could also be used to weight the score of different chunks in the sentence, so for more informative chunks to influence more of the total score mass.
+%l(c|m,M)?
+\subsection{Alignment Likelihood}\label{ch3:ml:al}
+% Recursive score of alignments
+% Used to align chunks correctly
+Let's consider the following pair of sentences:
+%\begin{quote}
+\enumsentence{Skip this track}
+\vspace{-0.7cm}
+\enumsentence{Jump over this song}
+%\end{quote}
+Again, English speakers can easily associate the meaning of ``skip" with the one of ``jump over", and the meaning of ``track" with the one of ``song".
+
+One device that the algorithm uses to solve this problem is the \textbf{Wordnet} Path Lenght measure for word comparison. However, it has been noticed that this measure has its limits. In particular
+\begin{itemize}
+\item Not all the words are included in Wordnet
+\item Being a static measure, it cannot be adapted to the domain
+\item It has difficulties spotting antonyms
+\end{itemize}
+The alignment likelihood measure is used in Chunk Scores and Word Scores (see Sections \ref{ch:arch:LU:scores:chunk} and \ref{ch:arch:LU:scores:chunk}) to \textbf{enforce correct alignments} of different chunks.
+$$
+l(c_2|c_1)=\frac{\text{\# of }c_1-c_2\text{ alignments }}{\text{\# of }c_1\text{ alignments}}
+$$
+Note that, since no alignment labels are provided in the dataset (each sentence is labeled with a meaning, but its syntactic structure is hidden), this measure have to be trained in an unsupervised fashion. This problem shares a lot with the alignment likelihood in \textbf{Machine Translation}, even though here we can take advantage of the chunks sharing the same language (thus allowing some clever initialization of unsupervised methods with sensible guesses based, for instance, on Wordnet). On the other side our problem presents less precise training data, in that, while MT alignments are trained on sentence pairs, here we have a group of sentences sharing a same meaning; it can be argued that this cannot allow for strong syntactic assumptions.
+% MT: T: more similar syntactic structure (label sentence by sentence)
+
+\subsection{Training}
+All the features presented in this section need to be trained on a corpus before being employed. It should be pointed out that our hand-made \textbf{corpus of meanings} is not big enough for good results to be expected from it, as it includes only six meanings, each one defined by a set of three or four sentences. As fare as we know, there is no existing corpus that could be used for this purpose. In Section \ref{ch:conclusions:fw:eval} we propose a method to produce such a corpus, that would however require a separate future work.
+
+The training of the \textbf{chunk likelihood} and \textbf{class-conditional chunk likelihood} parameters is trivial, as it only involves a relative counts of all the possible chunks derived from the existing example sentences.
+
+The training of the \textbf{alignment likelihood} requires more effort, as the training data does not include information about chunk alignments. The natural way of training this parameter would thus be to run an Expectation-Maximization procedure [CITATION], that retrieves alignment hypotheses from the scoring algorithm, and uses these hypoteses to improve the parameters of the algorithm itself in an iterative way. Due to time constraint, this procedure was not implemented.
+
+What happens in fact is that the algorithm is repeatedly run (a fixed number of times) on sentences labeled with the same meaning. As we have seen in Section \ref{algo}, the algorithm produces a score for every possible alignment of the two input sentences. This score is used to increment the total recorded \textbf{alignment mass} of the alignment, that is then used to draw the statics described in Section \ref{ch3:ml:al}. In this way we achieve an iterative update that is similar to the one performed with EM, but for the fact that the number of iterations is fixed, rather than dependant on EM's variation threshold.
+
+The part of the software that is concerned with training is the \texttt{lu.learn} package; specifically, the procedure described above is contained in the \texttt{lu.learn.sentence} module.
+
+\section{Summary} \label{conclusions}
+In this chapter we described an algorithm to compare the similarity of two input sentences. Its main \textbf{advantages} are the concurrent consideration of many features like word meanings, position and overlapping, as well as the structure of the sentences, having the result in the form of aligned binary trees. The algorithm is recursive and exhaustive in that considers all the possible alignments of all the possible combinations of all the possible binary trees of the two input sentences, maximizing the efficiency with dynamic programming. Due to its modular structure, the algorithm can be easily extended with new features, allowing its integration with well-known Machine Learning techniques in Computational Linguistics (eg. Expectation-Maximization for computing word/phrase alignment probabilities).
+
+There are some assumptions and \textbf{weak points} as well. First of all, the algorithm is inherently binary, in that every recursion step is made of a 2-split of the two input strings; this may have an effect in the way partial scores are combined. More generally, this ``two times binary" recursive structure makes the features design task hard, since the effect of one operation is not easy to control over a potentially unlimited number of recursion steps. Also the number of parameters can become high, since each score is a linear combination of single features, requiring a separate Machine Learning training.
+
+Lastly, it has to be pointed out that the algorithm we present, due to its extensible features system, is not meant to be definitive, but should rather be considered as a \textbf{backbone} for future extensions. The main steps ahead before expecting good results from it are described in Section \ref{ch:conclusions:fw:accuracy}.
+
+%\begin{thebibliography}{9}
+
+%\bibitem{achananuparp08}
+%Palakorn Achananuparp, Xiaohua Hu, Xiajiong Shen. The Evaluation of Sentence Similarity Measures. Lecture Notes in Computer Science Volume 5182, 2008, pp 305-316
+
+%\bibitem{udop}
+%Rens Bod. Unsupervised parsing with U-DOP. CoNLL-X '06 Proceedings of the Tenth Conference on Computational Natural Language Learning, 2006, pp 85-92. 
+
+%\bibitem{ibmmt}
+%P. Brown, S. Della Pietra, V. Della Pietra, and R. Mercer (1993). The mathematics of statistical machine translation: parameter estimation. Computational Linguistics, 19(2), 263-311.
+
+%\end{thebibliography}
